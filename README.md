@@ -11,7 +11,7 @@ This repository contains all the code for training TensorFlow object detection m
 For detailed documentation please refer to the docs section of the repo containing the solution wiki.
 
 ## Prerequisites
----
+
 In order to successfully setup your solution you will need to have access to and or provisioned the following:
 
 - Access to an Azure subscription
@@ -19,14 +19,14 @@ In order to successfully setup your solution you will need to have access to and
 - Annotated Images
 
 ## Getting Started
----
+
 In order to get started with setup and running your first model training experiment and deployment please refer to the QuickStart page within the docs section of this repo. This will provide the quickest path to environment setup and experiment running.
 
 For the full MLOps setup please refer to the documentation within the MLOps page of the docs section of this repo. As this is built on the MLOps accelerator further documentation can be found in that repo.
 
 
 ## Repository Structure
----
+
 This section breaks down the structure of the repo and how the code is organised into an end to end workflow.
 
 ```
@@ -62,4 +62,6 @@ This section breaks down the structure of the repo and how the code is organised
 - operation - python code for MLOps retraining pipelines
 - src - contains the python solution source code and packages, including experiment submission scripts
 
-Trademarks This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft’s Trademark & Brand Guidelines. Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft’s Trademark & Brand Guidelines. Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
