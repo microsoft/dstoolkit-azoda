@@ -1,9 +1,5 @@
 ![banner](/docs/.attachments/banner.jpg)
 
-[![Build Status](https://dev.azure.com/DAISolutions/CognitiveAI/_apis/build/status/Build?branchName=main)](https://dev.azure.com/DAISolutions/CognitiveAI/_build/latest?definitionId=50&branchName=main)
-
-[![Python 3.7](https://img.shields.io/badge/Python-3.7-3776AB)](https://www.python.org/downloads/release/python-370/)
-
 # Object Detection Solution Accelerator
 
 This repository contains all the code for training TensorFlow object detection models within Azure Machine Learning (AML) with setups for training on Azure compute, experiment monitoring and endpoint deployment as a webservice. It is built on the MLOps Accelerator and provides end to end training and deployment pipelines allowing quick and easy setup of CI/CD pipelines for your projects.
