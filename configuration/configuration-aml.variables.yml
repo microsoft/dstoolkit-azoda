@@ -1,0 +1,33 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Definition of AML-related environment variables
+
+variables:
+
+  PYTHON_VERSION: 3.6
+  SDK_VERSION: 1.27
+
+  # Training
+  AML_TRAINING_EXPERIMENT: detection
+  AML_TRAINING_PIPELINE: detectionpipeline
+  AML_TRAINING_COMPUTE: gpucompute
+  AML_TRAINING_ENV_PATH: configuration/environments/environment_training
+  AML_MODEL_NAME: usecase
+
+  # Model
+  TRAIN_SCRIPT: training/scripts/train.py
+  MODEL_IMAGE_TYPE: usecase
+  MODEL_STEPS: 1000
+  DATASTORE_NAME: test_data
+  MODEL_TRAIN_CSV: latest
+  MODEL_TEST_CSV: latest
+  BASE_MODEL: faster_rcnn_resnet101_coco_2018_01_28
+  # expand with additional model params as needed
+  # must update build_training_pipeline.py to match
+
+  # Real-time inference
+  AML_REALTIMEINFERENCE_ENV_PATH: configuration/environments/environment_inference
+  AKS_COMPUTE: aks-compute
+  AML_WEBSERVICE: webservice
+

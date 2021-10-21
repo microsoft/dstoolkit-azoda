@@ -1,0 +1,31 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Azure Pipeline Template for Building and Registering docker image to ACR
+
+parameters:
+- name: dockerfile
+  type: string
+- name: repository
+  type: string
+- name: acrServiceConnection
+  type: string
+- name: buildContext
+  type: string
+- name: tags
+  type: string
+
+jobs:
+
+- job: docker_build
+  displayName: 'Build and push docker image'
+  steps:
+  - task: Docker@2
+    inputs:
+      command: buildAndPush
+      repository: ${{parameters.repository}}
+      dockerfile: ${{parameters.dockerfile}}
+      containerRegistry:  ${{parameters.acrServiceConnection}}
+      buildContext: ${{parameters.buildContext}}
+      tags: |
+        ${{parameters.tags}}

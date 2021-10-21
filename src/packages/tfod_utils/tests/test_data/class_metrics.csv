@@ -1,0 +1,7 @@
+﻿class_name,binary_classification_class,freq
+class1,FN,1
+class1,FP,1
+class1,TP,2
+class2,FN,1
+class2,FP,1
+class2,TP,2

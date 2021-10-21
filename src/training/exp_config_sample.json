@@ -1,0 +1,28 @@
+{
+    "ENV_CONFIG_FILE": "dev_config.json",
+    "DESCRIPTION": "",
+    "EXP_NAME" : "",
+    "COMPUTE_NAME" : "",
+    "DOCKER_IMAGE_NAME" : "",
+    "DATA_MOUNT" : "",
+    "IMAGE_TYPE" : "",
+    "TRAIN_CSV" : "",
+    "TEST_CSV" : "",
+    "EVAL_CONF" : 0.5,
+    "RUN_PARAMS": {
+        "STEPS": 1000
+    },
+    "MODEL_PARAMS": {
+        "BASE_MODEL": "",
+        "FIRST_STAGE" : {
+            "STRIDE": 16,
+            "NMS_IOU_THRESHOLD": 0.5,
+            "NMS_SCORE_THRESHOLD": 0.0,
+            "MAX_PROPOSALS": 200,
+            "LOCALIZATION_LOSS_WEIGHT": 2.0,
+            "OBJECTNESS_LOSS_WEIGHT": 1.0
+        }
+    },
+    "HYPERTUNE": false,
+    "NODES":3
+}

@@ -1,0 +1,22 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Definition of infra-related environment variables
+
+variables:
+
+  # PROD Environment
+  ENVIRONMENT: PROD
+  RESOURCE_GROUP: rg-detection-prod-001
+  LOCATION: westeurope
+  NAMESPACE: detection
+  SERVICECONNECTION_RG: conn-detection-sub-infra
+  SERVICECONNECTION_WS: conn-detection-aml-prod
+  SERVICECONNECTION_CR: conn-detection-acr-prod
+  AMLWORKSPACE: aml$(NAMESPACE)
+  STORAGEACCOUNT: sa$(NAMESPACE)
+  KEYVAULT: kv$(NAMESPACE)
+  APPINSIGHTS: ai$(NAMESPACE)
+  CONTAINERREGISTRY: cr$(NAMESPACE)
+  RELEASE_TYPE: manual
+  BUSINESS_OWNER_EMAIL: business_email

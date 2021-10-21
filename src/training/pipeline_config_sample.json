@@ -1,0 +1,24 @@
+{
+    "EXP_NAME" : "",
+    "TRAIN_SCRIPT": "",
+    "STEPS": 1000,
+    "BASE_MODEL": "",
+    "COMPUTE" : {
+        "NAME" : "",
+        "NODES": 1,
+        "DOCKER_IMAGE_NAME" : ""
+    },
+    "DATA" : {
+        "DATASTORE_NAME" : "",
+        "IMAGE_TYPE" : "",
+        "TRAIN_CSV" : "",
+        "TEST_CSV" : ""
+    },
+    "PIPELINE": {
+        "PUBLISH": false,
+        "RUNFIRST": false,
+        "WAIT": false,
+        "NAME": "",
+        "DESCRIPTION": ""
+    }
+}
