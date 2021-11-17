@@ -1,10 +1,6 @@
-[[_TOC_]]
-
 # MLOps
----
 
 ## Introduction
----
 
 This repo is built on the MLOps Solution Accelerator (link will be added) and follows the same repository structure and process for setting up the CI/CD process. Detailed documentation is avaliable in the MLOps accelerator repository.
 
@@ -13,7 +9,6 @@ The repository is built on Azure DevOps, if you use a different DevOps/MLOps pla
 This section provides a summary of the MLOps process and where to find the key components, configuration files and pipelines. Before setting up the full MLOps process it is recommended to setup and test the manual train and deploy process as described in the QuickStart section. This will ensure you have the required Azure Resources, Dataset and Base models.
 
 ## Structure
----
 
 For MLOps there are 3 directories within the repo of relevance:
 - **Azure Pipelines**
@@ -36,7 +31,6 @@ There are 4 key groups of variables:
 - **environments** - defines the environments and packages for the modelling pipeline
 - **`.variable.yml` files** - defines the service principles and model paramters for the pipelines
 - **`_config.json`** - local config files containing workspace connection paramters for executing notebooks and local scripts - !Note these do not get committed
-
 
 ### Operation
 Contains the python code for deploying and running the Azure ML pipelines and deployment of models to endpoints as part of the MLOps workflow.
