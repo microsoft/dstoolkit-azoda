@@ -12,7 +12,7 @@ This section describes the process to take a trained model experiment and deploy
 ---
 Below illustrates the deployment script stages.
 
-![image.png](/.attachments/image-1afe45e5-5f4b-4db7-898e-1e057b117568.png)
+![image.png](/docs/.attachments/image-1afe45e5-5f4b-4db7-898e-1e057b117568.png)
 
 ## Deployment Parameters
 ---

@@ -9,7 +9,7 @@
 
 Evaluation is incorporated as part of the training jobs, all metrics calculated are logged to Azure Machine Learning. Figure below summarizes the flow of evaluation.
 
-![image-867a4779-f73e-4f62-8acf-6b9707c237a7.png](/.attachments/image-867a4779-f73e-4f62-8acf-6b9707c237a7.png)
+![image-867a4779-f73e-4f62-8acf-6b9707c237a7.png](/docs/.attachments/image-867a4779-f73e-4f62-8acf-6b9707c237a7.png)
 
 ## How Performance is Measured
 ---
@@ -24,7 +24,7 @@ In the Binary case we measure performance on a Image Level and on Class Level.
 ### Confusion Matrix
 Metrics calculated is based on the confusion matrix:
 
-![image-2bb949ae-d4be-4439-9539-44ceb0da5eeb.png](/.attachments/image-2bb949ae-d4be-4439-9539-44ceb0da5eeb.png)
+![image-2bb949ae-d4be-4439-9539-44ceb0da5eeb.png](/docs/.attachments/image-2bb949ae-d4be-4439-9539-44ceb0da5eeb.png)
 
 Example below:
 - **True Positive (TP)** – Case we predicted that the product has a defect, and the product has a defect
@@ -48,11 +48,11 @@ These metrics are position based metrics and are aligned to the computer vision 
 
 The below figure is the example of caluclating the Average Precision.
 
-![AP_calculation.jpeg](/.attachments/AP_calculation.jpeg)
+![AP_calculation.jpeg](/docs/.attachments/AP_calculation.jpeg)
 
 Further information about how the AP and mAP is calculated can be ontained in the following article - [link](https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173).
 
 ##### IoU - Defining When Position is Close Enough
 Intersection of Union (IoU) is the metrics used evaluating if a prediction is close enough. If IoU is above a specific threshold the prediction is defined as TP otherwise FP. The IoU is used evaluating a models predictions on a positional level. This is used as a based in the mAP calculations.
 
-![image.png](/.attachments/image-7f99f0d7-9ec5-44c4-ab8b-75432aa23b5a.png)
+![image.png](/docs/.attachments/image-7f99f0d7-9ec5-44c4-ab8b-75432aa23b5a.png)

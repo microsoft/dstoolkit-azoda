@@ -91,7 +91,7 @@ Due to different labelling setups, and diversity in different customer data the 
 
 Inline with tensorflows object detection repo the solution uses two datasets a training and an evaluation set. Each dataset is defined as a .csv with the followign column format as shown below.
 
-![image.png](/.attachments/datasets.png)
+![image.png](/docs/.attachments/datasets.png)
 
 For examples of converting labelling tool outputs to the .csv format please refer to the example adapter scripts under src/data_orchestration.
 
@@ -116,11 +116,11 @@ This allows for the same setup to be used for multiple models, by createing mult
 
 Your storage should look like the below screenshot
 
-![image.png](/.attachments/test_data_dir.png)
+![image.png](/docs/.attachments/test_data_dir.png)
 
 With the datset files looking like below
 
-![image.png](/.attachments/dataset_files.png)
+![image.png](/docs/.attachments/dataset_files.png)
 
 ### 4. Setup base model
 
@@ -128,11 +128,11 @@ The solution leverages transferlearning from pretrained models provided by tenso
 
 The model comes in ``.tar.gz`` and need to be un-tar using the command documented in the model zoo. This model then needs to be uploaded to the same storage as the datasets, and at the same level as the different usecases, in a folder called models as shown below:
 
-![image.png](/.attachments/model_store.png)
+![image.png](/docs/.attachments/model_store.png)
 
 Within that directory each model is stored in a folder and that name is used within the model training config:
 
-![image.png](/.attachments/models.png)
+![image.png](/docs/.attachments/models.png)
 
 **Note!** - some models are known to have issues with there base config file, check the Github for issues.
 

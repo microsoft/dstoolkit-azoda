@@ -42,13 +42,13 @@ It is important to create quality labels in order to have a performant model. Ma
 
 Below provides a flow for generating quality data:
 
-![data_quality_process2.jpg](/.attachments/data_quality_process2.jpg)
+![data_quality_process2.jpg](/docs/.attachments/data_quality_process2.jpg)
 
 ### Consensus Approach
 
 Below illustrates a simple multi-labeller team consensus approach. The images/boxes that are removed or do not reach consensus are important to review as these often identify the confusing cases. These will be the cases a model typically will struggle with.
 
-![image.png](/.attachments/consensus_analysis_flow.png)
+![image.png](/docs/.attachments/consensus_analysis_flow.png)
 
 ### EXIF Meta Data
 
