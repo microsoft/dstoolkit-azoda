@@ -1,21 +1,17 @@
-[[_TOC_]]
-
 # Model Deployment Process
----
 
 ## Introduction
----
 
 This section describes the process to take a trained model experiment and deploy as a webservice to be consumed by applications. Note, with model training if using the submit training during deployment you will need to set the `REG_MODEL` to `true` as this process does not automatically register the model. If using the AML pipeline this step is included.
 
 ## Deployment Stages
----
+
 Below illustrates the deployment script stages.
 
 ![image.png](/docs/.attachments/image-1afe45e5-5f4b-4db7-898e-1e057b117568.png)
 
 ## Deployment Parameters
----
+
 When deploying a model there are several parameters to be set. In order to make this simple they are set via a config file. In the deployment directory there is a config file called `deploy_config.json` with the following content:
 
 ``` json
@@ -47,7 +43,7 @@ Below a breakdown of each parameter can be obtained:
 - `REG_MODEL` - if the model needs to be registered or not from the run_id. If set to false the deployment will check the model registry for a registered model with a runid tag matching that of your set RUN_ID
 
 ## Running Model Deployment
----
+
 Below explains how to execute the model deployment process.
 
 1. Update the deploy_config.json file to the desired experiment configuration

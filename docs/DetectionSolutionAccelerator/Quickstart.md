@@ -1,9 +1,7 @@
-[[_TOC_]]
-
 # Quickstart
----
+
 ## Introduction
----
+
 This section explains the quickstart process to setup the solution and create your first model.
 
 The steps are summarised below:
@@ -44,7 +42,7 @@ This repo is built in python 3. It is recommended in addition to having python i
 Any python IDE is suitable for working with this repo but a recommendation is the open source IDE [Visual Studio Code](https://code.visualstudio.com/). This tool is free to use and has the added benefit of several available plugins to enhance working with Azure resources used in this project.
 
 ## Steps
----
+
 ### 1. Azure Resource Deployment
 
 #### Resource List

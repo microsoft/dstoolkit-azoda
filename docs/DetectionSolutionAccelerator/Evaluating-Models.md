@@ -1,18 +1,13 @@
-
-[[_TOC_]]
-
 # Evaluation Process
----
 
 ## Introduction
----
 
 Evaluation is incorporated as part of the training jobs, all metrics calculated are logged to Azure Machine Learning. Figure below summarizes the flow of evaluation.
 
 ![image-867a4779-f73e-4f62-8acf-6b9707c237a7.png](/docs/.attachments/image-867a4779-f73e-4f62-8acf-6b9707c237a7.png)
 
 ## How Performance is Measured
----
+
 Section below summerizes the calculation for provided metrics.
 
 ### Position vs. Binary Evaluations

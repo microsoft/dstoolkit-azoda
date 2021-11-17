@@ -1,20 +1,17 @@
-[[_TOC_]]
-
 # Model Training Process
----
 
 ## Introduction
----
+
 This section describes the process to train a model using the Azure ML.
 
 ## Training Stages
----
+
 Below illustrates the stages executed during model training and its inputs and artifacts:
 
 ![image.png](/docs/.attachments/image-8703edf3-ac31-4614-aec3-58c45ac44f3c.png)
 
 ## Training Parameters
----
+
 When executing there are several parameters to be set. In the training directory a file should be created called ``exp_config.json`` with the following content:
 
 ``` json
@@ -80,7 +77,7 @@ Below explains each parameter:
 
 
 ## Running Model Training
----
+
 Below explains how to execute model training and observe training progress. This assumes you have already followed the setup process documented in the QuickStart section.
 
 1. Update the ``exp_config.json`` file to the desired experiment configuration
@@ -99,7 +96,6 @@ Below explains how to execute model training and observe training progress. This
 
 
 ## Experiment Logging
----
 
 ### Metrics
 Below defines the metrics logged as part of an AML run:
@@ -130,7 +126,6 @@ During training the model conducts evaluation to see how the model is improving 
 The evaluation metrics is based on the evaluation approach, in most cases this is the COCO metrics. More information on these metrics can be found [here](http://cocodataset.org/#detection-eval)
 
 ## Tools
----
 
 ### Register Datastore
 If recreating the Azure environment from scratch you will have created a new datastore. In order to reference this in AML experiments you first need to register the datastore to the AML workspace. Below explains the steps to register a data store:

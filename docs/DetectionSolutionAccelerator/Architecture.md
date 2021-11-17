@@ -1,7 +1,4 @@
-[[_TOC_]]
-
 # High-level Architecture
----
 
 In the diagram below the high level architecture can be obtained.
 
