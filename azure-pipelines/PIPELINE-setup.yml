@@ -11,7 +11,7 @@ variables:
 - template: ../configuration/configuration-infra-DEV.variables.yml # DEV as default env
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: $(VM_VERSION)
 
 stages:
 

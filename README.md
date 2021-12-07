@@ -18,6 +18,8 @@ In order to successfully setup your solution you will need to have access to and
 
 In order to get started with setup and running your first model training experiment and deployment please refer to the QuickStart page within the docs section of this repo. This will provide the quickest path to environment setup and experiment running.
 
+[QuickStart](/docs/DetectionSolutionAccelerator/Quickstart.md)
+
 For the full MLOps setup please refer to the documentation within the MLOps page of the docs section of this repo. As this is built on the MLOps accelerator further documentation can be found in that repo.
 
 
