@@ -4,6 +4,7 @@
     "EXP_NAME" : "",
     "COMPUTE_NAME" : "",
     "DOCKER_IMAGE_NAME" : "",
+    "TF_VERSION": 2,
     "DATA_MOUNT" : "",
     "IMAGE_TYPE" : "",
     "TRAIN_CSV" : "",
