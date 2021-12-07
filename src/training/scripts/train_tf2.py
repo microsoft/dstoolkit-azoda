@@ -80,7 +80,8 @@ def main():
     tfrecords = TFRecord(train_run.base_path,
                          train_run.image_dir,
                          train_run.train_df,
-                         train_run.test_df)
+                         train_run.test_df,
+                         include_masks=train_run.base_model.startswith('mask_rcnn'))
 
     # log the details of the configured run object to AML
     train_run.log_details()

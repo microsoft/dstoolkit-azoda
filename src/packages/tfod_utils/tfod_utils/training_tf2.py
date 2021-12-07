@@ -1,4 +1,5 @@
 import os
+import ast
 import time
 import pprint
 
@@ -84,8 +85,17 @@ class TF2ODRun():
         test_file = os.path.join(sub_dir,
                                  self.test_csv)
 
-        self.train_df = pd.read_csv(os.path.join(self.base_path, train_file))
-        self.test_df = pd.read_csv(os.path.join(self.base_path, test_file))
+        if self.base_model.startswith("mask_rcnn"):
+            self.train_df = pd.read_csv(os.path.join(self.base_path, train_file),
+                                        converters={"segmentation": ast.literal_eval})
+            self.test_df = pd.read_csv(os.path.join(self.base_path, test_file),
+                                       converters={"segmentation": ast.literal_eval})
+            # For the moment support only segmentation based on polygons (object instance)
+            self.train_df["iscrowd"] = 0
+            self.test_df["iscrowd"] = 0
+        else:
+            self.train_df = pd.read_csv(os.path.join(self.base_path, train_file))
+            self.test_df = pd.read_csv(os.path.join(self.base_path, test_file))
 
     def set_outdirs(self):
         """
