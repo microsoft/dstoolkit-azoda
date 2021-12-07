@@ -2,6 +2,7 @@
     "ENV_CONFIG_FILE": "dev_config.json",
     "EXPERIMENT" : "",
     "RUN_ID" : "",
+    "TF_VERSION": 2,
     "USE_ACI" : true,
     "IMAGE_TYPE": "",
     "COMPUTE_TARGET_NAME" : "",
