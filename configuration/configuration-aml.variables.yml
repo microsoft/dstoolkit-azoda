@@ -7,6 +7,7 @@ variables:
 
   PYTHON_VERSION: 3.6
   SDK_VERSION: 1.27
+  VM_VERSION: ubuntu-18.04
 
   # Training
   AML_TRAINING_EXPERIMENT: detection

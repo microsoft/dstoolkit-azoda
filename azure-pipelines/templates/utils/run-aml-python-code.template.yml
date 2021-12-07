@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Azure Pipeline Template for running code that requires authentication to an AML workspace 
+# Azure Pipeline Template for running code that requires authentication to an AML workspace
 
 parameters:
 - name: serviceConnection
@@ -48,6 +48,7 @@ steps:
       inputs:
         azureSubscription: ${{parameters.serviceConnection}}
         scriptLocation: inlineScript
+        addSpnToEnvironment: true # Creates env vars: servicePrincipalId, servicePrincipalKey, tenantId
         inlineScript: |
           dependencies="azureml-sdk==$(SDK_VERSION) ${{parameters.scriptExtraDependencies}}"
           python -m pip install --upgrade pip && python -m pip install $dependencies
