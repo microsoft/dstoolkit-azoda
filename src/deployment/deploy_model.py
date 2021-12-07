@@ -56,13 +56,16 @@ def main():
             print("ERROR: Either set reg_model as True, or check spelling")
             sys.exit()
 
-    score_file = os.path.join(__here__, 'score.py')
-    env_file = "./conda_env.yml"
+    # update scoring file
+    score_filename, env_filename = ('score_tf2.py', 'conda_env_tf2.yml') if deploy_config['TF_VERSION'] == 2 \
+        else ('score.py', 'conda_env.yml')
+
+    score_file = os.path.join(__here__, score_filename)
     print("INFO: src dir is: {}".format(__here__))
 
     inference_config = deployment.create_inference_config(score_file,
                                                           __here__,
-                                                          env_file)
+                                                          env_filename)
 
     # check for an update existing webservice else create new
     if deployment.webservice_exists(deployment.webservice_name):

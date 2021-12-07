@@ -53,6 +53,10 @@ def get_arguments():
                         help='Devops Build ID',
                         required=True),
 
+    parser.add_argument('--tf_version',
+                        help='TF OD version',
+                        required=True),
+
     parser.add_argument('--compute',
                         help='Compute Target Name',
                         required=True),
@@ -97,12 +101,16 @@ def main():
         print("Either set reg_model as True, or check the model spelling")
         sys.exit()
 
-    score_file = os.path.join(__here__, 'score.py')
+    # update scoring file
+    score_filename, env_filename = ('score_tf2.py', 'conda_env_tf2.yml') if FLAGS.tf_version == 2 \
+        else ('score.py', 'conda_env.yml')
+
+    score_file = os.path.join(__here__, score_filename)
     print("Src dir is: {}".format(__here__))
 
     inference_config = deployment.create_inference_config(score_file,
                                                           __here__,
-                                                          "./conda_env.yml")
+                                                          env_filename)
 
     # check for an update existing webservice else create new
     if deployment.webservice_exists(deployment.webservice_name):

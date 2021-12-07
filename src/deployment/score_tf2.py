@@ -18,7 +18,8 @@ from azureml.contrib.services.aml_response import AMLResponse
 from PIL import Image
 from utils import label_map_util
 
-MODEL_NAME = '__REPLACE_MODEL_NAME__'
+MODEL_NAME = '__REPLACE_MODEL_NAME__'  # image type and detection modality
+INCLUDE_MASK = 'mask' in MODEL_NAME    # set global variable indicate whether to include masks in output dict
 LABEL_MAP_NAME = 'tf_label_map.pbtxt'
 MODEL_FILE_NAME = 'saved_model'
 
@@ -97,8 +98,12 @@ def inference(raw_data, THRESHOLD):
 
     num_detections = int(output_dict.pop('num_detections'))
 
-    output_dict = {key: value[0, :num_detections].numpy()
-                   for key, value in output_dict.items()}
+    # extend detection key list if required including mask
+    detection_keys = ['detection_classes', 'detection_boxes', 'detection_masks', 'detection_scores'] if INCLUDE_MASK \
+        else ['detection_classes', 'detection_boxes', 'detection_scores']
+
+    output_dict = {key: output_dict[key][0, :num_detections].numpy()
+                   for key in detection_keys}
 
     output_dict['num_detections'] = num_detections
 
@@ -109,16 +114,17 @@ def inference(raw_data, THRESHOLD):
     result = []
 
     for idx, score in enumerate(output_dict['detection_scores']):
+        idx_dict = {
+            'class': int(output_dict['detection_classes'][idx]),
+            'label': (model['category_index'][output_dict['detection_classes'][idx]]['name']),
+            'confidence': float(output_dict['detection_scores'][idx]),
+            'bounding_box': (output_dict['detection_boxes'][idx]).tolist()
+        }
+        if INCLUDE_MASK:
+            idx_dict['mask'] = (output_dict['detection_masks'][idx]).tolist()
+
         if score > THRESHOLD:
-            result.append(
-                {'class': int(output_dict['detection_classes'][idx]),
-                 'label': (model['category_index']
-                                [output_dict['detection_classes']
-                                            [idx]]
-                                ['name']),
-                 'confidence': float(output_dict['detection_scores'][idx]),
-                 'bounding_box': (output_dict['detection_boxes'][idx]).tolist()
-                 })
+            result.append(idx_dict)
         else:
             print('idx {} detection score too low {}'.format(idx, score))
 
