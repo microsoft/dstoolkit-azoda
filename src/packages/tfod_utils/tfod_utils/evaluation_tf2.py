@@ -14,6 +14,7 @@ from PIL import Image
 from object_detection.utils import label_map_util
 from object_detection.utils import per_image_evaluation
 from object_detection.utils import metrics
+from object_detection.utils import ops as utils_ops
 
 
 class Scoring():
@@ -118,19 +119,33 @@ class Scoring():
             # Convert to numpy arrays, and take index [0] to remove the batch
             # dimension
             num_detections = int(detections.pop('num_detections'))
-            detections = {key: value[0, :num_detections].numpy()
-                          for key, value in detections.items()}
+
+            need_detection_key = ['detection_classes', 'detection_boxes', 'detection_masks', 'detection_scores']
+            detections = {key: detections[key][0, :num_detections].numpy()
+                           for key in need_detection_key}
+
             detections['num_detections'] = num_detections
 
             # Converting detection classes to int
             detections['detection_classes'] = (detections['detection_classes']
                                                .astype(np.int64))
 
+            # # Handle models with masks:
+            # if 'detection_masks' in detections:
+            #     # Reframe the the bbox mask to the image size.
+            #     detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
+            #         tf.convert_to_tensor(detections['detection_masks']), detections['detection_boxes'],
+            #         image_np.shape[0], image_np.shape[1])
+            #     detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5,
+            #                                        tf.uint8)
+            #     detections['detection_masks_reframed'] = detection_masks_reframed.numpy()
+
             # Format detections to TFODAPI
             per_img_dets[image_i] = {
                 'boxes': detections['detection_boxes'],
                 'scores': detections['detection_scores'],
-                'labels': detections['detection_classes']
+                'labels': detections['detection_classes'],
+                # 'masks': detections['detection_masks_reframed']
             }
 
             # Format gts to TFODAPI
@@ -151,6 +166,7 @@ class Scoring():
         df = self.df_gts[self.df_gts.filename == img_id]
         gt_boxes = []
         gt_labels = []
+        # gt_masks = []
         for _, row_val in df.iterrows():
             xmin = float(row_val.xmin/width)
             ymin = float(row_val.ymin/height)
