@@ -12,6 +12,7 @@ import numpy as np
 from PIL import Image
 from object_detection.utils import dataset_util
 from collections import namedtuple
+from pycocotools import mask
 
 
 # Helper Funtions
@@ -43,7 +44,7 @@ def split(df, group):
 
 
 class TFRecord():
-    def __init__(self, base_path, image_dir, train_df, test_df):
+    def __init__(self, base_path, image_dir, train_df, test_df, include_masks):
         """
         TF Record
         Creates a set of tfrecords from version files
@@ -52,11 +53,13 @@ class TFRecord():
         :param image_dir: directory path of images
         :param train_df: train pandas dataframe from version file
         :param test_df: test pandas dataframe from version file
+        :param include_masks: Whether to include instance segmentations masks (PNG encoded) in the result
         """
         self.base_path = base_path
         self.image_dir = image_dir
         self.df_train = train_df
         self.df_test = test_df
+        self.include_masks = include_masks
         self.create_records()
 
     def create_records(self):
@@ -186,6 +189,9 @@ class TFRecord():
         ymaxs = []
         c_text = []
         classes = []
+        area = []
+        is_crowd = []
+        encoded_mask_png = []
 
         for index, row in group.object.iterrows():
             if row['class'] is np.nan:
@@ -197,7 +203,21 @@ class TFRecord():
             c_text.append(row['class'].encode('utf8'))
             classes.append(dict_mapping[row['class']])
 
-        tf_example = tf.train.Example(features=tf.train.Features(feature={
+            # ToDo: @Hong conduct polygon validity check
+            if self.include_masks:
+                is_crowd.append(row['iscrowd'])
+                run_len_encoding = mask.frPyObjects(row['segmentation'], height, width)
+                area.append(mask.area(run_len_encoding))
+                binary_mask = mask.decode(run_len_encoding)
+                if not row['iscrowd']:
+                    binary_mask = np.amax(binary_mask, axis=2)
+                binary_mask = (binary_mask * 255).astype(np.uint8)
+                pil_image = Image.fromarray(binary_mask)
+                output_io = io.BytesIO()
+                pil_image.save(output_io, format='PNG')
+                encoded_mask_png.append(output_io.getvalue())
+
+        feature_dict = {
             'image/height': dataset_util.int64_feature(height),
             'image/width': dataset_util.int64_feature(width),
             'image/filename': dataset_util.bytes_feature(filename),
@@ -210,7 +230,15 @@ class TFRecord():
             'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
             'image/object/class/text': dataset_util.bytes_list_feature(c_text),
             'image/object/class/label': dataset_util.int64_list_feature(classes),  # noqa
-        }))
+        }
+
+        if self.include_masks:
+            feature_dict['image/object/is_crowd'] = dataset_util.int64_list_feature(is_crowd)
+            feature_dict['image/object/area'] = dataset_util.float_list_feature(area)
+            feature_dict['image/object/mask'] = (dataset_util.bytes_list_feature(encoded_mask_png))
+
+        tf_example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
+
         return tf_example
 
     def inspect_record(self, record, out_path):

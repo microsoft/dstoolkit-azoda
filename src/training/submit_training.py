@@ -34,7 +34,8 @@ def main():
 
     env_config_file = exp_config['ENV_CONFIG_FILE']
 
-    docker_image = exp_config['DOCKER_IMAGE']
+    docker_image = exp_config['DOCKER_IMAGE_NAME']
+    tf_version = exp_config['TF_VERSION']  # Add tensorflow version (by default tf2)
     desc = exp_config['DESCRIPTION']
     cluster_name = exp_config['COMPUTE_NAME']
     experiment_name = exp_config['EXP_NAME']
@@ -94,7 +95,7 @@ def main():
             '--fs_loc_loss', fs_loc_loss,
             '--fs_obj_loss', fs_obj_loss]
 
-        training_script = 'train_inception.py'
+        training_script = 'train_tf2_hypertune.py' if tf_version == 2 else 'train_hypertune.py'
 
     else:
         print('INFO: Selected Base Model not yet\
@@ -112,7 +113,7 @@ def main():
             '--steps', steps,
             '--eval_conf', eval_conf]
 
-        training_script = 'train.py'
+        training_script = 'train_tf2.py' if tf_version == 2 else 'train.py'
 
         print('INFO: Hypertune not supported with unknown base model')
         print('INFO: Running as single node job')

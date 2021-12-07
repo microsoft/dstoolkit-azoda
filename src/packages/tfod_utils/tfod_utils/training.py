@@ -1,4 +1,5 @@
 import os
+import ast
 
 import pandas as pd
 import shutil
@@ -131,8 +132,15 @@ class TFODRun():
         test_file = os.path.join(sub_dir,
                                  self.test_csv)
 
-        self.train_df = pd.read_csv(os.path.join(self.base_path, train_file))
-        self.test_df = pd.read_csv(os.path.join(self.base_path, test_file))
+        if self.base_model.startswith("mask_rcnn"):
+            self.train_df = pd.read_csv(os.path.join(self.base_path, train_file), converters={"segmentation": ast.literal_eval})
+            self.test_df = pd.read_csv(os.path.join(self.base_path, test_file), converters={"segmentation": ast.literal_eval})
+            # For the moment support only segmentation based on polygons (object instance)
+            self.train_df["iscrowd"] = 0
+            self.test_df["iscrowd"] = 0
+        else:
+            self.train_df = pd.read_csv(os.path.join(self.base_path, train_file))
+            self.test_df = pd.read_csv(os.path.join(self.base_path, test_file))
 
     def set_outdirs(self):
         """
@@ -212,9 +220,11 @@ class TFODRun():
             model_cfg = cfg['model'].ssd
         elif self.base_model.startswith("faster_rcnn"):
             model_cfg = cfg['model'].faster_rcnn
+        elif self.base_model.startswith("mask_rcnn"):
+            model_cfg = cfg['model'].faster_rcnn
         else:
             raise ValueError('unknown base model {}, \
-                             we can only handle ssd or faster_rcnn'
+                             we can only handle ssd, faster_rcnn or mask_rcnn'
                              .format(self.base_model))
 
         label_map_dict = label_map_util.get_label_map_dict(self.mapping_file)
@@ -301,7 +311,7 @@ class TFODRun():
                         log.aml_log_average()
                         run.log('Train - Learning Rate', lr)
 
-        elif self.base_model.startswith("faster_rcnn"):
+        elif self.base_model.startswith("faster_rcnn") or self.base_model.startswith("mask_rcnn"):
 
             class TrainLoggingHook(tf.estimator.SessionRunHook):
                 def after_create_session(self, session, coord):
