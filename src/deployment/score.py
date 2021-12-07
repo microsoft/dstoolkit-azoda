@@ -19,6 +19,7 @@ from PIL import Image
 from utils import label_map_util
 
 MODEL_NAME = '__REPLACE_MODEL_NAME__'
+INCLUDE_MASK = 'mask' in MODEL_NAME    # set global variable indicate whether to include masks in output dict
 LABEL_MAP_NAME = 'tf_label_map.pbtxt'
 MODEL_FILE_NAME = 'frozen_inference_graph.pb'
 
@@ -59,11 +60,11 @@ def load_model():
         all_tensor_names = {output.name for op in ops for output in op.outputs}
         tensor_dict = {}
 
-        for key in ['num_detections',
-                    'detection_boxes',
-                    'detection_scores',
-                    'detection_classes']:
+        # extend detection key list if required including mask
+        detection_keys = ['num_detections', 'detection_classes', 'detection_boxes', 'detection_masks', 'detection_scores'] if INCLUDE_MASK \
+            else ['num_detections', 'detection_classes', 'detection_boxes', 'detection_scores']
 
+        for key in detection_keys:
             tensor_name = key + ':0'
             if tensor_name in all_tensor_names:
                 tensor_dict[key] = (tf.get_default_graph()
@@ -128,18 +129,23 @@ def inference(raw_data, THRESHOLD):
     output_dict['detection_scores'] = (output_dict['detection_scores'][0]
                                        .tolist())
 
+    if INCLUDE_MASK:
+        output_dict['detection_masks'] = output_dict['detection_masks'][0].tolist()
+
     result = []
 
     for idx, score in enumerate(output_dict['detection_scores']):
+        idx_dict = {
+            'class': output_dict['detection_classes'][idx],
+            'label': (model['category_index'][output_dict['detection_classes'][idx]]['name']),
+            'confidence': output_dict['detection_scores'][idx],
+            'bounding_box': output_dict['detection_boxes'][idx]
+        }
+        if INCLUDE_MASK:
+            idx_dict['mask'] = output_dict['detection_masks'][idx]
+
         if score > THRESHOLD:
-            result.append(
-                {'class': output_dict['detection_classes'][idx],
-                 'label': (model['category_index']
-                                [output_dict['detection_classes']
-                                            [idx]]
-                                ['name']),
-                 'confidence': output_dict['detection_scores'][idx],
-                 'bounding_box': output_dict['detection_boxes'][idx]})
+            result.append(idx_dict)
         else:
             print('idx {} detection score too low {}'.format(idx, score))
 
