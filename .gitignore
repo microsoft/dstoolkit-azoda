@@ -119,6 +119,9 @@ configuration/*.json
 # vscode
 **/.vscode
 
+# pycharm
+**/.idea
+
 # notebook outputs
 notebooks/train.py
 notebooks/*.py
