@@ -1,5 +1,5 @@
 # Base Image
-FROM tensorflow/tensorflow:latest-gpu
+FROM tensorflow/tensorflow:2.6.0-gpu
 
 RUN apt-get update && apt-get -q -y install git-core wget
 
