@@ -373,6 +373,7 @@ class TF2ODRun():
                             labels,
                             unpad_groundtruth_tensors,
                             optimizer,
+                            training_step=global_step,
                             add_regularization_loss=add_regularization_loss,
                             clip_gradients_value=clip_gradients_value,
                             num_replicas=strategy.num_replicas_in_sync)
