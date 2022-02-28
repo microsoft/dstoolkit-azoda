@@ -33,11 +33,13 @@ def main():
     model_name = deploy_config['IMAGE_TYPE']
     webservice_name = model_name.lower().replace("_", '')
 
-    if not deploy_config['USE_ACI']:
+    # check for deployment in ACI or AKS
+    if deploy_config['ACI_PARAMS']['USE_ACI'] and deploy_config['AKS_PARAMS']['USE_AKS']:
+        raise ValueError('Can only deploy to either ACI or AKS.')
+    elif deploy_config['AKS_PARAMS']['USE_AKS']:
         webservice_name = webservice_name + '-aks'
-        compute_target_name = deploy_config['COMPUTE_TARGET_NAME'] + '-aks'
 
-    # initialse deployment class with paramters
+    # initialise deployment class with parameters
     deployment = AMLDeploy(deploy_config['RUN_ID'],
                            deploy_config['EXPERIMENT'],
                            webservice_name,
@@ -72,12 +74,15 @@ def main():
         print("INFO: Updating deployed Service")
         deployment.update_existing_webservice(model, inference_config)
     else:
-        if deploy_config['USE_ACI']:
-            target, config = deployment.create_aci()
+        if deploy_config['ACI_PARAMS']['USE_ACI']:
+            target, config = deployment.create_aci(aci_auth=deploy_config['ACI_PARAMS']['ACI_AUTH'])
         else:
-            target, config = deployment.create_aks(compute_target_name)
+            target, config = deployment.create_aks(
+                compute_name=deploy_config['AKS_PARAMS']['COMPUTE_TARGET_NAME'] + '-aks',
+                vm_type=deploy_config['AKS_PARAMS']['VM_TYPE']
+            )
 
-        print("INFO: Service dosent exist! Creating new service")
+        print("INFO: Service doesnt exist! Creating new service")
         deployment.deploy_new_webservice(model,
                                          inference_config,
                                          config,
