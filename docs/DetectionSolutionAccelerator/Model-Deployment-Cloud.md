@@ -19,10 +19,18 @@ When deploying a model there are several parameters to be set. In order to make 
     "ENV_CONFIG_FILE": "dev_config.json",
     "EXPERIMENT" : "",
     "RUN_ID" : "",
-    "USE_ACI" : true,
+    "TF_VERSION": 2,
+    "REG_MODEL" : true,
     "IMAGE_TYPE": "",
-    "COMPUTE_TARGET_NAME" : "",
-    "REG_MODEL" : false
+    "ACI_PARAMS": {
+        "USE_ACI": true,
+        "ACI_AUTH": true
+    },
+    "AKS_PARAMS": {
+        "USE_AKS": false,
+        "VM_TYPE": "Standard_NC6",
+        "COMPUTE_TARGET_NAME" : ""
+    }
 }
 ```
 
@@ -34,13 +42,23 @@ Below a breakdown of each parameter can be obtained:
 
 - `RUN_ID` - This is the run ID from AML of the model you wish to deploy. This can be found from the Experiment view in AML
 
-- `USE_ACI` - Set this to true if you wish to deploy a model to ACI (this is for testing purposes only)
+- `TF_VERSION` - This is the tensorflow version (1 or 2), needed to specify different scoring script
+
+- `REG_MODEL` - If the model needs to be registered or not from the run_id. If set to false the deployment will check the model registry for a registered model with a runid tag matching that of your set RUN_ID
 
 - `IMAGE_TYPE` - The type of image or "use case" name as defined in the storage as the use case parent folder.
 
-- `COMPUTE_TARGET_NAME` - This will be the name of your deployed service and compute. If this already exists it will be updated
+- `ACI_PARAMS.USE_ACI` - Set this to true if you wish to deploy a model to ACI (this is for testing purposes only)
 
-- `REG_MODEL` - if the model needs to be registered or not from the run_id. If set to false the deployment will check the model registry for a registered model with a runid tag matching that of your set RUN_ID
+- `ACI_PARAMS.ACI_AUTH` - Whether to enable key-based authentication when using ACI, default value is true
+
+- `AKS_PARAMS.USE_AKS` - Set this to true if you wish to deploy a model to AKS, this is more suitable for production usage
+
+- `AKS_PARAMS.COMPUTE_TARGET_NAME` - This will be the name of your deployed service and compute. If this already exists it will be updated
+
+- `AKS_PARAMS.VM_TYPE` - Machine type of AKS cluster, default value is "Standard_NC6"
+
+
 
 ## Running Model Deployment
 

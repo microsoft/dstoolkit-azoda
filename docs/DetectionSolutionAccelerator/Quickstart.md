@@ -213,7 +213,7 @@ The experiment config stores all the model training run paramters. It needs to b
 
 #### Deployment Config
 
-The deployment config stores the deployment paramters and points to the desired training run to deploy the model from. This config needs to be created under the deployment directory within src called deploy_config.json. An example config is provided already in this location called deploy_config_sample.json. A more detailed breakdown of each paramter can be found under model deployment cloud.
+The deployment config stores the deployment parameters and points to the desired training run to deploy the model from. This config needs to be created under the deployment directory within src called deploy_config.json. An example config is provided already in this location called deploy_config_sample.json. A more detailed breakdown of each paramter can be found under model deployment cloud.
 
 ```json
 {
@@ -221,10 +221,17 @@ The deployment config stores the deployment paramters and points to the desired 
     "EXPERIMENT" : "",
     "RUN_ID" : "",
     "TF_VERSION": 2,
-    "USE_ACI" : true,
+    "REG_MODEL" : true,
     "IMAGE_TYPE": "",
-    "COMPUTE_TARGET_NAME" : "",
-    "REG_MODEL" : false
+    "ACI_PARAMS": {
+        "USE_ACI": true,
+        "ACI_AUTH": true
+    },
+    "AKS_PARAMS": {
+        "USE_AKS": false,
+        "VM_TYPE": "Standard_NC6",
+        "COMPUTE_TARGET_NAME" : ""
+    }
 }
 ```
 
