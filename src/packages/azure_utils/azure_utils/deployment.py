@@ -48,9 +48,10 @@ class AMLDeploy(AML):
                    ssl_cert_pem=None,
                    ssl_key_pem=None,
                    ssl_cname=None,
-                   exists=True):
+                   exists=False):
         """
         Creates an AKS service based on the provided configuration
+        :param compute_name: AKS cluster name
         :param vm_type: Azure VM type to use, defaults to 'Standard_NC6' (str)
         :param nodes: Numebr of VM nodes for service, defaults to 3 (int)
         :param app_insights: Enable app insights, defaults to false (bool)
@@ -60,6 +61,7 @@ class AMLDeploy(AML):
         web service. The address that's stamped into the certificate and the
         address that the clients use are compared to verify the identity
         of the web service
+        :param exists: Existence of the given compute name, defaults to true (bool)
         """
 
         if exists:
@@ -98,6 +100,7 @@ class AMLDeploy(AML):
                    cpu_cores=2,
                    memory_gb=4,
                    app_insights=False,
+                   aci_auth=True,
                    ssl_cert_pem=None,
                    ssl_key_pem=None,
                    ssl_cname=None):
@@ -106,6 +109,7 @@ class AMLDeploy(AML):
         :param cpu_cores: number of cpu cores, defaults to 2 (int)
         :param memory_gb: memory allocation for instance, defaults to 4 (int)
         :param app_insights: Enable app insights, defaults to false (bool)
+        :param aci_auth: Enable key-based auth, defaults to true (bool)
         :param ssl_cert_pem: PEM-encoded certificate file
         :param ssl_key_pem: PEM-encoded key file
         :param ssl_cname: FQDN of the address that you plan to use for the
@@ -121,7 +125,8 @@ class AMLDeploy(AML):
             config = (AciWebservice
                       .deploy_configuration(cpu_cores=cpu_cores,
                                             memory_gb=memory_gb,
-                                            enable_app_insights=app_insights))
+                                            enable_app_insights=app_insights,
+                                            auth_enabled=aci_auth))
         else:
             print('ssl params provided')
             print('config will use HTTPS')
@@ -129,6 +134,7 @@ class AMLDeploy(AML):
                       .deploy_configuration(cpu_cores=cpu_cores,
                                             memory_gb=memory_gb,
                                             enable_app_insights=app_insights,
+                                            auth_enabled=aci_auth,
                                             ssl_enabled=True,
                                             ssl_cert_pem_file=ssl_cert_pem,
                                             ssl_key_pem_file=ssl_key_pem,

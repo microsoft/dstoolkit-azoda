@@ -3,8 +3,15 @@
     "EXPERIMENT" : "",
     "RUN_ID" : "",
     "TF_VERSION": 2,
-    "USE_ACI" : true,
+    "REG_MODEL" : true,
     "IMAGE_TYPE": "",
-    "COMPUTE_TARGET_NAME" : "",
-    "REG_MODEL" : false
+    "ACI_PARAMS": {
+        "USE_ACI": true,
+        "ACI_AUTH": true
+    },
+    "AKS_PARAMS": {
+        "USE_AKS": false,
+        "VM_TYPE": "Standard_NC6",
+        "COMPUTE_TARGET_NAME" : ""
+    }
 }
