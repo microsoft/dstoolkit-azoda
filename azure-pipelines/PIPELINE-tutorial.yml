@@ -1,0 +1,69 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# - script: |     
+#     docker build . -f docker/tf_2/Dockerfile --no-cache
+#   displayName: 'Docker build'
+
+- script: |
+    docker images
+  displayName: 'Show docker images'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Internal Consumption(3f49fc74-6863-4c64-afb1-0f0f83d8e773)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      # Create resource group
+      # az group create --name tfod-test-rg2 --location westeurope
+      
+      # Create a container registry
+      # az acr create --resource-group tfod-test-rg2 --name tfodtestacr2 --sku Basic
+
+      # Authenticate
+      az acr login -n tfodtestacr2
+
+      # Get latest docker image id
+      # IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
+
+      # Tag latest image
+      # docker tag $IMAGE_ID tfodtestacr2.azurecr.io/tensorflowobjectdetection:latest
+
+      # Push docker image to acr
+      # docker push tfodtestacr2.azurecr.io/tensorflowobjectdetection:latest
+      
+      # Show docker containers
+      # docker container ls
+
+      # Create storage account
+      # az storage account create --name tfodtestsa --resource-group tfod-test-rg2
+
+      # Create container
+      # az storage container create --name tfodtestcontainer --account-name tfodtestsa
+
+      # Download tf2 model
+      # wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
+
+      # Uncompress model
+      # tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
+
+      # Set config to automatically agree to command without prompt
+      az config set extension.use_dynamic_install=yes_without_prompt
+
+      # Upload to container
+      # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+
+      # Create synthetic dataset
+      python src/auto_setup/synthetic_dataset_creation.py
+      
+      # Upload dataset to container
+      az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset/' --recursive
