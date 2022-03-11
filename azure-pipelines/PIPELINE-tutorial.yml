@@ -62,6 +62,9 @@ steps:
       # Upload to container
       # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
 
+      # Install required libraries
+      pip install numpy opencv-python pandas
+
       # Create synthetic dataset
       python src/auto_setup/synthetic_dataset_creation.py
       
