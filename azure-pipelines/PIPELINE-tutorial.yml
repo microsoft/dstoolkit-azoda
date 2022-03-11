@@ -18,7 +18,7 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'Internal Consumption(3f49fc74-6863-4c64-afb1-0f0f83d8e773)'
+    azureSubscription: 'ICARM'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
