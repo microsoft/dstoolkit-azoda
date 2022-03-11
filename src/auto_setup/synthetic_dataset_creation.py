@@ -1,10 +1,8 @@
-# %%
+from datetime import datetime
 import cv2
 import numpy as np
+import os
 import pandas as pd
-
-# import matplotlib.pyplot as plt
-# %%
 
 
 def add_rect(img):
@@ -82,30 +80,47 @@ def add_blur(img):
     return cv2.blur(img, ksize, cv2.BORDER_DEFAULT)
 
 
-# %%
+img_count = 100
+train_split = 0.9
 width, height = 640, 320
-output_base = '../../../data/'
+output_base = 'synthetic_dataset/'
 output_images = output_base + 'images/'
-export_path = output_base + 'labels.csv'
-row_data = []
-for i in range(10):
+output_datasets = output_base + 'datasets/'
+os.makedirs(output_datasets)
+os.makedirs(output_images)
+time_stamp = datetime.now().strftime('%y%m%d%H%m%S')
+export_path_train = output_base + f'datasets/train_pothole_{time_stamp}.csv'
+export_path_test = output_base + f'datasets/test_pothole_{time_stamp}.csv'
+row_data_train = []
+row_data_test = []
+np.random.seed(2022)
+
+for i in range(img_count):
     filename = f'img_{i}.jpg'
     print(filename)
     img = 255 * np.ones(shape=[height, width, 3], dtype=np.uint8)
 
-    for i in range(20):
+    for j in range(20):
         _ = add_circle(img, thickness=-1, central=False)
         img = add_blur(img)
 
-    for i in range(2):
+    for j in range(2):
         if np.random.rand() > 0.2:
             bb = add_circle(img)
-            row_data.append([filename,
-                             bb[0],
-                             bb[1],
-                             bb[2],
-                             bb[3],
-                             'circle'])
+            if i < train_split*img_count:
+                row_data_train.append([filename,
+                                       bb[0],
+                                       bb[1],
+                                       bb[2],
+                                       bb[3],
+                                       'circle'])
+            else:
+                row_data_test.append([filename,
+                                      bb[0],
+                                      bb[1],
+                                      bb[2],
+                                      bb[3],
+                                      'circle'])
         if np.random.rand() > 0.2:
             add_rect(img)
         if np.random.rand() > 0.2:
@@ -115,12 +130,12 @@ for i in range(10):
         if np.random.rand() > 0.2:
             add_line(img)
     cv2.imwrite(output_images+filename, img)
-# %%
-df = pd.DataFrame(row_data)
+
 column_names = ['filename', 'xmin', 'xmax', 'ymin', 'ymax', 'class']
-df.columns = column_names
-df.to_csv(export_path, index=False)
+df_train = pd.DataFrame(row_data_train)
+df_train.columns = column_names
+df_train.to_csv(export_path_train, index=False)
 
-# %%
-
-# %%
+df_test = pd.DataFrame(row_data_test)
+df_test.columns = column_names
+df_train.to_csv(export_path_test, index=False)
