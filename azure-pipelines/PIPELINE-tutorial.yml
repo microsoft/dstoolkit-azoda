@@ -2,9 +2,9 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: |     
-    docker build . -f docker/tf_2/Dockerfile --no-cache
-  displayName: 'Docker build'
+#- script: |     
+#    docker build . -f docker/tf_2/Dockerfile --no-cache
+#  displayName: 'Docker build'
 
 - script: |
     docker images
