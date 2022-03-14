@@ -65,6 +65,7 @@ steps:
       #az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
 
       # Upload dataset to container
-      #echo 'dataset upload'
-      #az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
-      az ml workspace create -w tfod-test-amlw -g tfod-test-rg
+      # echo 'dataset upload'
+      # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
+      # az ml workspace create -w tfod-test-amlw -g tfod-test-rg
+      az ml workspace create -n tfod-test-amlw -g tfod-test-rg
