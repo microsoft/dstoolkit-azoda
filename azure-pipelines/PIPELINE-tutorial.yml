@@ -69,7 +69,7 @@ steps:
       # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
 
       # Create AML workspace
-      #az extension add -n ml -y
+      az extension add -n ml -y
       #az ml workspace create -n tfod-test-amlw -g tfod-test-rg
 
       # Register datastore to workspace
