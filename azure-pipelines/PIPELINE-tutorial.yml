@@ -73,4 +73,15 @@ steps:
       #az ml workspace create -n tfod-test-amlw -g tfod-test-rg
 
       # Register datastore to workspace
-      az ml datastore attach-blob --account-name tfodtestsa --container-name tfodtestcontainer --name tfodtestamldatastore --resource-group tfod-test-rg --workspace-name tfod-test-amlw
+      #az ml datastore attach-blob --account-name tfodtestsa --container-name tfodtestcontainer --name tfodtestamldatastore --resource-group tfod-test-rg --workspace-name tfod-test-amlw
+      az ml data create --resource-group tfod-test-rg --workspace-name tfod-test-amlw --datastore-name tfodtestamldatastore
+
+      # Get AML container name
+      aml_storage_account_name=$(az ml datastore list --resource-group tfod-test-rg --workspace-name tfod-test-amlw --query "[0].{account_name:account_name}.account_name")
+
+      # Create container in AML storage account
+      az storage container create --name tfod-test-container --account-name $aml_storage_account_name
+
+      # Upload model and dataset
+      az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+      az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
