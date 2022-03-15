@@ -56,9 +56,10 @@ steps:
 
       # Create AML workspace
       az extension add -n ml -y
-      az ml workspace create -n tfod-dev-amlw -g tfod-dev-rg --container-registry tfoddevacr
+      az ml workspace create -n tfod-dev-amlw -g tfod-dev-rg --file azure-pipelines/templates/setup-aml.template.yml
 
-      az ml computetarget create amlcompute --max-nodes 3 --name gpu-1 --vm-size Standard_NC6 --workspace-name tfod-dev-amlw --resource-group tfod-dev-rg --no-wait
+      # Create gpu compute
+      az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name tfod-dev-amlw --resource-group tfod-dev-rg --no-wait --type AmlCompute
 
       # Get AML container name
       aml_storage_account_name_str=$(az ml datastore list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].{account_name:account_name}.account_name")
