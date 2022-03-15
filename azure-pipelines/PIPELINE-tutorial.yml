@@ -22,19 +22,19 @@ steps:
       #az group create --name tfod-test-rg --location westeurope
 
       # Create a container registry
-      az acr create --resource-group tfod-test-rg --name tfodtestacr3 --sku Standard
+      az acr create --resource-group tfod-test-rg --name tfodtestacr4 --sku Standard --admin-enabled true
 
       # Authenticate
-      az acr login -n tfodtestacr3
+      az acr login -n tfodtestacr4
 
       # Get latest docker image id
       IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
 
       # Tag latest image
-      docker tag $IMAGE_ID tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
+      docker tag $IMAGE_ID tfodtestacr4.azurecr.io/tensorflowobjectdetection:latest
 
       # Push docker image to acr
-      docker push tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
+      docker push tfodtestacr4.azurecr.io/tensorflowobjectdetection:latest
 
       # Show docker containers
       docker container ls
