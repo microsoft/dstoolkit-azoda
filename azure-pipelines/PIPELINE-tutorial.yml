@@ -2,9 +2,9 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-#- script: |     
-#    docker build . -f docker/tf_2/Dockerfile --no-cache
-#  displayName: 'Docker build'
+- script: |     
+    docker build . -f docker/tf_2/Dockerfile --no-cache
+  displayName: 'Docker build'
 
 - script: |
     docker images
@@ -25,19 +25,19 @@ steps:
       #az acr create --resource-group tfod-test-rg --name tfodtestacr --sku Basic
 
       # Authenticate
-      #az acr login -n tfodtestacr
+      az acr login -n tfodtestacr2
 
       # Get latest docker image id
-      #IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
+      IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
 
       # Tag latest image
-      #docker tag $IMAGE_ID tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
+      docker tag $IMAGE_ID tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
 
       # Push docker image to acr
-      #docker push tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
+      docker push tfodtestacr.azurecr.io/tensorflowobjectdetection:latest
 
       # Show docker containers
-      #docker container ls
+      docker container ls
 
       # Create storage account
       #az storage account create --name tfodtestsa --resource-group tfod-test-rg
@@ -46,19 +46,19 @@ steps:
       #az storage container create --name tfodtestcontainer --account-name tfodtestsa
 
       # Download tf2 model
-      wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
+      #wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
 
       # Uncompress model
       tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
 
       # Set config to automatically agree to command without prompt
-      az config set extension.use_dynamic_install=yes_without_prompt
+      #az config set extension.use_dynamic_install=yes_without_prompt
 
       # Install required libraries
-      pip install numpy opencv-python pandas
+      #pip install numpy opencv-python pandas
 
       # Create synthetic dataset
-      python src/auto_setup/synthetic_dataset_creation.py
+      #python src/auto_setup/synthetic_dataset_creation.py
 
       # Upload to container
       #echo 'model upload'
@@ -69,18 +69,16 @@ steps:
       # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
 
       # Create AML workspace
-      az extension add -n ml -y
+      #az extension add -n ml -y
       #az ml workspace create -n tfod-test-amlw -g tfod-test-rg
 
       # Get AML container name
-      aml_storage_account_name_str=$(az ml datastore list --resource-group tfod-test-rg --workspace-name tfod-test-amlw --query "[0].{account_name:account_name}.account_name")
-      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+      #aml_storage_account_name_str=$(az ml datastore list --resource-group tfod-test-rg --workspace-name tfod-test-amlw --query "[0].{account_name:account_name}.account_name")
+      #aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
 
       # Create container in AML storage account
       #az storage container create --name tfod-test-container --account-name $aml_storage_account_name
 
       # Upload model and dataset
-      az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
-      az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
-
-      
+      #az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+      #az storage blob directory upload -c tfod-test-container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
