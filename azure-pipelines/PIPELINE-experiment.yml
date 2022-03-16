@@ -21,4 +21,6 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
+        echo 'az account show'
         az account show
+        echo $Release.Deployment.RequestedForId
