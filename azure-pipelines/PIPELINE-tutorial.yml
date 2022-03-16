@@ -18,9 +18,15 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
 
+      # Install required libraries
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+
       # Variables
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
+      location=westeurope
+      acr_name=tfoddevacr
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
@@ -31,22 +37,22 @@ steps:
       echo $tenant_id
 
       # Create resource group
-      az group create --name tfod-dev-rg --location westeurope
+      az group create --name $resource_group --location $location
 
       # Create a container registry
-      az acr create --resource-group tfod-dev-rg --name tfoddevacr --sku Standard --admin-enabled true
+      az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
 
       # Authenticate
-      az acr login -n tfoddevacr
+      az acr login -n $acr_name
 
       # Get latest docker image id
       IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
 
       # Tag latest image
-      docker tag $IMAGE_ID tfoddevacr.azurecr.io/tensorflowobjectdetection:latest
+      docker tag $IMAGE_ID ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
 
       # Push docker image to acr
-      docker push tfoddevacr.azurecr.io/tensorflowobjectdetection:latest
+      docker push ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
 
       # Show docker containers
       docker container ls
@@ -68,20 +74,20 @@ steps:
 
       # Create AML workspace
       az extension add -n ml -y
-      az ml workspace create -n tfod-dev-amlw -g tfod-dev-rg --file azure-pipelines/templates/setup-aml.template.yml
+      az ml workspace create -n $workspace_name -g $resource_group --file azure-pipelines/templates/setup-aml.template.yml
 
       # Create gpu compute
-      az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name tfod-dev-amlw --resource-group tfod-dev-rg --no-wait --type AmlCompute
+      az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute
 
       # Get AML container name
-      aml_storage_account_name_str=$(az ml datastore list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
 
       # Create container in AML storage account
       #az storage container create --name tfod-dev-container --account-name $aml_storage_account_name
 
       # Upload model and dataset to container
-      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query container_name)
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container="${aml_container_str:1:${#aml_container_str}-2}"
       echo $aml_container
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
@@ -96,13 +102,9 @@ steps:
       cat dev_config.json
       jq . dev_config.json
       mv dev_config.json configuration/
-
-      # Install required libraries
-      pip install -e src/packages/azure_utils
-      pip install azureml-sdk==1.39.0
-
+      
       # Create exp_config.json
-      python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr tfoddevacr
+      python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
 
       # Start training script
       python src/training/submit_training.py
