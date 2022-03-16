@@ -96,6 +96,10 @@ steps:
       cat dev_config.json
       jq . dev_config.json
 
+      # Install required libraries
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+
       # Create exp_config.json
       python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr tfoddevacr
 
