@@ -29,10 +29,12 @@ steps:
       echo $subscriptionId
       echo 'tenantId'
       echo $tenantId
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg
       jq -n --arg tenant_id $tenant_id \
-            --arg workspace_name 'tfod-dev-amlw' \
+            --arg workspace_name $workspace_name \
             --arg subscription_id $subscriptionId \
-            --arg resource_group 'tfod-dev-rg' \
+            --arg resource_group  \
             '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
 
       jq . dev_config.json
