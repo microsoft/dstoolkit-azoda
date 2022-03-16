@@ -23,7 +23,7 @@ steps:
     inlineScript: |
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
-      tenant_id_str=$(az account list --query "[?isDefault].tenant_id|[0]")
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
       echo 'subscription_id'
       echo $subscription_id
