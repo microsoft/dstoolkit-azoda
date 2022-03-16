@@ -24,7 +24,7 @@ steps:
 
       # Variables
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
+      resource_group=tfod-dev-rg2
       location=westeurope
       acr_name=tfoddevacr
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
