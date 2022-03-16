@@ -83,14 +83,15 @@ def add_blur(img):
 img_count = 100
 train_split = 0.9
 width, height = 640, 320
-output_base = 'synthetic_dataset/'
+exp_name = 'synthetic_dataset'
+output_base = f'{exp_name}/'
 output_images = output_base + 'images/'
 output_datasets = output_base + 'datasets/'
 os.makedirs(output_datasets)
 os.makedirs(output_images)
 time_stamp = datetime.now().strftime('%y%m%d%H%m%S')
-export_path_train = output_base + f'datasets/train_pothole_{time_stamp}.csv'
-export_path_test = output_base + f'datasets/test_pothole_{time_stamp}.csv'
+export_path_train = output_base + f'datasets/train_{exp_name}_{time_stamp}.csv'
+export_path_test = output_base + f'datasets/test_{exp_name}_{time_stamp}.csv'
 row_data_train = []
 row_data_test = []
 np.random.seed(2022)
