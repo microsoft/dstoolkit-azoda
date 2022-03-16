@@ -107,4 +107,5 @@ steps:
       python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
 
       # Start training script
+      echo 'Start training'
       python src/training/submit_training.py
