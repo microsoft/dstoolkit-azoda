@@ -70,4 +70,4 @@ steps:
 
       # Upload model and dataset to container
       az storage blob directory upload -c tfod-dev-container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
-      az storage blob directory upload -c tfod-dev-container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d 'synthetic_dataset' --recursive
+      az storage blob directory upload -c tfod-dev-container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
