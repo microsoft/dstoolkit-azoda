@@ -42,5 +42,5 @@ print(json_string)
 # with open('exp_config.json', 'w') as outfile:
 #    json.dump(json_string, outfile)
 
-with open('exp_config.json', 'w') as outfile:
+with open('src/training/exp_config.json', 'w') as outfile:
     outfile.write(json_string)
