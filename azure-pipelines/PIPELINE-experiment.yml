@@ -18,13 +18,12 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ICARM'
-    scriptType: 'ps'
+    scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      $id = convertfrom-json (az account list --query "[?isDefault].id | [0]")
-      Write-Host $id
-      echo "##vso[task.setvariable variable=subscriptionId]$id"
-- powershell: Write-Host $(subscriptionId)
+      $subscriptionId = convertfrom-json (az account list --query "[?isDefault].id | [0]")
+      echo 'subscriptionId'
+      echo $(subscriptionId)
 
 - task: AzureCLI@2
   inputs:
