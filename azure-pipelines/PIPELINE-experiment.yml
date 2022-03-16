@@ -22,19 +22,17 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       subscriptionId=$(az account list --query "[?isDefault].id | [0]")
-      tenantId=$(az account list --query "[?isDefault].tenantId | [0]")
+      subscriptionId="${subscriptionId_str:1:${#subscriptionId_str}-2}"
+      tenantId_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenantId="${tenantId_str:1:${#tenantId_str}-2}"
       echo 'subscriptionId'
       echo $subscriptionId
       echo 'tenantId'
       echo $tenantId
+      jq -n --arg tenant_id $tenant_id \
+            --arg workspace_name 'tfod-dev-amlw' \
+            --arg subscription_id $subscriptionId \
+            --arg resource_group 'tfod-dev-rg' \
+            '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
 
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'ICARM'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-        echo 'az account show'
-        az account show
-        echo 'Check SubsciptionId'
-        echo $subscriptionId
+      jq . dev_config.json
