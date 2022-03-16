@@ -21,9 +21,12 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      $subscriptionId = convertfrom-json (az account list --query "[?isDefault].id | [0]")
+      subscriptionId=$(az account list --query "[?isDefault].id | [0]")
+      tenantId=$(az account list --query "[?isDefault].tenantId | [0]")
       echo 'subscriptionId'
-      echo $(subscriptionId)
+      echo $subscriptionId
+      echo 'tenantId'
+      echo $tenantId
 
 - task: AzureCLI@2
   inputs:
@@ -34,4 +37,4 @@ steps:
         echo 'az account show'
         az account show
         echo 'Check SubsciptionId'
-        echo $(subscriptionId)
+        echo $subscriptionId
