@@ -18,10 +18,21 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ICARM'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      $id = convertfrom-json (az account list --query "[?isDefault].id | [0]")
+      Write-Host $id
+      echo "##vso[task.setvariable variable=subscriptionId]$id"
+- powershell: Write-Host $(subscriptionId)
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ICARM'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
         echo 'az account show'
         az account show
-        echo 'Get subscription id'
-        az account list --query "[?name == 'Azure subscription 1'].{Id:id}" -o tsv
+        echo 'Check SubsciptionId'
+        echo $(subscriptionId)
