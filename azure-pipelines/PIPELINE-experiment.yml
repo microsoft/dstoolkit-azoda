@@ -23,4 +23,5 @@ steps:
     inlineScript: |
         echo 'az account show'
         az account show
-        echo $(Release.Deployment.RequestedForId)
+        echo 'Get subscription id'
+        az account list --query "[?name == 'Azure subscription 1'].{Id:id}" -o tsv
