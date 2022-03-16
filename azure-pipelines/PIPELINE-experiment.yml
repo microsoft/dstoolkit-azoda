@@ -21,22 +21,4 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
-      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      echo 'subscription_id'
-      echo $subscription_id
-      echo 'tenant_id'
-      echo $tenant_id
-      workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
-      echo $workspace_name
-      echo $resource_group
-      jq -n --arg tenant_id $tenant_id \
-            --arg subscription_id $subscription_id \
-            --arg workspace_name $workspace_name \
-            --arg resource_group $resource_group \
-            '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
-      cat dev_config.json
-      jq . dev_config.json
+      python src/training/submit_training.py
