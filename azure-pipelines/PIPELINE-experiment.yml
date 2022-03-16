@@ -34,9 +34,9 @@ steps:
       echo $workspace_name
       echo $resource_group
       jq -n --arg tenant_id $tenant_id \
-            --arg subscription_id $subscriptionId \
-            --arg workspace_name $workspace_name \
-            --arg resource_group  \
-            '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
+      --arg subscription_id $subscriptionId \
+      --arg workspace_name $workspace_name \
+      --arg resource_group  \
+      '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
 
       jq . dev_config.json
