@@ -23,4 +23,4 @@ steps:
     inlineScript: |
         echo 'az account show'
         az account show
-        echo $Release.Deployment.RequestedForId
+        echo $(Release.Deployment.RequestedForId)
