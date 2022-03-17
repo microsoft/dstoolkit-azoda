@@ -10,7 +10,6 @@ steps:
     docker images
   displayName: 'Show docker images'
 
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ICARM'
