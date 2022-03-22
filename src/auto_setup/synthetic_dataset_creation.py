@@ -139,4 +139,4 @@ df_train.to_csv(export_path_train, index=False)
 
 df_test = pd.DataFrame(row_data_test)
 df_test.columns = column_names
-df_train.to_csv(export_path_test, index=False)
+df_test.to_csv(export_path_test, index=False)
