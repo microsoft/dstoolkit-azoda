@@ -13,6 +13,10 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
+      # Required libraries
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+      
       # Variables
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
