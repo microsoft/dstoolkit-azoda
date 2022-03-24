@@ -16,6 +16,9 @@ steps:
       # Required libraries
       pip install -e src/packages/azure_utils
       pip install azureml-sdk==1.39.0
+
+      # Install az ml
+      az extension add -n ml -y
       
       # Variables
       workspace_name=tfod-dev-amlw
