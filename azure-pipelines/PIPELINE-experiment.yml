@@ -1,0 +1,49 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ICARM'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Variables
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg
+      acr_name=tfoddevacr
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+
+      # Create dev_config.json
+      jq -n --arg tenant_id $tenant_id \
+            --arg subscription_id $subscription_id \
+            --arg workspace_name $workspace_name \
+            --arg resource_group $resource_group \
+            '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
+      cat dev_config.json
+      jq . dev_config.json
+      mv dev_config.json configuration/
+      
+      # Create exp_config.json
+      python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
+
+      python src/training/submit_training.py

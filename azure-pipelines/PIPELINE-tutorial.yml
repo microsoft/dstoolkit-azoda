@@ -1,16 +1,10 @@
-# Starter pipeline
-
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 pool:
   vmImage: ubuntu-latest
 
 steps:
-# - script: |     
-#     docker build . -f docker/tf_2/Dockerfile --no-cache
-#   displayName: 'Docker build'
+- script: |     
+    docker build . -f docker/tf_2/Dockerfile --no-cache
+  displayName: 'Docker build'
 
 - script: |
     docker images
@@ -18,52 +12,99 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'Internal Consumption(3f49fc74-6863-4c64-afb1-0f0f83d8e773)'
+    azureSubscription: 'ICARM'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
 
+      # Install required libraries
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+
+      # Variables
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg
+      location=westeurope
+      acr_name=tfoddevacr
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      echo 'subscription_id'
+      echo $subscription_id
+      echo 'tenant_id'
+      echo $tenant_id
+
       # Create resource group
-      # az group create --name tfod-test-rg2 --location westeurope
-      
+      az group create --name $resource_group --location $location
+
       # Create a container registry
-      # az acr create --resource-group tfod-test-rg2 --name tfodtestacr2 --sku Basic
+      az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
 
       # Authenticate
-      az acr login -n tfodtestacr2
+      az acr login -n $acr_name
 
       # Get latest docker image id
-      # IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
+      IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
 
       # Tag latest image
-      # docker tag $IMAGE_ID tfodtestacr2.azurecr.io/tensorflowobjectdetection:latest
+      docker tag $IMAGE_ID ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
 
       # Push docker image to acr
-      # docker push tfodtestacr2.azurecr.io/tensorflowobjectdetection:latest
-      
+      docker push ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
+
       # Show docker containers
-      # docker container ls
-
-      # Create storage account
-      # az storage account create --name tfodtestsa --resource-group tfod-test-rg2
-
-      # Create container
-      # az storage container create --name tfodtestcontainer --account-name tfodtestsa
+      docker container ls
 
       # Download tf2 model
-      # wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
+      wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
 
       # Uncompress model
-      # tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
+      tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
 
       # Set config to automatically agree to command without prompt
       az config set extension.use_dynamic_install=yes_without_prompt
 
-      # Upload to container
-      # az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+      # Install required libraries
+      pip install numpy opencv-python pandas
 
       # Create synthetic dataset
       python src/auto_setup/synthetic_dataset_creation.py
+
+      # Create AML workspace
+      az extension add -n ml -y
+      az ml workspace create -n $workspace_name -g $resource_group --file azure-pipelines/templates/setup-aml.template.yml
+
+      # Create gpu compute
+      az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute
+
+      # Get AML container name
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+
+      # Create container in AML storage account
+      #az storage container create --name tfod-dev-container --account-name $aml_storage_account_name
+
+      # Upload model and dataset to container
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container="${aml_container_str:1:${#aml_container_str}-2}"
+      echo $aml_container
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
+
+      # Create dev_config.json
+      #jq -n --arg tenant_id $tenant_id \
+      #      --arg subscription_id $subscription_id \
+      #      --arg workspace_name $workspace_name \
+      #      --arg resource_group $resource_group \
+      #      '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
+      #cat dev_config.json
+      #jq . dev_config.json
+      #mv dev_config.json configuration/
       
-      # Upload dataset to container
-      az storage blob directory upload -c tfodtestcontainer --account-name tfodtestsa -s 'synthetic_dataset/' -d 'synthetic_dataset/' --recursive
+      # Create exp_config.json
+      #python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
+
+      # Start training script
+      #echo 'Start training'
+      #python src/training/submit_training.py

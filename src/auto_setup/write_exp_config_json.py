@@ -19,7 +19,7 @@ data = {
     "TEST_CSV": "latest",
     "EVAL_CONF": 0.5,
     "RUN_PARAMS": {
-        "STEPS": 100000
+        "STEPS": 100
     },
     "MODEL_PARAMS": {
         "BASE_MODEL": "faster_rcnn_resnet50_v1_640x640_coco17_tpu-8",
@@ -42,5 +42,5 @@ print(json_string)
 # with open('exp_config.json', 'w') as outfile:
 #    json.dump(json_string, outfile)
 
-with open('exp_config.json', 'w') as outfile:
+with open('src/training/exp_config.json', 'w') as outfile:
     outfile.write(json_string)
