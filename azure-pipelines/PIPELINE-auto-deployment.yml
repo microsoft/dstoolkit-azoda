@@ -21,4 +21,13 @@ steps:
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      echo 'placeholder'
+      run_id_str=$(az ml job list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].name")
+      run_id="${run_id_str:1:${#run_id_str}-2}"
+      echo 'run_id'
+      echo $run_id
+      echo 'Generating deploy_config.json'
+      python src/auto_setup/write_deploy_config_json.py --experiment_name synthetic_dataset --run_id $run_id
+      echo 'Moving config'
+      mv deploy_config.json src/deployment/
+      echo 'Run deployment script'
+      python src/deployment/deploy_model.py
