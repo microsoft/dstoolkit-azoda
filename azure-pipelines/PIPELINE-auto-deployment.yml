@@ -13,6 +13,13 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
+      # Required libraries
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+
+      # Install az ml
+      az extension add -n ml -y
+      
       # Variables
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
@@ -21,7 +28,7 @@ steps:
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      run_id_str=$(az ml job list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].name")
+      run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[0].name")
       run_id="${run_id_str:1:${#run_id_str}-2}"
       echo 'run_id'
       echo $run_id
@@ -29,5 +36,14 @@ steps:
       python src/auto_setup/write_deploy_config_json.py --experiment_name synthetic_dataset --run_id $run_id
       echo 'Moving config'
       mv deploy_config.json src/deployment/
+      echo 'Generating dev_config.json'
+      jq -n --arg tenant_id $tenant_id \
+            --arg subscription_id $subscription_id \
+            --arg workspace_name $workspace_name \
+            --arg resource_group $resource_group \
+            '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
+      cat dev_config.json
+      jq . dev_config.json
+      mv dev_config.json configuration/
       echo 'Run deployment script'
       python src/deployment/deploy_model.py

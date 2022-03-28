@@ -22,6 +22,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Variables
+      project=pothole
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
       acr_name=tfoddevacr
@@ -44,6 +45,6 @@ steps:
       mv dev_config.json configuration/
       
       # Create exp_config.json
-      python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
+      python src/auto_setup/write_exp_config_json.py --experiment_name $project --acr $acr_name
 
       python src/training/submit_training.py
