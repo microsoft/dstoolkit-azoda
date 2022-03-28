@@ -36,6 +36,4 @@ steps:
 
       # Upload images to pixie
       cd src/auto_setup
-      echo $(api)
-      echo $(key)
-      # python export_images_to_pixie.py --api https://w4pixiev3-test2-api.azurewebsites.net --key 'check' --project synthetic_dataset
+      python export_images_to_pixie.py --api $(api) --key $(key) --project synthetic_dataset
