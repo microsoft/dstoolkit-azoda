@@ -35,5 +35,7 @@ steps:
       python src/auto_setup/synthetic_dataset_creation.py
 
       # Upload images to pixie
+      echo $(API)
+      echo $(KEY)
       cd src/auto_setup
-      python export_images_to_pixie.py --api $(api) --key $(key) --project synthetic_dataset
+      python export_images_to_pixie.py --api $(API) --key $(KEY) --project synthetic_dataset
