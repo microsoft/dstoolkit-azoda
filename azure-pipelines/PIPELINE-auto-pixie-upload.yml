@@ -42,7 +42,8 @@ steps:
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
 
       # Download dataset
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d '.'' --recursive
+      echo 'download dataset'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d '.' --recursive
       # Upload images to pixie
       echo $(API)
       echo $(KEY)
