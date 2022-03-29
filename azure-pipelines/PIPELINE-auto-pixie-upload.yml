@@ -26,7 +26,7 @@ steps:
       pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
       sudo apt install ffmpeg -y
       pip install ffprobe
-      pip uninstall ffmpeg
+      pip uninstall ffmpeg-python
       pip install ffmpeg-python
       # Set config to automatically agree to command without prompt
       az config set extension.use_dynamic_install=yes_without_prompt
