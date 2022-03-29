@@ -19,6 +19,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Variables
+      lsb_release -a
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
       acr_name=tfoddevacr
