@@ -35,6 +35,7 @@ steps:
       pip install ffmpeg-python ffprobe packaging requests numpy opencv-python pandas
       # Set config to automatically agree to command without prompt
       az config set extension.use_dynamic_install=yes_without_prompt
+      az extension add -n ml -y
 
       # Get AML container name
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
