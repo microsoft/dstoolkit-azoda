@@ -40,6 +40,14 @@ steps:
       # Set config to automatically agree to command without prompt
       az config set extension.use_dynamic_install=yes_without_prompt
 
+      # Get AML container name
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+
+      # Download dataset
+      az storage blob directory download -c tfod-dev-container --account-name aml_storage_account_name -s synthetic_dataset/ -d "." --recursive
+      
+
       # Create synthetic dataset
       python src/auto_setup/synthetic_dataset_creation.py
 
