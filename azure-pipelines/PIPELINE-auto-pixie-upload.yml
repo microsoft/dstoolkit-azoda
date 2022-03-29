@@ -41,15 +41,11 @@ steps:
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
 
       # Download dataset
-      az storage blob directory download -c tfod-dev-container --account-name aml_storage_account_name -s synthetic_dataset/ -d "." --recursive
-      
-
-      # Create synthetic dataset
-      python src/auto_setup/synthetic_dataset_creation.py
+      az storage blob directory download -c tfod-dev-container --account-name aml_storage_account_name -s $(DATASET)/ -d "." --recursive
 
       # Upload images to pixie
       echo $(API)
       echo $(KEY)
       cd src/auto_setup
       pip freeze
-      python export_images_to_pixie.py --api $(API) --key $(KEY) --project synthetic_dataset
+      python export_images_to_pixie.py --api $(API) --key $(KEY) --project $(DATASET)
