@@ -24,7 +24,7 @@ steps:
       run_id_str=$(az ml job list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].name")
       run_id="${run_id_str:1:${#run_id_str}-2}"
       pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
-      apt install ffmpeg -y
+      sudo apt install ffmpeg -y
       # Set config to automatically agree to command without prompt
       az config set extension.use_dynamic_install=yes_without_prompt
 
