@@ -22,7 +22,6 @@ steps:
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg
       acr_name=tfoddevacr
-      aml_container=tfod-dev-container
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
@@ -40,10 +39,11 @@ steps:
       # Get AML container name
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container="${aml_container_str:1:${#aml_container_str}-2}"
 
       # Download dataset
-      echo 'download dataset'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d '.' --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
       # Upload images to pixie
       echo $(API)
       echo $(KEY)
