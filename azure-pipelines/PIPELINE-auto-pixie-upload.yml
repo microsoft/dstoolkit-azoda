@@ -40,4 +40,5 @@ steps:
       echo $(API)
       echo $(KEY)
       cd src/auto_setup
+      pip freeze
       python export_images_to_pixie.py --api $(API) --key $(KEY) --project synthetic_dataset
