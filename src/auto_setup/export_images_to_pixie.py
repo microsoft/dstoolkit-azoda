@@ -16,19 +16,20 @@ args = parser.parse_args()
 # Set up Pixie connection
 # Authentication information
 config_dict = {'pixie': {'deploy': {'api': args.api, 'key': args.key}}}
-with open('config1.yaml', 'w') as file:
+with open('config.yaml', 'w') as file:
     documents = yaml.dump(config_dict, file)
-config = yaml.load(open("config1.yaml", "r"), Loader=yaml.FullLoader)["pixie"]["deploy"]
+config = yaml.load(open("config.yaml", "r"), Loader=yaml.FullLoader)["pixie"]["deploy"]
 # Create Pixie client
 px_client = px.PixieClient(config["api"], api_key=config.get("key"))
 # Create a pixie project
 project_name = args.project
-project = px_client.create_project(px.Project(project_name, 'Testing synthetic circle dataset'), exist_ok=True)
+project = px_client.create_project(px.Project(project_name, 'Dataset import test'), exist_ok=True)
 # Configure directories
 image_directory = f'../../{project_name}/images/'
 annotations_directory = f'../../{project_name}/datasets/'
 # Build up annotation dictionary
 file_annotations = dict()
+class_names = []
 for filename in os.listdir(annotations_directory):
     if not filename.endswith('.csv'):
         continue
@@ -43,6 +44,8 @@ for filename in os.listdir(annotations_directory):
         bb_height = row['ymax']-y_min
         if image_filename not in file_annotations:
             file_annotations[image_filename] = []
+        if class_name not in class_names:
+            class_names.append(class_name)
         file_annotations[image_filename].append({'x_min': x_min,
                                                  'y_min': y_min,
                                                  'bb_width': bb_width,
@@ -51,7 +54,7 @@ for filename in os.listdir(annotations_directory):
 # Create a Pixie dataset
 din = px.DatasetIn(project_id=project.id,
                    name=project_name,
-                   data=px.ObjectDetectionDataset(classes=['circle']),
+                   data=px.ObjectDetectionDataset(classes=class_names),
                    description="")
 dataset = px_client.create_dataset(din)
 
