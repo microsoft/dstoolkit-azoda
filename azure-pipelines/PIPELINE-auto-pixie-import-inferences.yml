@@ -48,3 +48,4 @@ steps:
       # Upload images to pixie
       cd src/auto_setup
       python import_from_pixie --api $(API) --key $(KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --model_id $(MODEL_ID) --export_inferences
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'inferences_pixie.csv' -d '.'
