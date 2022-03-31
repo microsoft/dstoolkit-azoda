@@ -47,4 +47,4 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
       # Upload images to pixie
       cd src/auto_setup
-      python export_images_to_pixie.py --api $(API) --key $(KEY) --project $(DATASET)
+      python export_images_to_pixie.py --api $(API) --key $(KEY) --dataset $(DATASET)
