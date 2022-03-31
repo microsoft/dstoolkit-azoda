@@ -1,5 +1,5 @@
 pool:
-  vmImage: ubuntu-18.04
+  vmImage: ubuntu-latest
 
 steps:
 - script: |     
@@ -15,7 +15,7 @@ steps:
 
       echo '--- Setting variables ---'
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg-test
+      resource_group=tfod-dev-rg-demo
       location=westeurope
       acr_name=tfoddevacr
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
