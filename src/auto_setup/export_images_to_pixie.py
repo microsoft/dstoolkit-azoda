@@ -10,7 +10,7 @@ import yaml
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--api', help='API url of the pixie deployment')
 parser.add_argument('-k', '--key', help='Key for the specified pixie deployment')
-parser.add_argument('-p', '--project', help='Name of project/dataset')
+parser.add_argument('-d', '--dataset', help='Name of project/dataset')
 args = parser.parse_args()
 
 # Set up Pixie connection
@@ -19,14 +19,18 @@ config_dict = {'pixie': {'deploy': {'api': args.api, 'key': args.key}}}
 with open('config.yaml', 'w') as file:
     documents = yaml.dump(config_dict, file)
 config = yaml.load(open("config.yaml", "r"), Loader=yaml.FullLoader)["pixie"]["deploy"]
+
 # Create Pixie client
 px_client = px.PixieClient(config["api"], api_key=config.get("key"))
+
 # Create a pixie project
-project_name = args.project
+project_name = args.dataset
 project = px_client.create_project(px.Project(project_name, 'Dataset import test'), exist_ok=True)
+
 # Configure directories
 image_directory = f'../../{project_name}/images/'
 annotations_directory = f'../../{project_name}/datasets/'
+
 # Build up annotation dictionary
 file_annotations = dict()
 class_names = []
