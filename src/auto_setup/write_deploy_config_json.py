@@ -11,7 +11,7 @@ data = {
     "EXPERIMENT": args.experiment_name,
     "RUN_ID": args.run_id,
     "TF_VERSION": 2,
-    "REG_MODEL": False,
+    "REG_MODEL": True,
     "IMAGE_TYPE": args.experiment_name,
     "ACI_PARAMS": {
         "USE_ACI": True,
