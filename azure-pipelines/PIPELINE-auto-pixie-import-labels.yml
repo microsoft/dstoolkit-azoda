@@ -1,0 +1,50 @@
+# Pipeline for example deployment
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: ubuntu-18.04
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.8'
+    addToPath: true
+    architecture: 'x64'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ICARM'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Variables
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg
+      acr_name=tfoddevacr
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      run_id_str=$(az ml job list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].name")
+      run_id="${run_id_str:1:${#run_id_str}-2}"
+      # Install required libraries
+      pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
+      sudo apt install ffmpeg -y
+      pip uninstall ffmpeg-python -y
+      pip install ffmpeg-python ffprobe packaging requests numpy opencv-python pandas
+      # Set config to automatically agree to command without prompt
+      az config set extension.use_dynamic_install=yes_without_prompt
+      az extension add -n ml -y
+
+      # Get AML container name
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container="${aml_container_str:1:${#aml_container_str}-2}"
+
+      # Download dataset
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
+      # Upload images to pixie
+      cd src/auto_setup
+      python import_from_pixie --api $(API) --key $(KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --export_labels
