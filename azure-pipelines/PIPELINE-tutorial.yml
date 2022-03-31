@@ -1,14 +1,10 @@
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-18.04
 
 steps:
 - script: |     
     docker build . -f docker/tf_2/Dockerfile --no-cache
   displayName: 'Docker build'
-
-- script: |
-    docker images
-  displayName: 'Show docker images'
 
 - task: AzureCLI@2
   inputs:
@@ -17,94 +13,71 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
 
-      # Install required libraries
-      pip install -e src/packages/azure_utils
-      pip install azureml-sdk==1.39.0
-
-      # Variables
+      echo '--- Setting variables ---'
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
+      resource_group=tfod-dev-rg-test
       location=westeurope
       acr_name=tfoddevacr
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      echo 'subscription_id'
-      echo $subscription_id
-      echo 'tenant_id'
-      echo $tenant_id
 
-      # Create resource group
+      echo '--- Installing required libraries ---'
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
+
+      echo '--- Create resource group ---'
       az group create --name $resource_group --location $location
 
-      # Create a container registry
+      echo '--- Create a container registry ---'
       az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
 
-      # Authenticate
+      echo '--- Authenticating ---'
       az acr login -n $acr_name
 
-      # Get latest docker image id
+      echo '--- Getting latest docker image ID ---'
       IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
 
-      # Tag latest image
+      echo '--- Tagging latest image ---'
       docker tag $IMAGE_ID ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
 
-      # Push docker image to acr
+      echo '--- Pushing docker image to ACR ---'
       docker push ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
 
-      # Show docker containers
+      echo '--- Listing docker containers ---'
       docker container ls
 
-      # Download tf2 model
+      echo '--- Downloading TF2 model ---'
       wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
 
-      # Uncompress model
+      echo '--- Decompressing TF2 model ---'
       tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
 
-      # Set config to automatically agree to command without prompt
+      echo '--- Setting automatic yes to prompts ---'
       az config set extension.use_dynamic_install=yes_without_prompt
 
-      # Install required libraries
-      pip install numpy opencv-python pandas
-
-      # Create synthetic dataset
+      echo '--- Creating a synthetic dataset ---'
       python src/auto_setup/synthetic_dataset_creation.py
 
-      # Create AML workspace
+      echo '--- Creating AML Workspace ---'
       az extension add -n ml -y
       az ml workspace create -n $workspace_name -g $resource_group --file azure-pipelines/templates/setup-aml.template.yml
 
-      # Create gpu compute
+      echo '--- Creating GPU compute instance ---'
       az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute
 
-      # Get AML container name
+      echo '--- Fetching AML storage account name ---'
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
 
-      # Create container in AML storage account
-      #az storage container create --name tfod-dev-container --account-name $aml_storage_account_name
-
       # Upload model and dataset to container
+      echo '--- Fetching AML container name ---'
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container="${aml_container_str:1:${#aml_container_str}-2}"
-      echo $aml_container
+
+      echo '--- Uploading TF2 model to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
+
+      echo '--- Uploading synthetic dataset to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
-
-      # Create dev_config.json
-      #jq -n --arg tenant_id $tenant_id \
-      #      --arg subscription_id $subscription_id \
-      #      --arg workspace_name $workspace_name \
-      #      --arg resource_group $resource_group \
-      #      '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
-      #cat dev_config.json
-      #jq . dev_config.json
-      #mv dev_config.json configuration/
-      
-      # Create exp_config.json
-      #python src/auto_setup/write_exp_config_json.py --experiment_name synthetic_dataset --acr $acr_name
-
-      # Start training script
-      #echo 'Start training'
-      #python src/training/submit_training.py
