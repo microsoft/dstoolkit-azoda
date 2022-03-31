@@ -40,7 +40,6 @@ steps:
             --arg workspace_name $workspace_name \
             --arg resource_group $resource_group \
             '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
-      cat dev_config.json
       jq . dev_config.json
       mv dev_config.json configuration/
       
