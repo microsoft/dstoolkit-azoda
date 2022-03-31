@@ -1,8 +1,3 @@
-# Pipeline for example deployment
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 pool:
   vmImage: ubuntu-18.04
 
@@ -47,4 +42,5 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
       # Upload images to pixie
       cd src/auto_setup
-      python import_from_pixie --api $(API) --key $(KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --export_labels
+      python import_from_pixie.py --api $(API) --key $(KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --export_labels
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'labels_pixie.csv' -d '.'
