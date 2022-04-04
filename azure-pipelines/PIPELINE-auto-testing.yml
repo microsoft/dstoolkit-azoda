@@ -29,6 +29,8 @@ steps:
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
       run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[0].name")
       run_id="${run_id_str:1:${#run_id_str}-2}"
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container="${aml_container_str:1:${#aml_container_str}-2}"
 
