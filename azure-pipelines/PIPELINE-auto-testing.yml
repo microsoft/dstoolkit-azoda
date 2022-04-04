@@ -20,7 +20,6 @@ steps:
       az extension add -n ml -y
 
       echo '--- Setting variables ---'
-      project=synthetic_dataset
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
@@ -35,10 +34,10 @@ steps:
 
       echo '--- Extract test images from dataset ---'
       cd src/auto_setup
-      python extract_test_images.py --dataset $project
+      python extract_test_images.py --dataset $(DATASET)
 
       echo '--- Use endpoint for inference on test dataset ---'
-      python infer_with_endpoint.py --endpoint $ENDPOINT --key $KEY --dataset $project
+      python infer_with_endpoint.py --endpoint $(ENDPOINT) --key $(KEY) --dataset $(DATASET)
       
       echo '--- Export confusion matrix artifact ---'
-      python create_confusion_matrix.py --dataset $project
+      python create_confusion_matrix.py --dataset $(DATASET)
