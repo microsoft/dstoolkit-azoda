@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 pool:
-  vmImage: ubuntu-18.04
+  vmImage: ubuntu-latest
 
 steps:
 - task: AzureCLI@2
@@ -19,6 +19,7 @@ steps:
       pip install azureml-sdk==1.39.0 scikit-learn==1.0.2 matplotlib==3.5.1 pandas==1.4.1 opencv-python==4.5.5.62
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
+      python --version
 
       echo '--- Setting variables ---'
       workspace_name=tfod-dev-amlw
