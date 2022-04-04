@@ -16,7 +16,7 @@ steps:
       
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
-      pip install azureml-sdk==1.39.0 scikit-learn==1.0.2
+      pip install azureml-sdk==1.39.0 scikit-learn==1.0.2 matplotlib==3.5.1
       az extension add -n ml -y
 
       echo '--- Setting variables ---'
