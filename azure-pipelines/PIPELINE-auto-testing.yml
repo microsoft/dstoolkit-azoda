@@ -1,0 +1,44 @@
+# Pipeline for example deployment
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ICARM'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      
+      echo '--- Installing required libraries ---'
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0 scikit-learn==1.0.2
+      az extension add -n ml -y
+
+      echo '--- Setting variables ---'
+      project=synthetic_dataset
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg-demo
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[0].name")
+      run_id="${run_id_str:1:${#run_id_str}-2}"
+
+      echo '--- Download dataset from storage account ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
+
+      echo '--- Extract test images from dataset ---'
+      cd src/auto_setup
+      python extract_test_images.py --dataset $project
+
+      echo '--- Use endpoint for inference on test dataset ---'
+      python infer_with_endpoint.py --endpoint $ENDPOINT --key $KEY --dataset $project
+      
+      echo '--- Export confusion matrix artifact ---'
+      python create_confusion_matrix.py --dataset $project
