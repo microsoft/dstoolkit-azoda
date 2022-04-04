@@ -14,8 +14,8 @@ parser.add_argument('-d', '--dataset', help='Name of dataset/project')
 args = parser.parse_args()
 dataset = args.dataset
 
-image_directory = f'{dataset}/test_images/'
-inferences_directory = f'{dataset}/test_inferences/'
+image_directory = f'../../{dataset}/test_images/'
+inferences_directory = f'../../{dataset}/test_inferences/'
 os.makedirs(inferences_directory, exist_ok=True)
 enable_auth = False
 row_data = []
