@@ -1,7 +1,4 @@
-# Pipeline for example deployment
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+name: Export labels to Pixie
 
 pool:
   vmImage: ubuntu-18.04
@@ -14,14 +11,14 @@ steps:
     architecture: 'x64'
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'ICARM'
+    azureSubscription: 'ARMSC'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
       # Variables
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
-      acr_name=tfoddevacr
+      resource_group=tfod-dev-rg-demo
+      acr_name=tfod-dev-acr-$subscription_id
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
@@ -47,4 +44,4 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
       # Upload images to pixie
       cd src/auto_setup
-      python export_images_to_pixie.py --api $(API) --key $(KEY) --dataset $(DATASET)
+      python export_images_to_pixie.py --api $(PIXIE_API) --key $(PIXIE_KEY) --dataset $(DATASET)
