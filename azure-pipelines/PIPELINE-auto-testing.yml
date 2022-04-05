@@ -16,29 +16,34 @@ steps:
       
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
-      pip install azureml-sdk==1.39.0 scikit-learn==1.0.2
+      pip install azureml-sdk==1.39.0 scikit-learn==1.0.2 matplotlib==3.5.1 pandas==1.4.1 opencv-python==4.5.5.62
+      az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
+      python --version
 
       echo '--- Setting variables ---'
-      project=synthetic_dataset
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg-demo
+      resource_group=tfod-dev-rg
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
       run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[0].name")
       run_id="${run_id_str:1:${#run_id_str}-2}"
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container="${aml_container_str:1:${#aml_container_str}-2}"
 
       echo '--- Download dataset from storage account ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
 
       echo '--- Extract test images from dataset ---'
       cd src/auto_setup
-      python extract_test_images.py --dataset $project
+      python extract_test_images.py --dataset $(DATASET)
 
       echo '--- Use endpoint for inference on test dataset ---'
-      python infer_with_endpoint.py --endpoint $ENDPOINT --key $KEY --dataset $project
+      python infer_with_endpoint.py --endpoint $(ENDPOINT) --key $(KEY) --dataset $(DATASET)
       
       echo '--- Export confusion matrix artifact ---'
-      python create_confusion_matrix.py --dataset $project
+      python create_confusion_matrix.py --dataset $(DATASET)
