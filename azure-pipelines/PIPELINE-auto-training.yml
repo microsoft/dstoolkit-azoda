@@ -1,3 +1,5 @@
+name: Model training
+
 pool:
   vmImage: ubuntu-latest
 
