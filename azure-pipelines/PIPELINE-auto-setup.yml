@@ -8,20 +8,20 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'ICARM'
+    azureSubscription: 'ARMSC'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
 
       echo '--- Setting variables ---'
-      workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg-demo
-      location=westeurope
-      acr_name=tfoddevacr
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg-demo
+      location=westeurope
+      acr_name=tfod-dev-acr-$subscription_id
 
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
@@ -60,9 +60,12 @@ steps:
       echo '--- Creating a synthetic dataset ---'
       python src/auto_setup/synthetic_dataset_creation.py
 
+      echo '--- Creating AML config ---'
+      python src/auto_setup/write_aml_template_yaml.py
+
       echo '--- Creating AML Workspace ---'
       az extension add -n ml -y
-      az ml workspace create -n $workspace_name -g $resource_group --file azure-pipelines/templates/setup-aml.template.yml
+      az ml workspace create -n $workspace_name -g $resource_group --file aml_config.yaml
 
       echo '--- Creating GPU compute instance ---'
       az ml compute create --max-instances 3 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute
