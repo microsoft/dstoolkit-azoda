@@ -43,6 +43,8 @@ if args.export_labels:
         img_width, img_height = file.image.width, file.image.height
         filename = file.properties['filename']
         print(filename)
+        if dataset_name not in file.additional_properties['labels']:
+            continue
         label_id = file.additional_properties['labels'][dataset_name]['labelId']
         label = px_client.get_labels(label_id=label_id)
         if not hasattr(label, 'data'):
