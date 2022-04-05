@@ -39,15 +39,51 @@ In ADO, select the following:
 - Select **+Select members** and paste the copied **Display name** from earlier, select it from the list, then click **Select**
 - Click **Next**, then **Review + assign**
 
-### Run the Infra-setup pipeline
+### Run the Infra-setup pipeline (~9 minutes)
 
 Now we can import pipelines from the connected repo to create resources on our Azure subscription
 
 In ADO, select the following:
 - **Pipelines**
-- **Create Pipeline**
+- **Create Pipeline** (**New pipeline** if one already exists)
 - **Azure Repos Git**
 - Select your project
 - **Existing Azure Pipelines YAML file**
 - Under **Branch** select **feature/auto_setup**
 - Under **Path** select **/azure-pipelines/PIPELINE-auto-setup.yml** then **Continue**
+- **Run**
+
+### Train a first model (~5 minutes)
+
+Now we can train a first model, it was be with a generated dataset. Later you can replace it with your own.
+
+Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-training.yml**. This pipeline will ask you to authenicate interactively about one minute after the pipeline starts. Watch the pipeline output to see it.
+
+### Deploy the model (~7 minutes)
+
+Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute.
+
+### Test the deployment
+
+Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-testing.yml**. This will require some variables to be set before pressing Run. 
+
+First you will need the endpoint name and key:
+- Go to your [Azure portal](https://portal.azure.com)
+- Search and select **Machine learning** from the search bar
+- Select the one you created from the list (the default is called tfod-dev-amlw, in resource group tfod-dev-rg-demo)
+- **Launch studio**
+- **Endpoints** on the left
+- **syntheticdataset** (the name of the dataset)
+- **Consume**
+
+Here you can see the **REST endpoint** and **Primary key**. In the next step, we will give these to the pipeline.
+
+On the Edit page of the pipeline, select the following:
+- **Variables**
+- **New variable**
+- In the **Name** field enter **dataset**, in the **Value** field enter **synthetic_dataset**, then **OK**
+- When entering both \<REST endpoint\> and \<Primary key\>, surround them with double quotes **" "** so that the characters don't lead to misinterpretation
+- **+** , then as above, **Name**: **endpoint**, **Value**: \<"REST endpoint"\>, select **Keep this value secret**, then **OK**
+- **+** , then as above, **Name**: **key**, **Value**: \<"Primary key"\>, select **Keep this value secret**, then **OK**
+- **Save**
+- **Run**
