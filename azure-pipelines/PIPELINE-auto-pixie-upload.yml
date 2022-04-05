@@ -1,7 +1,9 @@
 name: Export labels to Pixie
 
+trigger: none
+
 pool:
-  vmImage: ubuntu-18.04
+  vmImage: ubuntu-latest
 
 steps:
 - task: UsePythonVersion@0
