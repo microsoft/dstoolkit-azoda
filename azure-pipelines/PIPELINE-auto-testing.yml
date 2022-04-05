@@ -1,4 +1,7 @@
-name: Test deployment
+# Pipeline for example deployment
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
 pool:
   vmImage: ubuntu-latest
@@ -20,7 +23,7 @@ steps:
 
       echo '--- Setting variables ---'
       workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
+      resource_group=tfod-dev-rg-demo
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
