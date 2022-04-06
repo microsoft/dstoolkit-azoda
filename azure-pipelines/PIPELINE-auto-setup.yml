@@ -19,9 +19,9 @@ steps:
 
       echo '--- Setting variables ---'
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      subscription_id=$(echo $subscription_id_str | tr -d \")
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      tenant_id=$(echo $tenant_id_str | tr -d \")
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
       location=westeurope
@@ -76,12 +76,12 @@ steps:
 
       echo '--- Fetching AML storage account name ---'
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
-      aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
+      aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
 
       # Upload model and dataset to container
       echo '--- Fetching AML container name ---'
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
-      aml_container="${aml_container_str:1:${#aml_container_str}-2}"
+      aml_container=$(echo $aml_container_str | tr -d \")
 
       echo '--- Uploading TF2 model to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive

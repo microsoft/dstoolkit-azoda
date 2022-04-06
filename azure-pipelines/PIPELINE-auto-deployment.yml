@@ -23,9 +23,9 @@ steps:
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
+      subscription_id=$(echo $subscription_id_str | tr -d \")
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-      tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      tenant_id=$(echo $tenant_id_str | tr -d \")
 
       echo '-- Get latest completed run id ---'
       az ml job list --resource-group $resource_group --workspace-name $workspace_name > jobs.json
