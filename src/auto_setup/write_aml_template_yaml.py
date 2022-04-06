@@ -6,7 +6,7 @@ parser.add_argument('-s', '--subscription', help='Your Azure subscription')
 args = parser.parse_args()
 
 container_reg = f'/subscriptions/{args.subscription}/resourceGroups/tfod-dev-rg/' \
-                 'providers/Microsoft.ContainerRegistry/registries/tfod-dev-acr-{args.subscription}'
+                f'providers/Microsoft.ContainerRegistry/registries/tfod-dev-acr-{args.subscription}'
 
 config_dict = {'$schema': 'https://azuremlschemas.azureedge.net/latest/workspace.schema.json',
                'name': 'tfod-dev-amlw',
