@@ -27,7 +27,7 @@ steps:
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[0].name")
+      run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[-1].name")
       run_id="${run_id_str:1:${#run_id_str}-2}"
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name="${aml_storage_account_name_str:1:${#aml_stroage_account_name_str}-1}"
