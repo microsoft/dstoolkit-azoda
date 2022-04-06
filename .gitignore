@@ -126,3 +126,7 @@ configuration/*.json
 notebooks/train.py
 notebooks/*.py
 notebooks/score.py
+
+# yolo development
+src/auto_setup/synthetic_dataset.yaml
+synthetic_dataset
