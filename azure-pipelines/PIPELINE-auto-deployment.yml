@@ -26,8 +26,10 @@ steps:
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
-      run_id_str=$(az ml job list --resource-group $resource_group --workspace-name $workspace_name --query "[-1].name")
-      run_id="${run_id_str:1:${#run_id_str}-2}"
+
+      echo '-- Get latest completed run id ---'
+      az ml job list --resource-group $resource_group --workspace-name $workspace_name > jobs.json
+      run_id=$(python src/auto_setup/get_latest_run_from_json.py)
 
       echo '--- Writing deploy_config.json ---'
       python src/auto_setup/write_deploy_config_json.py --experiment_name $project --run_id $run_id
