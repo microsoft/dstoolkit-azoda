@@ -20,7 +20,7 @@ steps:
       project=synthetic_dataset
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
-      acr_name=tfod-dev-acr-$subscription_id
+      acr_name=$(echo tfod$subscription_id | tr -d -)
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
