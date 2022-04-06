@@ -25,7 +25,7 @@ steps:
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
       location=westeurope
-      acr_name=tfod-dev-acr-$subscription_id
+      acr_name=$(echo tfod$subscription_id | tr -d -)
 
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
@@ -65,7 +65,7 @@ steps:
       python src/auto_setup/synthetic_dataset_creation.py
 
       echo '--- Creating AML config ---'
-      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id --resource_group $resource_group --workspace $workspace_name
+      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id --resource_group $resource_group --workspace $workspace_name --acr_name $acr_name
 
       echo '--- Creating AML Workspace ---'
       az extension add -n ml -y
