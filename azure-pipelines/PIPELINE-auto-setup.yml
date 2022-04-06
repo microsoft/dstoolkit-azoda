@@ -1,3 +1,7 @@
+name: Setup Infrastructure
+
+trigger: none
+
 pool:
   vmImage: ubuntu-latest
 
@@ -61,7 +65,7 @@ steps:
       python src/auto_setup/synthetic_dataset_creation.py
 
       echo '--- Creating AML config ---'
-      python src/auto_setup/write_aml_template_yaml.py
+      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id
 
       echo '--- Creating AML Workspace ---'
       az extension add -n ml -y

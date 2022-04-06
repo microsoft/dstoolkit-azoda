@@ -1,3 +1,7 @@
+name: Model Training
+
+trigger: none
+
 name: Model training
 
 pool:
