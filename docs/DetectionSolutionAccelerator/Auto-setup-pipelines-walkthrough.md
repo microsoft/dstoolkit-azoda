@@ -82,8 +82,37 @@ On the Edit page of the pipeline, select the following:
 - **Variables**
 - **New variable**
 - In the **Name** field enter **dataset**, in the **Value** field enter **synthetic_dataset**, then **OK**
-- When entering both \<REST endpoint\> and \<Primary key\>, surround them with double quotes **" "** so that the characters don't lead to misinterpretation
+- When entering both \<REST endpoint\> and \<Primary key\>, surround them with double quotes **" "** so that the characters don't lead to misinterpretation. Also remember to check the secret option, so that the information is not visible.
 - **+** , then as above, **Name**: **endpoint**, **Value**: \<"REST endpoint"\>, select **Keep this value secret**, then **OK**
 - **+** , then as above, **Name**: **key**, **Value**: \<"Primary key"\>, select **Keep this value secret**, then **OK**
 - **Save**
 - **Run**
+
+Once the pipeline is done, the confusion matrix will be shown in the logs.
+
+### Export labels to Pixie
+
+Pixie is an interactive labelling tool that has built-in model training to accelerate the labelling process.
+
+Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto-pixie-upload.yml**. This will also require variables added before running, as above:
+
+- **Name**: **PIXIE_API**, **Value**: \<"Pixie endpoint"\>, select **Keep this value secret**, then **OK**
+- **Name**: **PIXIE_KEY**, **Value**: \<"Pixie key"\>, select **Keep this value secret**, then **OK**
+- **Name**: **dataset**, **Value**: **synthetic_dataset**, then **OK**
+
+You will need to get pixie authentication or start your own deployment. More info on this soon.
+
+### Import labels from Pixie
+
+After adding more labels Pixie, you can run this pipeline to load the new labels to your storage account.
+
+Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto-pixie-import-labels.yml** with the following variables:
+
+- **Name**: **PIXIE_API**, **Value**: \<"Pixie endpoint"\>, select **Keep this value secret**, then **OK**
+- **Name**: **PIXIE_KEY**, **Value**: \<"Pixie key"\>, select **Keep this value secret**, then **OK**
+- **Name**: **dataset**, **Value**: **synthetic_dataset**, then **OK**
+- **Name**: **project_id**, **Value**: **<project_id>**, then **OK**
+- **Name**: **model_id**, **Value**: **<model_id>**, then **OK**
+
+The model id can be found from the model page in Pixie.
+
