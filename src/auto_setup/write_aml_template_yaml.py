@@ -2,13 +2,14 @@ import argparse
 import yaml
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-a', '--acr_name', help='Your ACR name')
 parser.add_argument('-s', '--subscription', help='Your Azure subscription')
 parser.add_argument('-r', '--resource_group', help='Your Azure resource group')
 parser.add_argument('-w', '--workspace', help='Your AML workspace')
 args = parser.parse_args()
 
 container_reg = f'/subscriptions/{args.subscription}/resourceGroups/{args.resource_group}/' \
-                f'providers/Microsoft.ContainerRegistry/registries/tfod-dev-acr-{args.subscription}'
+                f'providers/Microsoft.ContainerRegistry/registries/{args.acr_name}'
 
 config_dict = {'$schema': 'https://azuremlschemas.azureedge.net/latest/workspace.schema.json',
                'name': args.workspace,
