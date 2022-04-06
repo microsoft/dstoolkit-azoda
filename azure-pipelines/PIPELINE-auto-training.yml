@@ -18,11 +18,11 @@ steps:
       project=synthetic_dataset
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
-      acr_name=$(echo tfod$subscription_id | tr -d -)
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id="${subscription_id_str:1:${#subscription_id_str}-2}"
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id="${tenant_id_str:1:${#tenant_id_str}-2}"
+      acr_name=$(echo tfod$subscription_id | tr -d -)
 
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
