@@ -53,15 +53,15 @@ In ADO, select the following:
 - Under **Path** select **/azure-pipelines/PIPELINE-auto-setup.yml** then **Continue**
 - **Run**
 
-### Train a first model (~5 minutes)
+### Submit a model training job (~2 minutes)
 
 Now we can train a first model, it was be with a generated dataset. Later you can replace it with your own.
 
-Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-training.yml**. This pipeline will ask you to authenicate interactively about one minute after the pipeline starts. Watch the pipeline output to see it.
+Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-training.yml**. This pipeline will ask you to authenicate interactively about one minute after the pipeline starts. Watch the pipeline output to see it. The default training config uses very few steps, so it shoud take about 5 minutes to finish.
 
-### Deploy the model (~7 minutes)
+### Deploy the model (~9 minutes)
 
-Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute.
+Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute. Make sure the model has finished training before deploying. 
 
 ### Test the deployment
 
