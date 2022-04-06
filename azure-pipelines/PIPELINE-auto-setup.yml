@@ -65,7 +65,7 @@ steps:
       python src/auto_setup/synthetic_dataset_creation.py
 
       echo '--- Creating AML config ---'
-      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id
+      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id --resource_group $resource_group --workspace $workspace_name
 
       echo '--- Creating AML Workspace ---'
       az extension add -n ml -y
