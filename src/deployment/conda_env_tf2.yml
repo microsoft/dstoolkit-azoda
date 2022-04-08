@@ -1,17 +1,17 @@
 channels:
 - conda-forge
 dependencies:
-- python=3.7.1
+- python=3.7
 - pip:
   - azureml-core
   - azureml-defaults
-  - joblib==1.1.0
+  - joblib
   - azureml-sdk
   - pillow
-  - tensorflow==2.6.2
+  - tensorflow
   - numpy
   - itsdangerous==2.0.1
-  - Flask==2.0.3
+  - Flask
   - Jinja2
   - gunicorn
 
