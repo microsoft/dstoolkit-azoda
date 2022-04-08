@@ -30,6 +30,7 @@ steps:
       echo '-- Get latest completed run id ---'
       az ml job list --resource-group $resource_group --workspace-name $workspace_name > jobs.json
       run_id=$(python src/auto_setup/get_latest_run_from_json.py)
+      run_id=$(echo $run_id | tr -d \")
 
       echo '--- Writing deploy_config.json ---'
       python src/auto_setup/write_deploy_config_json.py --experiment_name $project --run_id $run_id
@@ -43,6 +44,6 @@ steps:
             '{"AML_TENANT_ID": $tenant_id, "AML_WORKSPACE_NAME": $workspace_name, "AML_SUBSCRIPTION_ID": $subscription_id, "AML_RESOURCE_GROUP": $resource_group}' > dev_config.json
       jq . dev_config.json
       mv dev_config.json configuration/
-      
+
       echo '--- Starting deployment script ---'
       python src/deployment/deploy_model.py
