@@ -14,7 +14,9 @@ import sys
 
 from azure_utils.azure import load_config
 from azure_utils.deployment import AMLDeploy
-
+from azureml.core.model import Model
+from azureml.core.webservice import LocalWebservice
+from azureml.core import Workspace
 
 __here__ = os.path.dirname(os.path.realpath(__file__))
 
@@ -68,25 +70,39 @@ def main():
     inference_config = deployment.create_inference_config(score_file,
                                                           __here__,
                                                           env_filename)
+    deploy_local = False
+    if deploy_local:
+        deployment_config = LocalWebservice.deploy_configuration(port=6789)
+        ws = Workspace.get(name="tfod-dev-amlw",
+                           subscription_id='***REMOVED***',
+                           resource_group='tfod-dev-rg-demo')
+        local_service = Model.deploy(workspace=ws,
+                                     name='localdeployment',
+                                     models=[model],
+                                     inference_config=inference_config,
+                                     deployment_config=deployment_config)
 
-    # check for an update existing webservice else create new
-    if deployment.webservice_exists(deployment.webservice_name):
-        print("INFO: Updating deployed Service")
-        deployment.update_existing_webservice(model, inference_config)
+        local_service.wait_for_deployment(show_output=True)
+        print(f"Scoring URI is : {local_service.scoring_uri}")
     else:
-        if deploy_config['ACI_PARAMS']['USE_ACI']:
-            target, config = deployment.create_aci(aci_auth=deploy_config['ACI_PARAMS']['ACI_AUTH'])
+        # check for an update existing webservice else create new
+        if deployment.webservice_exists(deployment.webservice_name):
+            print("INFO: Updating deployed Service")
+            deployment.update_existing_webservice(model, inference_config)
         else:
-            target, config = deployment.create_aks(
-                compute_name=deploy_config['AKS_PARAMS']['COMPUTE_TARGET_NAME'] + '-aks',
-                vm_type=deploy_config['AKS_PARAMS']['VM_TYPE']
-            )
+            if deploy_config['ACI_PARAMS']['USE_ACI']:
+                target, config = deployment.create_aci(aci_auth=deploy_config['ACI_PARAMS']['ACI_AUTH'])
+            else:
+                target, config = deployment.create_aks(
+                    compute_name=deploy_config['AKS_PARAMS']['COMPUTE_TARGET_NAME'] + '-aks',
+                    vm_type=deploy_config['AKS_PARAMS']['VM_TYPE']
+                )
 
-        print("INFO: Service doesnt exist! Creating new service")
-        deployment.deploy_new_webservice(model,
-                                         inference_config,
-                                         config,
-                                         target)
+            print("INFO: Service doesnt exist! Creating new service")
+            deployment.deploy_new_webservice(model,
+                                            inference_config,
+                                            config,
+                                            target)
 
 
 if __name__ == '__main__':
