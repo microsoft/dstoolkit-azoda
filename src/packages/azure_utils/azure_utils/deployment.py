@@ -160,8 +160,13 @@ class AMLDeploy(AML):
                                inference_config=infer_config,
                                deployment_config=deploy_config,
                                deployment_target=deploy_target)
-
-        service.wait_for_deployment(show_output=True)
+        try:
+            service.wait_for_deployment(show_output=True)
+        except Exception as e:
+            print('wait did not work', e)
+        finally:
+            print('logs')
+            print(service.get_logs())
         print(service.state)
 
     def update_existing_webservice(self,

@@ -25,31 +25,34 @@ MODEL_FILE_NAME = 'saved_model'
 
 
 def init():
+    print('init() start')
     global model
     global blob_service
+    print('load_model()')
     model = load_model()
 
 
 def load_model():
+    print('load_model start')
     model_dir = Model.get_model_path(MODEL_NAME)
 
     label_map_file = os.path.join(model_dir, LABEL_MAP_NAME)
     label_map_dict = label_map_util.get_label_map_dict(label_map_file)
     num_classes = len(label_map_dict)
     label_map = label_map_util.load_labelmap(label_map_file)
-
+    print(' label_map_util.convert_label_map_to_categories')
     categories = label_map_util.convert_label_map_to_categories(
                                         label_map,
                                         max_num_classes=num_classes,
                                         use_display_name=True)
-
+    print('label_map_util.create_category_index')
     category_index = label_map_util.create_category_index(categories)
 
     model_path = os.path.join(model_dir, MODEL_FILE_NAME)
 
     # New model load approach
     detection_fn = tf.saved_model.load(model_path)
-
+    print('return ...')
     return {'detection_fn': detection_fn,
             'category_index': category_index}
 
