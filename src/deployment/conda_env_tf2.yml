@@ -11,7 +11,7 @@ dependencies:
   - tensorflow
   - numpy
   - itsdangerous==2.0.1
-  - Flask
+  - Flask==2.0.3
   - Jinja2
   - gunicorn
 
