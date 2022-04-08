@@ -1,15 +1,18 @@
 channels:
 - conda-forge
 dependencies:
-- python=3.7
+- python=3.7.1
 - pip:
-  - azureml-core==1.27.0
-  - azureml-defaults==1.27.0
+  - azureml-core
+  - azureml-defaults
   - joblib==1.1.0
-  - azureml-sdk==1.27.0
-  - pillow==9.0.1
-  - tensorflow==2.8.0
-  - numpy==1.21.5
+  - azureml-sdk
+  - pillow
+  - tensorflow==2.6.2
+  - numpy
   - itsdangerous==2.0.1
+  - Flask==2.0.3
+  - Jinja2
+  - gunicorn
 
 name: basic_env
