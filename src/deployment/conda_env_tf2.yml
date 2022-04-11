@@ -5,14 +5,15 @@ dependencies:
 - pip:
   - azureml-core
   - azureml-defaults
-  - joblib==1.1.0
+  - joblib
   - azureml-sdk
   - pillow
-  - tensorflow==2.6.2
+  - tensorflow
   - numpy
   - itsdangerous==2.0.1
-  - Flask==2.0.3
-  - Jinja2
+  - Flask==1.1.2
+  - Jinja2<3.1.0
   - gunicorn
+  - werkzeug==2.0.2
 
 name: basic_env
