@@ -63,7 +63,7 @@ Repeat the same process as above, but set the path to **/azure-pipelines/PIPELIN
 
 Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute. Make sure the model has finished training before deploying. 
 
-### Test the deployment
+### Test the deployment (~4 minutes)
 
 Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-testing.yml**. This will require some variables to be set before pressing Run. 
 
@@ -90,7 +90,7 @@ On the Edit page of the pipeline, select the following:
 
 Once the pipeline is done, the confusion matrix will be shown in the logs.
 
-### Export labels to Pixie
+### Export labels to Pixie (~6 minutes)
 
 Pixie is an interactive labelling tool that has built-in model training to accelerate the labelling process.
 
