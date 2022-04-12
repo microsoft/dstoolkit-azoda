@@ -13,38 +13,30 @@ steps:
     architecture: 'x64'
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'ICARM'
+    azureSubscription: 'ARMSC'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      # Variables
-      workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg
-      acr_name=tfoddevacr
-      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id=$(echo $subscription_id_str | tr -d \")
-      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-      tenant_id=$(echo $tenant_id_str | tr -d \")
-      run_id_str=$(az ml job list --resource-group tfod-dev-rg --workspace-name tfod-dev-amlw --query "[0].name")
-      run_id=$(echo $run_id_str | tr -d \")
-      # Install required libraries
+
+      echo '--- Installing required libraries ---'
+      az config set extension.use_dynamic_install=yes_without_prompt
+      pip install -e src/packages/azure_utils
+      pip install azureml-sdk==1.39.0
+      az extension add -n ml -y
       pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
       sudo apt install ffmpeg -y
       pip uninstall ffmpeg-python -y
       pip install ffmpeg-python ffprobe packaging requests numpy opencv-python pandas
-      # Set config to automatically agree to command without prompt
-      az config set extension.use_dynamic_install=yes_without_prompt
-      az extension add -n ml -y
 
-      # Get AML container name
+      echo '--- Setting variables ---'
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg-demo
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
 
-      # Download dataset
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
-      # Upload images to pixie
+      echo '--- Import inferences from pixie project ---'
       cd src/auto_setup
-      python import_from_pixie.py --api $(API) --key $(KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --model_id $(MODEL_ID) --export_inferences
+      python import_from_pixie.py --api $(PIXIE_API) --key $(PIXIE_KEY) --dataset $(DATASET) --project_id $(PROJECT_ID) --export_inferences
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'inferences_pixie.csv' -d '.'
