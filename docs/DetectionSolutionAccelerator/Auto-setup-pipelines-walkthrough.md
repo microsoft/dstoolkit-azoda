@@ -94,7 +94,7 @@ Once the pipeline is done, the confusion matrix will be shown in the logs.
 
 Pixie is an interactive labelling tool that has built-in model training to accelerate the labelling process.
 
-Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto-pixie-upload.yml**. This will also require variables added before running, as above:
+Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto-pixie-upload.yml**. Replace \<"Pixie endpoint"\> and \<"Pixie key"\> with your Pixie connection information. This will also require variables added before running, as above:
 
 - **Name**: **PIXIE_API**, **Value**: \<"Pixie endpoint"\>, select **Keep this value secret**, then **OK**
 - **Name**: **PIXIE_KEY**, **Value**: \<"Pixie key"\>, select **Keep this value secret**, then **OK**
@@ -102,7 +102,7 @@ Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto
 
 You will need to get pixie authentication or start your own deployment. More info on this soon.
 
-### Import labels from Pixie
+### Import labels from Pixie (~5 minutes)
 
 After adding more labels Pixie, you can run this pipeline to load the new labels to your storage account.
 
@@ -111,8 +111,16 @@ Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto
 - **Name**: **PIXIE_API**, **Value**: \<"Pixie endpoint"\>, select **Keep this value secret**, then **OK**
 - **Name**: **PIXIE_KEY**, **Value**: \<"Pixie key"\>, select **Keep this value secret**, then **OK**
 - **Name**: **dataset**, **Value**: **synthetic_dataset**, then **OK**
-- **Name**: **project_id**, **Value**: **<project_id>**, then **OK**
-- **Name**: **model_id**, **Value**: **<model_id>**, then **OK**
+- **Name**: **project_id**, **Value**: **<project_id>**, then **OK** (usually five letters)
 
-The model id can be found from the model page in Pixie.
+### Import inferences from Pixie (~3.5 minutes)
 
+After inferencing with Pixie, you can run this pipeline to load the inferences to your storage account.
+
+Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto-pixie-import-inferences.yml** with the following variables:
+
+- **Name**: **PIXIE_API**, **Value**: \<"Pixie endpoint"\>, select **Keep this value secret**, then **OK**
+- **Name**: **PIXIE_KEY**, **Value**: \<"Pixie key"\>, select **Keep this value secret**, then **OK**
+- **Name**: **dataset**, **Value**: **synthetic_dataset**, then **OK**
+- **Name**: **project_id**, **Value**: **<project_id>**, then **OK** (usually five letters)
+- **Name**: **model_id**, **Value**: **<model_id>**, then **OK** (visible from Models tab)
