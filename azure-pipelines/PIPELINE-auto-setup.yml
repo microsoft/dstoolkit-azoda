@@ -83,18 +83,6 @@ steps:
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
 
-      # echo '--- Saving variables to variable-group ---'
-      # az pipelines variable-group create --name tfod-variables
-      #                                    --variables service_connection='ARMSC'
-      #                                                subscription_id=$subscription_id
-      #                                                tenant_id=$tenant_id
-      #                                                workspace_name=$workspace_name
-      #                                                resource_group=$resource_group
-      #                                                location=$location
-      #                                                acr_name=$acr_name
-      #                                                aml_storage_account_name=$aml_storage_account_name
-      #                                                aml_container=$aml_container
-
       echo '--- Uploading TF2 model to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
 
