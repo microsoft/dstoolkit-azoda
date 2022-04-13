@@ -131,4 +131,3 @@ notebooks/score.py
 src/auto_setup/synthetic_dataset.yaml
 synthetic_dataset
 jobs.json
-yolov5/
