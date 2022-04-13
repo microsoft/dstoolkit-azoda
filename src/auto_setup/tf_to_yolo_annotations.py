@@ -1,27 +1,28 @@
 # Script to convert current annotation style to the yolo annotation convention
 
-# %%
 # Imports
+import argparse
 from PIL import Image
 import os
 import pandas as pd
 import shutil
 import util
-import yaml
 
-# %%
-dataset_name = 'synthetic_dataset'
-base_dir = f'../../{dataset_name}'
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--dataset', help='Name of dataset/project')
+args = parser.parse_args()
+dataset_name = args.dataset
+base_dir = f'{dataset_name}'
 datasets_dir = os.path.join(base_dir, 'datasets/')
 train_path = util.get_lastest_iteration(datasets_dir, req_prefix='train')
 test_path = util.get_lastest_iteration(datasets_dir, req_prefix='test')
 dataset_paths = [train_path, test_path]
-# %%
+
 # Set paths
 for annotation_path in dataset_paths:
     images_path = os.path.join(base_dir, 'images')
-    yolo_annotations_path = os.path.join(base_dir, f'yolo_labels/{os.path.basename(annotation_path)[:-4]}/')
-    os.makedirs(os.path.join(base_dir, 'yolo_labels'), exist_ok=True)
+    yolo_annotations_path = os.path.join(base_dir, 'yolo', 'labels', f'{os.path.basename(annotation_path)[:-4]}/')
+    os.makedirs(os.path.join(base_dir, 'yolo', 'labels'), exist_ok=True)
     df = pd.read_csv(annotation_path)
 
     # Set class name to id mapping
@@ -87,34 +88,27 @@ for annotation_path in dataset_paths:
 
     print("Complete")
 
-# %%
 # Move images
 src_loc = os.path.join(base_dir, 'images')
 for annotation_path in dataset_paths:
-    images_path = os.path.join(base_dir, 'yolo_images')
+    images_path = os.path.join(base_dir, 'yolo', 'images')
     os.makedirs(images_path, exist_ok=True)
     annotation_base_name = os.path.basename(annotation_path)[:-4]
-    dst_loc = os.path.join(base_dir, f'yolo_images/{annotation_base_name}')
+    dst_loc = os.path.join(base_dir, 'yolo', f'images/{annotation_base_name}')
     os.makedirs(dst_loc, exist_ok=True)
-    yolo_annotations_path = os.path.join(base_dir, f'yolo_labels/{os.path.basename(annotation_path)[:-4]}/')
+    yolo_annotations_path = os.path.join(base_dir, 'yolo', f'labels/{os.path.basename(annotation_path)[:-4]}/')
     df = pd.read_csv(annotation_path)
     filenames = sorted(list(set(df['filename'])))
     for filename in filenames:
         shutil.copyfile(os.path.join(src_loc, filename), os.path.join(dst_loc, filename))
 
-# %%
 # Make yaml
-# TODO fix double quotes in output
 class_list = str(sorted(list(class_id_dict)))
-class_list = f'{class_list[:2]}{class_list[2:-2]}{class_list[-2:]}'
-config_dict = {'path': f'../../{dataset_name}',
-               'train': f'yolo_images/{os.path.basename(train_path)[:-4]}',
-               'val': f'yolo_images/{os.path.basename(test_path)[:-4]}',
-               'nc': len(list(class_id_dict)),
-               'names': class_list
-               }
+lines = f'path: ../{dataset_name}/yolo\n' \
+        f'train: images/{os.path.basename(train_path)[:-4]}\n' \
+        f'val: images/{os.path.basename(test_path)[:-4]}\n' \
+        f'nc: {len(list(class_id_dict))}\n' \
+        f'names: {class_list}\n'
 
-with open(f'{dataset_name}.yaml', 'w') as file:
-    documents = yaml.safe_dump(config_dict, file, default_style='')
-
-# %%
+with open(f'{dataset_name}.yaml', 'w') as f:
+    f.writelines(lines)
