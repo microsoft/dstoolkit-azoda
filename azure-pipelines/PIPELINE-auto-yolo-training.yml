@@ -31,7 +31,7 @@ steps:
 
       echo '--- Transform into yolo annotation format ---'
       pip install numpy==1.22.3 pandas==1.4.1
-      python src/auto_setup/tf_to_yolo_annotations.py --dataset synthetic_dataset
+      python src/auto_setup/tf_to_yolo_annotations.py --dataset $DATASET
 
       echo '--- Installing required libraries ---'
       cd yolov5
