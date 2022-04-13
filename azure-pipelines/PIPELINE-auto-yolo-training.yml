@@ -21,7 +21,7 @@ steps:
       az extension add -n ml -y
 
       echo '--- Setting variables ---'
-      DATASET=synthetic_dataset
+      export DATASET=synthetic_dataset
       workspace_name=tfod-dev-amlw
       resource_group=tfod-dev-rg-demo
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
