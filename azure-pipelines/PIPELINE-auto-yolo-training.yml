@@ -34,6 +34,9 @@ steps:
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
 
+      echo 'ls models/yolov5'
+      ls models/yolov5
+
       echo '--- Installing required libraries for yolov5 ---'
       pip install -r models/yolov5/requirements.txt
 
