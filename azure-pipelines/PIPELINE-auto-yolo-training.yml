@@ -6,6 +6,15 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- script: |
+    git config --global --add filter.lfs.required true
+    git config --global --add filter.lfs.smudge "git-lfs smudge -- %f"
+    git config --global --add filter.lfs.process "git-lfs filter-process"
+    git config --global --add filter.lfs.clean "git-lfs clean -- %f"
+  displayName: Configure LFS for use with submodules
+- checkout: self
+  lfs: true
+  submodules: true
 
 - task: AzureCLI@2
   inputs:
@@ -33,6 +42,9 @@ steps:
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
+
+      echo 'ls models/yolov5'
+      ls models/yolov5
 
       echo '--- Installing required libraries for yolov5 ---'
       pip install -r models/yolov5/requirements.txt
