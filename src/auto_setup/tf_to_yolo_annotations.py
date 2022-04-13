@@ -104,7 +104,7 @@ for annotation_path in dataset_paths:
 
 # Make yaml
 class_list = str(sorted(list(class_id_dict)))
-lines = f'path: ../{dataset_name}/yolo\n' \
+lines = f'path: ../../{dataset_name}/yolo\n' \
         f'train: images/{os.path.basename(train_path)[:-4]}\n' \
         f'val: images/{os.path.basename(test_path)[:-4]}\n' \
         f'nc: {len(list(class_id_dict))}\n' \
