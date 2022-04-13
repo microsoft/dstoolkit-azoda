@@ -33,7 +33,7 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
 
       echo '--- Transform into yolo annotation format ---'
-      python src/auto_setup/tf_to_yolo_annotations.py --dataset synthetic_dataset
+      python src/auto_setup/tf_to_yolo_annotations.py --dataset $DATASET
 
       echo '--- Installing required libraries for yolov5 ---'
       cd models/yolov5
