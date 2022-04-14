@@ -34,6 +34,7 @@ annotations_directory = f'../../{project_name}/datasets/'
 # Build up annotation dictionary
 file_annotations = dict()
 class_names = []
+os.makedirs(annotations_directory, exist_ok=True)
 for filename in os.listdir(annotations_directory):
     if not filename.endswith('.csv'):
         continue
