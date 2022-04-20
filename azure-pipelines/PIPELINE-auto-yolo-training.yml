@@ -41,7 +41,7 @@ steps:
       pip install -r models/yolov5/requirements.txt
 
       echo '--- Train model (1 epoch) ---'
-      python models/yolov5/train.py --data synthetic_dataset.yaml --cfg yolov5s.yaml --weights '' --batch-size 16 --epochs 100
+      python models/yolov5/train.py --data synthetic_dataset.yaml --cfg yolov5s.yaml --batch-size 16 --epochs 50
       
       echo '--- Store training run data to datastore ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/train/exp/' -d yolov5_models/$timestamp/ --recursive
