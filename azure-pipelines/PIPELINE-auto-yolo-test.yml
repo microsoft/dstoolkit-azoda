@@ -1,4 +1,4 @@
-name: Yolov5 Model Inferencing
+name: Yolov5 Model Testing
 
 trigger: none
 
@@ -40,17 +40,11 @@ steps:
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
 
-      echo 'ls models/yolov5'
-      ls models/yolov5
-
-      echo 'ls models/yolov5/runs/train/loaded_weights/'
-      ls models/yolov5/runs/train/loaded_weights/
-
       echo '--- Installing required libraries for yolov5 ---'
       pip install -r models/yolov5/requirements.txt
 
-      echo '--- Infer on all images ---'
-      python models/yolov5/detect.py --source $(DATASET)/images/ --weights models/yolov5/runs/train/loaded_weights/weights/best.pt --conf-thres 0.1 --save-txt --save-conf 
+      echo '--- Test on validation images ---'
+      python models/yolov5/val.py --weights models/yolov5/runs/train/loaded_weights/weights/best.pt --data synthetic_dataset.yaml --conf-thres 0.5 --iou-thres 0.5 --task val --save-txt --save-conf --verbose
 
-      echo '--- Store inference run data to datastore ---'
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/detect/exp' -d yolov5_inferences/$timestamp/ --recursive
+      echo '--- Store test run data to datastore ---'
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/val/exp/' -d yolov5_tests/$timestamp/ --recursive
