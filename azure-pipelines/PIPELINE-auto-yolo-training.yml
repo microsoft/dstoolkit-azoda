@@ -5,17 +5,6 @@ trigger: none
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: |
-    git config --global --add filter.lfs.required true
-    git config --global --add filter.lfs.smudge "git-lfs smudge -- %f"
-    git config --global --add filter.lfs.process "git-lfs filter-process"
-    git config --global --add filter.lfs.clean "git-lfs clean -- %f"
-  displayName: Configure LFS for use with submodules
-- checkout: self
-  lfs: true
-  submodules: true
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ARMSC'
@@ -24,6 +13,9 @@ steps:
     inlineScript: |
 
       echo '--- Installing required libraries ---'
+      cd models
+      git clone https://github.com/ultralytics/yolov5.git
+      cd ..
       pip install -e src/packages/azure_utils
       pip install matplotlib==3.5.1 numpy==1.22.3 pandas==1.4.1
       az config set extension.use_dynamic_install=yes_without_prompt
