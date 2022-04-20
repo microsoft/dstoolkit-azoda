@@ -50,7 +50,7 @@ steps:
       pip install -r models/yolov5/requirements.txt
 
       echo '--- Infer on all images ---'
-      python detect.py --source $(DATASET)/images/ --weights models/yolov5/runs/train/loaded_weights/weights/best.pt --conf-thres 0.1 --save-txt --save-conf 
+      python models/yolov5/detect.py --source $(DATASET)/images/ --weights models/yolov5/runs/train/loaded_weights/weights/best.pt --conf-thres 0.1 --save-txt --save-conf 
 
-      echo '--- Store training run data to datastore ---'
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/detect/' -d 'yolov5_inferences/${timestamp}/' --recursive
+      echo '--- Store inference run data to datastore ---'
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/detect/exp' -d 'yolov5_inferences/${timestamp}/' --recursive
