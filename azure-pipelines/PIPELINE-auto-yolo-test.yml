@@ -40,7 +40,7 @@ steps:
       echo $latest_timestamp
 
       echo '--- Get model ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_runs/$latest_timestamp/weights/ -d "models/yolov5/runs/train/loaded_weights/" --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d "models/yolov5/runs/train/loaded_weights/" --recursive
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
