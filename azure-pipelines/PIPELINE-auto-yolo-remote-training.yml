@@ -15,6 +15,7 @@ steps:
 
       echo '--- Installing required libraries ---'
       pip install -e src/packages/azure_utils
+      pip install matplotlib==3.5.1 numpy==1.22.3 pandas==1.4.1
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
 
@@ -26,8 +27,14 @@ steps:
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
 
-      echo '--- Get dataset ---'
+      echo '--- Get job config ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s remote_training_job.yml -d .
+
+      echo '--- Transform into yolo annotation format ---'
+      python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
+
+      echo '--- Get dataset ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s synthetic_dataset/ -d . --recursive
 
       echo '--- Start remote training job ---'
       az ml job create -f remote_training_job.yml --web --stream
