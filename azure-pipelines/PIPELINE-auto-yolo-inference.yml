@@ -40,7 +40,7 @@ steps:
       echo $latest_timestamp
 
       echo '--- Get model ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_runs/$latest_timestamp/weights/ -d "models/yolov5/runs/train/loaded_weights/" --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d models/yolov5/runs/train/loaded_weights/ --recursive
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
@@ -52,4 +52,4 @@ steps:
       python models/yolov5/detect.py --source $(DATASET)/images/ --weights models/yolov5/runs/train/loaded_weights/weights/best.pt --conf-thres 0.1 --save-txt --save-conf 
 
       echo '--- Store inference run data to datastore ---'
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'models/yolov5/runs/detect/exp' -d yolov5_inferences/$timestamp/ --recursive
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s models/yolov5/runs/detect/exp -d yolov5_inferences/$timestamp/ --recursive
