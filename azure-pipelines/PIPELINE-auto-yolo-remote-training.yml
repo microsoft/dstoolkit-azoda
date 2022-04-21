@@ -1,4 +1,4 @@
-name: Yolov5 Model Training
+name: Yolov5 Remote Model Training
 
 trigger: none
 
