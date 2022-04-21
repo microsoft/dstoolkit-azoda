@@ -14,7 +14,6 @@ steps:
     inlineScript: |
 
       echo '--- Installing required libraries ---'
-      pip install -e src/packages/azure_utils
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
 
@@ -30,4 +29,4 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s remote_training_job.yml -d .
 
       echo '--- Start remote training job ---'
-      az ml job create -f remote_training_job.yml --web --stream
+      az ml job create -f remote_training_job.yml --web --stream --resource-group $resource_group --workspace-name $workspace_name
