@@ -1,7 +1,7 @@
 name: Yolov5 Model Training
 
 trigger: none
-
+compute: azureml:gpu-cluster
 pool:
   vmImage: ubuntu-latest
 
