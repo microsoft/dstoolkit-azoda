@@ -1,4 +1,4 @@
-name: Yolov5 Model Training
+name: Yolov5 Remote Model Training
 
 trigger: none
 
@@ -37,4 +37,4 @@ steps:
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s synthetic_dataset/ -d . --recursive
 
       echo '--- Start remote training job ---'
-      az ml job create -f remote_training_job.yml --web --stream
+      az ml job create -f remote_training_job.yml --web --stream --resource-group $resource_group --workspace-name $workspace_name
