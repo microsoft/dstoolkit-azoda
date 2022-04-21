@@ -34,8 +34,12 @@ steps:
       echo '--- Get dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
 
+      echo '--- Get latest model timestamp---'
+      latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c aml_container -d yolov5_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+      latest_timestamp=${latest_checkpoint:15:15}
+
       echo '--- Get model ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_runs/20220420120555/weights/ -d "models/yolov5/runs/train/loaded_weights/" --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_runs/$latest_timestamp/weights/ -d "models/yolov5/runs/train/loaded_weights/" --recursive
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
