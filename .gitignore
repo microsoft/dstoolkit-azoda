@@ -133,3 +133,4 @@ synthetic_dataset
 jobs.json
 
 !/models/*
+!models/yolo/**
