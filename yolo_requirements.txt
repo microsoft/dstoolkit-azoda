@@ -1,0 +1,16 @@
+azureml-sdk
+azureml-core
+matplotlib==3.3.4
+numpy==1.19.5
+opencv-python-headless
+pandas==1.1.5
+Pillow==8.4.0
+PyYAML==6.0
+requests==2.27.1
+scipy==1.5.4
+seaborn==0.11.2
+tensorboard==2.8.0
+thop==0.0.31.post2005241907
+torch
+torchvision
+tqdm==4.63.1
