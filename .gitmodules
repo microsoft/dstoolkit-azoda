@@ -1,3 +1,0 @@
-[submodule "models/yolov5"]
-	path = models/yolov5
-	url = git@ssh.dev.azure.com:v3/dabauman/tfod_demo/yolov5.git
