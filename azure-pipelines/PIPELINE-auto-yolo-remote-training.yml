@@ -46,6 +46,7 @@ steps:
       cat config.json
       
       cat $(DATASET).yaml
+      mv $(DATASET).yaml models/yolo/
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo_training.py --dataset $(DATASET)
