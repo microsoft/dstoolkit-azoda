@@ -23,7 +23,7 @@ src = ScriptRunConfig(source_directory='models/yolo/',
                                  '--batch-size', '16',
                                  '--epochs', '5',
                                  '--input_ref', dataset.as_mount()])
-
+print('Starting run')
 run = Experiment(workspace=ws, name='tfod_exp').submit(config=src)
 run.wait_for_completion(show_output=True)
 run.download_files('outputs')
