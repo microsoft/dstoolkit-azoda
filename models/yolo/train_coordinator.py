@@ -9,15 +9,15 @@ parser.add_argument("--epochs", type=int, help="Number of epochs")
 parser.add_argument("--input_ref", type=str, help="Dataset mount reference")
 args = parser.parse_args()
 
-# Creates the config file on the 
-lines = f'path: {args.input_ref}/yolo\n' \
-        f'train: images/train_{args.dataset}_220406080415\n' \
-        f'val: images/test_{args.dataset}_220406080415\n' \
-         'nc: 1\n' \
-         'names: [\'circle\']\n'
+# Updates the dataset location
+with open(f'{args.dataset}.yaml') as f:
+    lines = f.readlines()
+
+lines[0] = f'path: {args.input_ref}/yolo\n'
 
 with open(f'{args.dataset}.yaml', 'w') as f:
     f.writelines(lines)
+
 
 # project must be set to outputs, since the AML saves results in the outputs directory
 os.system(f"python yolov5/train.py --data {args.dataset}.yaml \

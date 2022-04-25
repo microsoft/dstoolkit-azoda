@@ -32,11 +32,11 @@ steps:
       echo '--- Get job config ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s remote_training_job.yml -d .
 
+      echo '--- Get dataset ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d . --recursive
+
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
-
-      echo '--- Get dataset ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s synthetic_dataset/ -d . --recursive
 
       echo '--- Writing aml config.json ---'
       jq -n --arg subscription_id $subscription_id \
@@ -44,7 +44,8 @@ steps:
             --arg resource_group $resource_group \
             '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name}' > config.json
       cat config.json
-      jq . config.json
+      
+      cat $(DATASET).yaml
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo_training.py
