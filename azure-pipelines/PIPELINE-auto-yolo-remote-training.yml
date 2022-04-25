@@ -30,7 +30,7 @@ steps:
       aml_container=$(echo $aml_container_str | tr -d \")
 
       echo '--- Get dataset ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d models/yolo/ --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d . --recursive
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
@@ -44,6 +44,9 @@ steps:
       
       cat $(DATASET).yaml
       mv $(DATASET).yaml models/yolo/
+      mv $(DATASET) models/yolo/
+
+      ls
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo_training.py --dataset $(DATASET)
