@@ -36,5 +36,13 @@ steps:
       echo '--- Get dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s synthetic_dataset/ -d . --recursive
 
+      echo '--- Writing aml config.json ---'
+      jq -n --arg subscription_id $subscription_id \
+            --arg workspace_name $workspace_name \
+            --arg resource_group $resource_group \
+            '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name,  }' > config.json
+      cat config.json
+      jq . config.json
+
       echo '--- Start remote training job ---'
-      az ml job create -f remote_training_job.yml --web --stream --resource-group $resource_group --workspace-name $workspace_name
+      python src/auto_setup/start_yolo_training.py
