@@ -40,7 +40,7 @@ steps:
       jq -n --arg subscription_id $subscription_id \
             --arg workspace_name $workspace_name \
             --arg resource_group $resource_group \
-            '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name,  }' > config.json
+            '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name}' > config.json
       cat config.json
       jq . config.json
 
