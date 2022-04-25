@@ -11,7 +11,7 @@ dataset = Dataset.File.from_files(path=(datastore, 'synthetic_dataset/'))
 src = ScriptRunConfig(source_directory='models/yolo/',
                       script='train_coordinator.py',
                       compute_target='gpu-cluster',
-                      environment=env.from_pip_requirements('myenv', 'freeze_alt.txt'),
+                      environment=env.from_pip_requirements('myenv', 'yolo_requirements.txt'),
                       arguments=['--dataset', 'synthetic_dataset',
                                  '--cfg', 'yolov5s.yaml',
                                  '--batch-size', '16',
