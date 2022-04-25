@@ -48,4 +48,4 @@ steps:
       cat $(DATASET).yaml
 
       echo '--- Start remote training job ---'
-      python src/auto_setup/start_yolo_training.py
+      python src/auto_setup/start_yolo_training.py --dataset $(DATASET)
