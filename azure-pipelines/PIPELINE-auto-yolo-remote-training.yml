@@ -46,7 +46,10 @@ steps:
       mv $(DATASET).yaml models/yolo/
       mv $(DATASET) models/yolo/
 
-      ls
+      echo 'ls'
+      ls 
+      echo 'ls models/yolo/'
+      ls models/yolo
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo_training.py --dataset $(DATASET)
