@@ -6,7 +6,6 @@ parser.add_argument("--dataset", type=str, help="Dataset name")
 parser.add_argument("--cfg", type=str, help="Model yaml config")
 parser.add_argument("--batch-size", type=int, help="Batch size")
 parser.add_argument("--epochs", type=int, help="Number of epochs")
-parser.add_argument("--input_ref", type=str, help="Dataset mount reference")
 args = parser.parse_args()
 
 print('Editing config')
