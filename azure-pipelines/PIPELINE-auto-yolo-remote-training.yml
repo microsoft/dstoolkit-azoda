@@ -52,4 +52,4 @@ steps:
       ls models/yolo
 
       echo '--- Start remote training job ---'
-      python src/auto_setup/start_yolo_training.py --dataset $(DATASET)
+      python src/auto_setup/start_yolo_training.py --dataset $(DATASET) --subscription_id $subscription_id --resource_group $resource_group --workspace_name $workspace_name
