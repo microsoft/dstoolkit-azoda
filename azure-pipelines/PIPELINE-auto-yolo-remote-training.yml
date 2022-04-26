@@ -64,5 +64,5 @@ steps:
                                           --subscription_id $subscription_id \
                                           --resource_group $resource_group \
                                           --workspace_name $workspace_name \
-                                          --mode train
+                                          --mode train \
                                           --epochs 50
