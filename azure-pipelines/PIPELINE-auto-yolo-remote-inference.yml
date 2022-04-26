@@ -37,24 +37,19 @@ steps:
       echo '--- Get dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
 
+      echo '--- Get latest model timestamp ---'
+      latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov5_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+      latest_timestamp=${latest_checkpoint:15:13}
+      echo $latest_timestamp
+      
+      echo '--- Get model ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d models/yolo/loaded_weights/ --recursive
+
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
-
-      echo '--- Writing aml config.json ---'
-      jq -n --arg subscription_id $subscription_id \
-            --arg workspace_name $workspace_name \
-            --arg resource_group $resource_group \
-            '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name}' > config.json
-      cat config.json
       
-      cat $(dataset).yaml
       mv $(dataset).yaml models/yolo/
       mv $(dataset) models/yolo/
-
-      echo 'ls'
-      ls 
-      echo 'ls models/yolo/'
-      ls models/yolo
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo.py --dataset $(dataset) \
@@ -64,4 +59,4 @@ steps:
                                           --subscription_id $subscription_id \
                                           --resource_group $resource_group \
                                           --workspace_name $workspace_name \
-                                          --mode train
+                                          --mode infer
