@@ -5,6 +5,9 @@ trigger: none
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: tfod-variables-test
+
 steps:
 - task: AzureCLI@2
   inputs:
@@ -12,4 +15,4 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az pipelines variable-group create --name vars --variables testvar=test
+      echo $(testvar)
