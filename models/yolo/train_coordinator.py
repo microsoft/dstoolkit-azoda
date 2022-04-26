@@ -22,8 +22,9 @@ with open(f'{args.dataset}.yaml', 'w') as f:
 
 # project must be set to outputs, since the AML saves results in the outputs directory
 print('Start training')
-os.system(f"python yolov5/train.py --data {args.dataset}.yaml \
-          --cfg {args.cfg} \
+os.system(f"python yolov5/train.py \
           --batch-size {args.batch_size} \
+          --cfg {args.cfg} \
+          --data {args.dataset}.yaml \
           --epochs {args.epochs} \
           --project outputs/")
