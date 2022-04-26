@@ -1,0 +1,15 @@
+name: Test var group
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az pipelines variable-group create --name vars --variables testvar=test
