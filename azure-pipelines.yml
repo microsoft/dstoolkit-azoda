@@ -1,0 +1,18 @@
+name: Test var group
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: tfod-variables-test
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo $(testvar)
