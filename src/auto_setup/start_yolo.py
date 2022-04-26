@@ -12,6 +12,8 @@ parser.add_argument("--subscription_id", type=str, help="Subscription ID")
 parser.add_argument("--resource_group", type=str, help="Resource Group")
 parser.add_argument("--workspace_name", type=str, help="Workspace Name")
 parser.add_argument("--mode", type=str, help="train/infer")
+parser.add_argument("--epochs", type=str, default='5', help="Number of training epochs")
+parser.add_argument("--model", type=str, default='yolov5s', help="Number of training epochs")
 
 args = parser.parse_args()
 
@@ -33,9 +35,9 @@ if args.mode == 'train':
                           compute_target='gpu-cluster',
                           environment=env.from_pip_requirements('myenv', 'yolo_requirements.txt'),
                           arguments=['--dataset', dataset_name,
-                                     '--cfg', 'yolov5s.yaml',
+                                     '--cfg', f'{args.model}.yaml',
                                      '--batch-size', '16',
-                                     '--epochs', '5'])
+                                     '--epochs', args.epochs])
     print('Starting run')
     run = Experiment(workspace=ws, name='tfod_exp').submit(config=src)
     run.wait_for_completion(show_output=True)
