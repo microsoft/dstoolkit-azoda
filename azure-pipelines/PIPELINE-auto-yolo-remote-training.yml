@@ -5,6 +5,9 @@ trigger: none
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: vars
+
 steps:
 - task: AzureCLI@2
   inputs:
@@ -24,16 +27,18 @@ steps:
       resource_group=tfod-dev-rg-demo
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id=$(echo $tenant_id_str | tr -d \")
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
 
       echo '--- Get dataset ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d . --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
 
       echo '--- Transform into yolo annotation format ---'
-      python src/auto_setup/tf_to_yolo_annotations.py --dataset $(DATASET)
+      python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
 
       echo '--- Writing aml config.json ---'
       jq -n --arg subscription_id $subscription_id \
@@ -42,9 +47,9 @@ steps:
             '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name}' > config.json
       cat config.json
       
-      cat $(DATASET).yaml
-      mv $(DATASET).yaml models/yolo/
-      mv $(DATASET) models/yolo/
+      cat $(dataset).yaml
+      mv $(dataset).yaml models/yolo/
+      mv $(dataset) models/yolo/
 
       echo 'ls'
       ls 
@@ -52,4 +57,10 @@ steps:
       ls models/yolo
 
       echo '--- Start remote training job ---'
-      python src/auto_setup/start_yolo_training.py --dataset $(DATASET) --subscription_id $subscription_id --resource_group $resource_group --workspace_name $workspace_name
+      python src/auto_setup/start_yolo_training.py --dataset $(dataset) \
+                                                   --tenant_id $tenant_id
+                                                   --service_principal_id $(service_principal_id)
+                                                   --service_principal_password $(service_principal_password)
+                                                   --subscription_id $subscription_id \
+                                                   --resource_group $resource_group \
+                                                   --workspace_name $workspace_name \
