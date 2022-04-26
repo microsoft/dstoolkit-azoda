@@ -150,6 +150,3 @@ def plot_confusion_matrix(cm,
         print('ERROR: Please specify export path')
     else:
         plt.savefig(export_path)
-
-def test_func():
-    print('test')
