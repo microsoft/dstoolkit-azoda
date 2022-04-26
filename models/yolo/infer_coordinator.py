@@ -9,7 +9,7 @@ args = parser.parse_args()
 
 # project must be set to outputs, since the AML saves results in the outputs directory
 print('Start inferencing')
-os.system(f"python yolov5/detect.py --source {args.images}.yaml \
+os.system(f"python yolov5/detect.py --source {args.images} \
           --weights {args.weights} \
           --conf-thres {args.conf} \
           --save-txt \
