@@ -13,5 +13,6 @@ os.system(f"python yolov5/detect.py --source {args.images} \
           --weights {args.weights} \
           --conf-thres {args.conf} \
           --save-txt \
-          --save-conf")
+          --save-conf \
+          --project outputs/")
 print('Inferencing complete')
