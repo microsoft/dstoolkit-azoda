@@ -28,7 +28,7 @@ env = Environment.get(workspace=ws, name="AzureML-sklearn-1.0-ubuntu20.04-py38-c
 env = env.clone("yolo_env")
 datastore = ws.get_default_datastore()
 if args.mode == 'train':
-    src = ScriptRunConfig(source_directory='models/ultralytics_yolov5/',
+    src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='train_coordinator.py',
                           compute_target='gpu-cluster',
                           environment=env.from_pip_requirements('myenv', 'yolo_requirements.txt'),
@@ -42,7 +42,7 @@ if args.mode == 'train':
     run.download_files('outputs')
     datastore.upload(src_dir='outputs/', target_path=f'yolov5_models/{time_stamp}/', overwrite=False)
 elif args.mode == 'infer':
-    src = ScriptRunConfig(source_directory='models/ultralytics_yolov5/',
+    src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='infer_coordinator.py',
                           compute_target='gpu-cluster',
                           environment=env.from_pip_requirements('myenv', 'yolo_requirements.txt'),
@@ -55,7 +55,7 @@ elif args.mode == 'infer':
     run.download_files('outputs')
     datastore.upload(src_dir='outputs/', target_path=f'yolov5_inferences/{time_stamp}/', overwrite=False)
 elif args.mode == 'test':
-    src = ScriptRunConfig(source_directory='models/ultralytics_yolov5/',
+    src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='test_coordinator.py',
                           compute_target='gpu-cluster',
                           environment=env.from_pip_requirements('myenv', 'yolo_requirements.txt'),
