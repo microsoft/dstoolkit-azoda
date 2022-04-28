@@ -52,7 +52,7 @@ myenv.docker.base_image = DEFAULT_GPU_IMAGE
 inference_config = InferenceConfig(entry_script="score.py", source_directory=".", environment=myenv)
 
 # get the registered model
-model = Model.register(ws, model_name='yolov5model', model_path='loaded_weights/weights/best.pt')
+model = Model.register(ws, model_name='yolov5model', model_path='best.pt')
 
 # Name of the web service that is deployed
 aks_service_name = 'aks-' + str(uuid.uuid4())[:4]
