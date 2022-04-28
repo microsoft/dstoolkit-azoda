@@ -12,7 +12,7 @@ def init():
                            path='ultralytics_yolov5/best.pt',
                            source='local',
                            force_reload=True,
-                           device='gpu')
+                           device=0)
 
 
 def run(request):
