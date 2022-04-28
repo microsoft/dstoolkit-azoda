@@ -1,0 +1,40 @@
+name: Yolov5 Model Deployment
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: vars
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      echo '--- Installing required libraries ---'
+      az config set extension.use_dynamic_install=yes_without_prompt
+      az extension add -n ml -y
+
+      echo '--- Setting variables ---'
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id=$(echo $subscription_id_str | tr -d \")
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id=$(echo $tenant_id_str | tr -d \")
+      workspace_name=tfod-dev-amlw
+      resource_group=tfod-dev-rg-demo
+      timestamp=$(date +%Y%m%d_%H%M%S)
+
+      echo '--- Start inference deployment ---'
+      cd models_zoo/yolo/
+      python deploy_gpu_inference.py --tenant_id $tenant_id \
+                                     --service_principal_id $service_principal_id \
+                                     --service_principal_password $service_principal_password \
+                                     --subscription_id $subscription_id \
+                                     --resource_group $resource_group \
+                                     --workspace_name $workspace_name \
+                                     --dataset $dataset
