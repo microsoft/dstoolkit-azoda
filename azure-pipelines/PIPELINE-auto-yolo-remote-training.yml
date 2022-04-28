@@ -69,4 +69,4 @@ steps:
                                           --resource_group $resource_group \
                                           --workspace_name $workspace_name \
                                           --mode train \
-                                          --epochs 50
+                                          --epochs 40
