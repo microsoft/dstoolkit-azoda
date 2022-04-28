@@ -29,10 +29,13 @@ steps:
       subscription_id=$(echo $subscription_id_str | tr -d \")
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id=$(echo $tenant_id_str | tr -d \")
+      echo 'tenant_id='$tenant_id
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
+      echo 'aml_storage_account_name='$aml_storage_account_name
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
+      echo 'aml_container='$aml_container
 
       echo '--- Get dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
@@ -43,13 +46,13 @@ steps:
       echo $latest_timestamp
       
       echo '--- Get model ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d models/yolo/loaded_weights/ --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d model_zoo/ultralytics_yolov5/loaded_weights/ --recursive
 
       echo '--- Transform into yolo annotation format ---'
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
       
-      mv $(dataset).yaml models/yolo/
-      mv $(dataset) models/yolo/
+      mv $(dataset).yaml model_zoo/ultralytics_yolov5/
+      mv $(dataset) model_zoo/ultralytics_yolov5/
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo.py --dataset $(dataset) \
