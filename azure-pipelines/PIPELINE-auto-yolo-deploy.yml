@@ -31,7 +31,7 @@ steps:
       timestamp=$(date +%Y%m%d_%H%M%S)
 
       echo '--- Start inference deployment ---'
-      cd models_zoo/yolo/
+      cd model_zoo/ultralytics_yolov5/
       python deploy_gpu_inference.py --tenant_id $tenant_id \
                                      --service_principal_id $(service_principal_id) \
                                      --service_principal_password $(service_principal_password) \
