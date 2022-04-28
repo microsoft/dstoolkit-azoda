@@ -3,16 +3,16 @@ from PIL import Image
 import json
 import base64
 import torch
-import sys
-import os
 
 
 def init():
     global model
-    model = torch.hub.load('yolo/yolov5', 'custom', path='yolo/last.pt', source='local', force_reload=True, device='cpu')
-    print(sys.version)
-    print('ls .')
-    os.listdir('.')
+    model = torch.hub.load('ultralytics_yolov5/yolov5',
+                           'custom',
+                           path='ultralytics_yolov5/best.pt',
+                           source='local',
+                           force_reload=True,
+                           device='gpu')
 
 
 def run(request):
@@ -21,4 +21,4 @@ def run(request):
     stream = BytesIO(decoded_img)
     img = Image.open(stream).convert("RGBA")
     results = model([img])
-    return f"test is {results.xyxy[0]}"
+    return f"{results.xyxy[0]}"
