@@ -30,6 +30,11 @@ steps:
       resource_group=tfod-dev-rg-demo
       timestamp=$(date +%Y%m%d_%H%M%S)
 
+      echo '--- Get latest model timestamp ---'
+      latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov5_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+      latest_timestamp=${latest_checkpoint:15:13}
+      echo 'latest model='$latest_timestamp
+
       echo '--- Start inference deployment ---'
       cd model_zoo/ultralytics_yolov5/
       python deploy_gpu_inference.py --tenant_id $tenant_id \
