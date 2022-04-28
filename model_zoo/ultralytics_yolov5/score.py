@@ -8,14 +8,14 @@ import os
 
 def init():
     global model
+    print('ls .')
+    os.listdir('.')
     model = torch.hub.load('ultralytics_yolov5/yolov5',
                            'custom',
-                           path='loaded_weights/best.pt',
+                           path='best.pt',
                            source='local',
                            force_reload=True,
                            device=0)
-    print('ls .')
-    os.listdir('.')
 
 
 def run(request):
