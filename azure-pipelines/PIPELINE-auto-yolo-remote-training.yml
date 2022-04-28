@@ -48,13 +48,13 @@ steps:
       cat config.json
       
       cat $(dataset).yaml
-      mv $(dataset).yaml models/yolo/
-      mv $(dataset) models/yolo/
+      mv $(dataset).yaml model_zoo/yolo/
+      mv $(dataset) model_zoo/yolo/
 
       echo 'ls'
       ls 
-      echo 'ls models/yolo/'
-      ls models/yolo
+      echo 'ls model_zoo/yolo/'
+      ls model_zoo/yolo
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo.py --dataset $(dataset) \

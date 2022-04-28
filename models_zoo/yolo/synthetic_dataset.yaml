@@ -1,5 +1,0 @@
-path: synthetic_dataset/yolo
-train: images/train_synthetic_dataset_220406080415
-val: images/test_synthetic_dataset_220406080415
-nc: 1
-names: ['circle']
