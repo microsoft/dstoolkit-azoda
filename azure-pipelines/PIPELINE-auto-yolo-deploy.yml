@@ -33,9 +33,9 @@ steps:
       echo '--- Start inference deployment ---'
       cd models_zoo/yolo/
       python deploy_gpu_inference.py --tenant_id $tenant_id \
-                                     --service_principal_id $service_principal_id \
-                                     --service_principal_password $service_principal_password \
+                                     --service_principal_id $(service_principal_id) \
+                                     --service_principal_password $(service_principal_password) \
                                      --subscription_id $subscription_id \
                                      --resource_group $resource_group \
                                      --workspace_name $workspace_name \
-                                     --dataset $dataset
+                                     --dataset $(dataset)
