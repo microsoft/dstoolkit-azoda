@@ -43,7 +43,7 @@ steps:
       echo 'latest model='$latest_timestamp
 
       echo '--- Get model ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d model_zoo/ultralytics_yolov5/loaded_weights/ --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/best.pt -d model_zoo/ultralytics_yolov5/
 
       echo '--- Start inference deployment ---'
       cd model_zoo/ultralytics_yolov5/
