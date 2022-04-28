@@ -3,6 +3,7 @@ from PIL import Image
 import json
 import base64
 import torch
+import os
 
 
 def init():
@@ -13,6 +14,8 @@ def init():
                            source='local',
                            force_reload=True,
                            device=0)
+    print('ls .')
+    os.listdir('.')
 
 
 def run(request):
