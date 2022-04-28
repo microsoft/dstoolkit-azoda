@@ -9,7 +9,7 @@ def init():
     global model
     model = torch.hub.load('ultralytics_yolov5/yolov5',
                            'custom',
-                           path='ultralytics_yolov5/best.pt',
+                           path='ultralytics_yolov5/loaded_weights/best.pt',
                            source='local',
                            force_reload=True,
                            device=0)
