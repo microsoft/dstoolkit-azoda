@@ -35,6 +35,9 @@ steps:
       latest_timestamp=${latest_checkpoint:15:13}
       echo 'latest model='$latest_timestamp
 
+      echo '--- Get model ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d model_zoo/ultralytics_yolov5/loaded_weights/ --recursive
+
       echo '--- Start inference deployment ---'
       cd model_zoo/ultralytics_yolov5/
       python deploy_gpu_inference.py --tenant_id $tenant_id \
