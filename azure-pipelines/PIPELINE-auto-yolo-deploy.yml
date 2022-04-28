@@ -17,6 +17,7 @@ steps:
     inlineScript: |
 
       echo '--- Installing required libraries ---'
+      pip install -e src/packages/azure_utils
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
 
