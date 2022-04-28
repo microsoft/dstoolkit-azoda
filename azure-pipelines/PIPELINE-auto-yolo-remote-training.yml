@@ -27,6 +27,7 @@ steps:
       resource_group=tfod-dev-rg-demo
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
+      echo 'subscription_id='$subscription_id
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id=$(echo $tenant_id_str | tr -d \")
       echo 'tenant_id='$tenant_id
