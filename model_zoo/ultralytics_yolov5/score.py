@@ -12,7 +12,7 @@ def init():
     os.listdir('.')
     model = torch.hub.load('ultralytics_yolov5/yolov5',
                            'custom',
-                           path='best.pt',
+                           path='ultralytics_yolov5/best.pt',
                            source='local',
                            force_reload=True,
                            device=0)
