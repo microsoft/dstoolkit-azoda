@@ -16,7 +16,6 @@ parser.add_argument("--epochs", type=str, default='5', help="Number of training 
 parser.add_argument("--model", type=str, default='yolov5s', help="Number of training epochs")
 
 args = parser.parse_args()
-
 sp = ServicePrincipalAuthentication(tenant_id=args.tenant_id,
                                     service_principal_id=args.service_principal_id,
                                     service_principal_password=args.service_principal_password)
