@@ -61,11 +61,6 @@ steps:
       mv $(dataset).yaml model_zoo/ultralytics_yolov5/
       mv $(dataset) model_zoo/ultralytics_yolov5/
 
-      echo 'ls'
-      ls 
-      echo 'ls model_zoo/ultralytics_yolov5/'
-      ls model_zoo/ultralytics_yolov5
-
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo.py --dataset $(dataset) \
                                           --tenant_id $tenant_id \
