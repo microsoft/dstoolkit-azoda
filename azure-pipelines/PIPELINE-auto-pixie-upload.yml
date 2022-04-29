@@ -28,8 +28,8 @@ steps:
       pip install ffmpeg-python ffprobe packaging requests numpy opencv-python pandas
 
       echo '--- Setting variables ---'
-      workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg-demo
+      workspace_name=azoda-amlw
+      resource_group=azoda-rg
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)

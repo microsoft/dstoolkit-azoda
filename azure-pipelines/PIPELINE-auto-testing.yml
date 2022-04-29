@@ -21,8 +21,8 @@ steps:
       python --version
 
       echo '--- Setting variables ---'
-      workspace_name=tfod-dev-amlw
-      resource_group=tfod-dev-rg-demo
+      workspace_name=azoda-amlw
+      resource_group=azoda-rg
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")

@@ -1,9 +1,0 @@
-$schema: https://azuremlschemas.azureedge.net/latest/workspace.schema.json
-name: tfod-dev-amlw
-location: westeurope
-display_name: Basic workspace
-description: Description placeholder
-container_registry: /subscriptions/3f49fc74-6863-4c64-afb1-0f0f83d8e773/resourceGroups/tfod-dev-rg/providers/Microsoft.ContainerRegistry/registries/tfoddevacr
-hbi_workspace: false
-tags:
-  purpose: demonstration
