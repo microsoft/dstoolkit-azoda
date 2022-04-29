@@ -33,13 +33,12 @@ if args.mode == 'train':
                           script='train_coordinator.py',
                           compute_target='gpu-cluster',
                           environment=env,
-                          # .from_pip_requirements('myenv', 'model_zoo/ultralytics_yolov5/yolov5/requirements.txt'),
                           arguments=['--dataset', args.dataset,
                                      '--cfg', f'{args.model}.yaml',
                                      '--batch-size', '16',
                                      '--epochs', args.epochs])
     print('Starting run')
-    run = Experiment(workspace=ws, name='tfod_train').submit(config=src)
+    run = Experiment(workspace=ws, name='azoda_train').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
     datastore.upload(src_dir='outputs/', target_path=f'yolov5_models/{time_stamp}/', overwrite=False)
@@ -53,7 +52,7 @@ elif args.mode == 'infer':
                                      '--weights', 'loaded_weights/weights/best.pt',
                                      '--conf', '0.5'])
     print('Starting run')
-    run = Experiment(workspace=ws, name='tfod_infer').submit(config=src)
+    run = Experiment(workspace=ws, name='azoda_infer').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
     datastore.upload(src_dir='outputs/', target_path=f'yolov5_inferences/{time_stamp}/', overwrite=False)
@@ -68,7 +67,7 @@ elif args.mode == 'test':
                                      '--conf', '0.5',
                                      '--iou', '0.5'])
     print('Starting run')
-    run = Experiment(workspace=ws, name='tfod_test').submit(config=src)
+    run = Experiment(workspace=ws, name='azoda_test').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
     datastore.upload(src_dir='outputs/', target_path=f'yolov5_tests/{time_stamp}/', overwrite=False)
