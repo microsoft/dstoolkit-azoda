@@ -1,5 +1,6 @@
-from azureml.core import Workspace, Environment, Experiment, ScriptRunConfig
+from azureml.core import Workspace, Experiment, ScriptRunConfig
 from azureml.core.authentication import ServicePrincipalAuthentication
+from azureml.core.environment import Environment, DEFAULT_GPU_IMAGE
 from datetime import datetime
 import argparse
 
@@ -24,8 +25,8 @@ ws = Workspace.get(subscription_id=args.subscription_id,
                    name=args.workspace_name,
                    auth=sp)
 time_stamp = datetime.now().strftime('%y%m%d_%H%M%S')
-env = Environment.get(workspace=ws, name="AzureML-sklearn-1.0-ubuntu20.04-py38-cpu")
-env = env.clone("yolo_env")
+env = Environment.from_conda_specification(name="myenv", file_path="myenv.yml")
+env.docker.base_image = DEFAULT_GPU_IMAGE
 datastore = ws.get_default_datastore()
 if args.mode == 'train':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
