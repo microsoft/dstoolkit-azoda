@@ -20,7 +20,7 @@ steps:
 
       echo '--- Installing required libraries ---'
       az config set extension.use_dynamic_install=yes_without_prompt
-      pip install -e src/packages/azure_utils
+      
       pip install azureml-sdk==1.39.0
       az extension add -n ml -y
       pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16

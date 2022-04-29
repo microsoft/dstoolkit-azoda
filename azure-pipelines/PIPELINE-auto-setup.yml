@@ -28,7 +28,7 @@ steps:
       acr_name=$(echo azoda$subscription_id | tr -d -)
 
       echo '--- Installing required libraries ---'
-      pip install -e src/packages/azure_utils
+      
       pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
 
       echo '--- Create resource group ---'

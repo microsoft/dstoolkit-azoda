@@ -17,7 +17,7 @@ steps:
       cd models
       git clone https://github.com/ultralytics/yolov5.git
       cd ..
-      pip install -e src/packages/azure_utils
+      
       pip install matplotlib==3.5.1 numpy==1.22.3 pandas==1.4.1
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y

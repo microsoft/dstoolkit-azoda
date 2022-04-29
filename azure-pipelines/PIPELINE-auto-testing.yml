@@ -14,7 +14,7 @@ steps:
     inlineScript: |
       
       echo '--- Installing required libraries ---'
-      pip install -e src/packages/azure_utils
+      
       pip install azureml-sdk==1.39.0 scikit-learn==1.0.2 matplotlib==3.5.1 pandas==1.4.1 opencv-python==4.5.5.62
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
