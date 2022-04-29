@@ -24,6 +24,7 @@ steps:
       cd ../../..
       
       pip install -r requirements.txt
+      pip freeze
       az config set extension.use_dynamic_install=yes_without_prompt
       az extension add -n ml -y
 
