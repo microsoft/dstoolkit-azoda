@@ -43,4 +43,4 @@ steps:
       
       echo '--- Exporting dataset to Pixie ---'
       cd src/auto_setup
-      python export_images_to_pixie.py --api $(pixie_api) --key $(pixie_key) --dataset $(dataset)
+      python export_images_to_pixie.py --api $(pixie_api) --key "$(pixie_key)" --dataset $(dataset)
