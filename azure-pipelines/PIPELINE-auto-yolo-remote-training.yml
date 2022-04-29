@@ -21,7 +21,7 @@ steps:
       git clone https://github.com/ultralytics/yolov5
       cd yolov5
       git checkout fe7de6a82da3444d755453f86f40b508f3b99419
-      cd ../..
+      cd ../../..
       pip install -e src/packages/azure_utils
       pip install matplotlib==3.5.1 numpy==1.22.3 pandas==1.4.1
       az config set extension.use_dynamic_install=yes_without_prompt
