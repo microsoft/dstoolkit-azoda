@@ -39,7 +39,7 @@ In ADO, select the following:
 - Select **+Select members** and paste the copied **Display name** from earlier, select it from the list, then click **Select**
 - Click **Next**, then **Review + assign**
 
-### Run the Infra-setup pipeline (~9 minutes)
+### Run the Infra-setup pipeline
 
 Now we can import pipelines from the connected repo to create resources on our Azure subscription
 
@@ -50,7 +50,7 @@ In ADO, select the following:
 - Select your project
 - **Existing Azure Pipelines YAML file**
 - Under **Branch** select **feature/yolo**
-- Under **Path** select **/azure-pipelines/PIPELINE-auto-setup.yml** then **Continue**
+- Under **Path** select **/azure-pipelines/setup.yml** then **Continue**
 - **Run**
 
 ### Get service principal id and password
@@ -60,6 +60,12 @@ A service principal acts like a user account that the code can use to authentica
 In the open service principal tab from above:
 - Store the **Application (client) ID** value
 - Select **Certificates & secrets**
+- **+New client secret**
+- Change the **Expires** options if you would like the password to last something other than 6 months
+- **Add**
+- Store the new **Value**, not the Secret ID.
+
+This is the username and password which we will store in the variable group next.
  
 ### Setup a variable group
 
@@ -72,20 +78,28 @@ In ADO, select the following:
 - Under Variable group name: **vars**
 - Below under Variables, select **+Add**
 - Under name enter: **dataset**, under value: **synthetic_dataset**
+- Select **+Add**
+- Under name enter: **service_principal_id**, under value: **Application (client) ID from above**
+- Select **+Add**
+- Under name enter: **service_principal_password**, under value: **Application (client) Secret Value from above**
 
+### Submit a model training job
 
+Now we can train a first model, it will be with a generated dataset. Later you can replace it with your own.
 
-### Submit a model training job (~2 minutes)
+Repeat the same process as above, but set the path to **/azure-pipelines/remote-train.yml**. Each of these pipelines using the variable group will need permission. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
 
-Now we can train a first model, it was be with a generated dataset. Later you can replace it with your own.
+This will train a model and store the weights in AML datastore under yolov5_models. Each model will be stored in its own folder named by its timestamp.
 
-Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-training.yml**. This pipeline will ask you to authenicate interactively about one minute after the pipeline starts. Watch the pipeline output to see it. The default training config uses very few steps, so it shoud take about 5 minutes to finish.
+To explore the datastore, select **Datastores** in your AML Studio resource, then **workspaceblobstore (Default)**, then **Browse (preview)**. Otherwise you can download **Azure Storage Explorer** which has a drag and drop interface for navigating datastores.
 
-### Deploy the model (~9 minutes)
+### Submit a model training job 
+
+### Deploy the model 
 
 Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute. Make sure the model has finished training before deploying. 
 
-### Test the deployment (~4 minutes)
+### Test the deployment
 
 Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-testing.yml**. This will require some variables to be set before pressing Run. 
 
@@ -112,7 +126,7 @@ On the Edit page of the pipeline, select the following:
 
 Once the pipeline is done, the confusion matrix will be shown in the logs.
 
-### Export labels to Pixie (~6 minutes)
+### Export labels to Pixie
 
 Pixie is an interactive labelling tool that has built-in model training to accelerate the labelling process.
 
@@ -124,7 +138,7 @@ Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto
 
 You will need to get pixie authentication or start your own deployment. More info on this soon.
 
-### Import labels from Pixie (~5 minutes)
+### Import labels from Pixie
 
 After adding more labels Pixie, you can run this pipeline to load the new labels to your storage account.
 
@@ -135,7 +149,7 @@ Repeat the pipeline setup process with the path **/azure-pipelines/PIPELINE-auto
 - **Name**: **dataset**, **Value**: **synthetic_dataset**, then **OK**
 - **Name**: **project_id**, **Value**: **<project_id>**, then **OK** (usually five letters)
 
-### Import inferences from Pixie (~3.5 minutes)
+### Import inferences from Pixie
 
 After inferencing with Pixie, you can run this pipeline to load the inferences to your storage account.
 
