@@ -36,8 +36,8 @@ steps:
       aml_container=$(echo $aml_container_str | tr -d \")
 
       echo '--- Loading dataset ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(DATASET)/ -d "." --recursive
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d "." --recursive
       
       echo '--- Exporting dataset to Pixie ---'
       cd src/auto_setup
-      python export_images_to_pixie.py --api $(PIXIE_API) --key $(PIXIE_KEY) --dataset $(DATASET)
+      python export_images_to_pixie.py --api $(pixie_api) --key $(pixie_key) --dataset $(dataset)
