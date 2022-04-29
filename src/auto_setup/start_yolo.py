@@ -12,7 +12,7 @@ parser.add_argument("--service_principal_password", type=str, help="Serice Princ
 parser.add_argument("--subscription_id", type=str, help="Subscription ID")
 parser.add_argument("--resource_group", type=str, help="Resource Group")
 parser.add_argument("--workspace_name", type=str, help="Workspace Name")
-parser.add_argument("--mode", type=str, help="train/infer")
+parser.add_argument("--mode", type=str, help="train/infer/test")
 parser.add_argument("--epochs", type=str, default='5', help="Number of training epochs")
 parser.add_argument("--model", type=str, default='yolov5s', help="Number of training epochs")
 
@@ -46,8 +46,7 @@ elif args.mode == 'infer':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='infer_coordinator.py',
                           compute_target='gpu-1',
-                          environment=env.from_pip_requirements('myenv',
-                                                                'model_zoo/ultralytics_yolov5/yolov5/requirements.txt'),
+                          environment=env,
                           arguments=['--images', f'{args.dataset}/images/',
                                      '--weights', 'loaded_weights/weights/best.pt',
                                      '--conf', '0.5'])
@@ -60,8 +59,7 @@ elif args.mode == 'test':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='test_coordinator.py',
                           compute_target='gpu-1',
-                          environment=env.from_pip_requirements('myenv',
-                                                                'model_zoo/ultralytics_yolov5/yolov5/requirements.txt'),
+                          environment=env,
                           arguments=['--dataset', args.dataset,
                                      '--weights', 'loaded_weights/weights/best.pt',
                                      '--conf', '0.5',
