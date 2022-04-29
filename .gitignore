@@ -127,10 +127,8 @@ notebooks/train.py
 notebooks/*.py
 notebooks/score.py
 
-# yolo development
-src/auto_setup/synthetic_dataset.yaml
-synthetic_dataset
-jobs.json
+# images
+*.jpg
 
-!/models/*
-!models/yolo/**
+# model development
+synthetic_dataset

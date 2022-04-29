@@ -43,7 +43,6 @@ except ComputeTargetException:
     aks_target.wait_for_completion(show_output=True)
 
 gpu_aks_config = AksWebservice.deploy_configuration(autoscale_enabled=True,
-                                                    # num_replicas=3,
                                                     cpu_cores=2,
                                                     memory_gb=6)
 

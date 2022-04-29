@@ -13,7 +13,6 @@ print('Editing config')
 with open(f'{args.dataset}.yaml') as f:
     lines = f.readlines()
 print(lines)
-# lines[0] = f'path: {args.input_ref}/yolo\n'
 lines[0] = f'path: {args.dataset}/yolo\n'
 print('After edit:')
 print(lines)
