@@ -5,6 +5,9 @@ trigger: none
 pool:
   vmImage: ubuntu-18.04
 
+variables:
+- group: vars
+
 steps:
 - task: UsePythonVersion@0
   inputs:
