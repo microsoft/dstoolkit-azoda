@@ -6,10 +6,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: |     
-    docker build . -f docker/tf_2/Dockerfile --no-cache
-  displayName: 'Docker build'
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ARMSC'
@@ -28,7 +24,6 @@ steps:
       acr_name=$(echo azoda$subscription_id | tr -d -)
 
       echo '--- Installing required libraries ---'
-      
       pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
 
       echo '--- Create resource group ---'
@@ -36,27 +31,6 @@ steps:
 
       echo '--- Create a container registry ---'
       az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
-
-      echo '--- Authenticating ---'
-      az acr login -n $acr_name
-
-      echo '--- Getting latest docker image ID ---'
-      IMAGE_ID=$(docker images | awk '{print $3}' | awk 'NR==2')
-
-      echo '--- Tagging latest image ---'
-      docker tag $IMAGE_ID ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
-
-      echo '--- Pushing docker image to ACR ---'
-      docker push ${acr_name}.azurecr.io/tensorflowobjectdetection:latest
-
-      echo '--- Listing docker containers ---'
-      docker container ls
-
-      echo '--- Downloading TF2 model ---'
-      wget "http://download.tensorflow.org/models/object_detection/tf2/20200711/faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz"
-
-      echo '--- Decompressing TF2 model ---'
-      tar -xf faster_rcnn_resnet50_v1_640x640_coco17_tpu-8.tar.gz
 
       echo '--- Setting automatic yes to prompts ---'
       az config set extension.use_dynamic_install=yes_without_prompt
@@ -82,9 +56,6 @@ steps:
       echo '--- Fetching AML container name ---'
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
-
-      echo '--- Uploading TF2 model to AML container ---'
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/' -d 'models' --recursive
 
       echo '--- Uploading synthetic dataset to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
