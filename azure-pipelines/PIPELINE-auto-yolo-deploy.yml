@@ -34,7 +34,7 @@ steps:
       tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
       tenant_id=$(echo $tenant_id_str | tr -d \")
       echo 'tenant_id='$tenant_id
-      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azodadev')], &account_name)"[0].account_name)
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       echo 'aml_storage_account_name='$aml_storage_account_name
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
