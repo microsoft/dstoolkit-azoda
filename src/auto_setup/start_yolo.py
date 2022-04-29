@@ -25,7 +25,7 @@ ws = Workspace.get(subscription_id=args.subscription_id,
                    name=args.workspace_name,
                    auth=sp)
 time_stamp = datetime.now().strftime('%y%m%d_%H%M%S')
-env = Environment.from_conda_specification(name="myenv", file_path="myenv.yml")
+env = Environment.from_conda_specification(name="myenv", file_path="model_zoo/ultralytics_yolov5/myenv.yml")
 env.docker.base_image = DEFAULT_GPU_IMAGE
 datastore = ws.get_default_datastore()
 if args.mode == 'train':
