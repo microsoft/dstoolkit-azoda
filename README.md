@@ -1,14 +1,17 @@
-# Project
+# Azure Object Detection Accelerator
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+This repository serves as a starting point and accelerator for object detection projects on Azure. The walkthrough will help you to quickly setup training, labelling, inference, testing and deployment pipelines. A starter dataset is generated for demonstration purposes to show you where to place your data. The pipelines clearly show the steps required so that changes can be easily made as required.
 
-As the maintainer of this project, please make a few updates:
+## Prerequisites
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+In order to setup your solution you will need the following:
+
+- Access to an Azure subscription
+- Access to an Azure DevOps subscription
+
+## Getting Started
+
+Follow the walkthrough in docs/ObjectDetectionAccelerator/Walkthrough.md for a full detailed walkthrough. The walkthrough can be finished in under an hour and requires no coding.
 
 ## Contributing
 

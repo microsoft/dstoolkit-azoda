@@ -1,0 +1,73 @@
+name: Yolov5 Remote Model Training
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: vars
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+
+      echo '--- Installing required libraries ---'
+      cd model_zoo/ultralytics_yolov5
+      git clone https://github.com/ultralytics/yolov5
+      cd yolov5
+      git checkout fe7de6a82da3444d755453f86f40b508f3b99419
+      cd ../../..
+      
+      pip install -r requirements.txt
+      pip freeze
+      az config set extension.use_dynamic_install=yes_without_prompt
+      az extension add -n ml -y
+
+      echo '--- Setting variables ---'
+      workspace_name=azoda-amlw
+      resource_group=azoda-rg
+      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
+      subscription_id=$(echo $subscription_id_str | tr -d \")
+      echo 'subscription_id='$subscription_id
+      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
+      tenant_id=$(echo $tenant_id_str | tr -d \")
+      echo 'tenant_id='$tenant_id
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
+      aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")                                             
+      echo 'aml_storage_account_name='$aml_storage_account_name
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container=$(echo $aml_container_str | tr -d \")
+      echo 'aml_container='$aml_container
+
+      echo '--- Get dataset ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
+
+      echo '--- Transform into yolo annotation format ---'
+      python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
+
+      echo '--- Writing aml config.json ---'
+      jq -n --arg subscription_id $subscription_id \
+            --arg workspace_name $workspace_name \
+            --arg resource_group $resource_group \
+            '{"subscription_id": $subscription_id, "resource_group": $resource_group, "workspace_name": $workspace_name}' > config.json
+      cat config.json
+      
+      cat $(dataset).yaml
+      mv $(dataset).yaml model_zoo/ultralytics_yolov5/
+      mv $(dataset) model_zoo/ultralytics_yolov5/
+
+      echo '--- Start remote training job ---'
+      python src/auto_setup/start_yolo.py --dataset $(dataset) \
+                                          --tenant_id $tenant_id \
+                                          --service_principal_id $(service_principal_id) \
+                                          --service_principal_password $(service_principal_password) \
+                                          --subscription_id $subscription_id \
+                                          --resource_group $resource_group \
+                                          --workspace_name $workspace_name \
+                                          --mode train \
+                                          --epochs 40
