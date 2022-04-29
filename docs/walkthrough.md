@@ -49,7 +49,6 @@ In ADO, select the following:
 - **Azure Repos Git**
 - Select your project
 - **Existing Azure Pipelines YAML file**
-- Under **Branch** select **feature/yolo**
 - Under **Path** select **/azure-pipelines/setup.yml** then **Continue**
 - **Run**
 
@@ -84,7 +83,7 @@ In ADO, select the following:
 - Under name enter: **service_principal_password**, under value: **Application (client) Secret Value from above**
 - Click the lock icon next to passwords, keys and secrets to set the variable type to secret
 
-### Submit a model training job
+### Submit a model training job (~25 minutes)
 
 Now we can train a first model, it will be with a generated dataset. Later you can replace it with your own.
 
@@ -94,7 +93,7 @@ This will train a model and store the weights in AML datastore under **yolov5_mo
 
 To explore the datastore, select **Datastores** in your AML Studio resource, then **workspaceblobstore (Default)**, then **Browse (preview)**. Otherwise you can download **Azure Storage Explorer** which has a drag and drop interface for navigating datastores.
 
-### Submit a model inference job
+### Submit a model inference job (~10 minutes)
 
 Once the model training is complete, we can perform inference on a directory of images.
 
@@ -102,7 +101,7 @@ Repeat the same process as above to start a pipeline, but set the path to **/azu
 
 This will perform inference on all the datasets images. You can change the directory in the script **start_yolo_aml_run.py**. The results will be stored in **yolov5_inferences** in the datastore.
 
-### Submit a model test job
+### Submit a model test job (~20 minutes)
 
 Once the model training is complete, we can test the model on a dataset.
 
@@ -110,7 +109,7 @@ Repeat the same process as above to start a pipeline, but set the path to **/azu
 
 This will evaluate the model on the test labels. You can change adjust the tested dataset in the configuration set in **test_coordinator.py**. The results will be stored in **yolov5_tests** in the datastore.
 
-### Deploy the model
+### Deploy the model (~15 minutes)
 
 After the model has been trained, we can deploy an inference webservice which return the inference results given an image.
 
