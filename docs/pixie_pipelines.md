@@ -4,7 +4,7 @@ Pixie is a tool developed by Microsoft Research to assist with labelling. It has
 
 In order to interact with Pixie you will need an endpoint and key. You will need to deploy your own or get the details of an existing deployment. More details to follow in the next update.
 
-### Export labels to Pixie
+### Export labels to Pixie (~5 minutes)
 
 Repeat the pipeline setup process with the path **/azure-pipelines/pixie-export-dataset.yml**. Add the following variables to your variable group:
 
@@ -12,7 +12,7 @@ Repeat the pipeline setup process with the path **/azure-pipelines/pixie-export-
 - **pixie_key**, **Your pixie key**
 - **dataset**, **synthetic_dataset** or the name of your dataset. This will be the name of your pixie project.
 
-### Import labels from Pixie
+### Import labels from Pixie (~4 minutes)
 
 After adding labels on Pixie, you can run this pipeline to load the new labels to your storage account.
 
@@ -25,7 +25,7 @@ Repeat the pipeline setup process with the path **/azure-pipelines/pixie-import-
 
 This will import the inferences to your storage account under the name **inferences_pixie.csv**.
 
-### Import inferences from Pixie
+### Import inferences from Pixie (~4 minutes)
 
 After inferencing with Pixie, you can run this pipeline to load the inferences to your storage account.
 
