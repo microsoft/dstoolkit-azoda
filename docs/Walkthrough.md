@@ -61,8 +61,6 @@ In the open service principal tab from above:
 - Store the **Application (client) ID** value
 - Select **Certificates & secrets**
  
-
-
 ### Setup a variable group
 
 A variable group is a collection of variables which can be used across multiple pipelines. We will store the dataset and service principal information here.
