@@ -100,7 +100,15 @@ Once the model training is complete, we can perform inference on a directory of 
 
 Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-infer.yml**. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
 
-This will perform inference on all the datasets images. You can change the directory in the function **start_yolo_aml_run.py**. The results will be stored in **yolov5_inferences** in the datastore.
+This will perform inference on all the datasets images. You can change the directory in the script **start_yolo_aml_run.py**. The results will be stored in **yolov5_inferences** in the datastore.
+
+### Submit a model test job
+
+Once the model training is complete, we can test the model on a dataset.
+
+Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-test.yml**. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
+
+This will evaluate the model on the test labels. You can change adjust the tested dataset in the configuration set in **test_coordinator.py**. The results will be stored in **yolov5_tests** in the datastore.
 
 ### Deploy the model
 
