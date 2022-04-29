@@ -39,7 +39,7 @@ In ADO, select the following:
 - Select **+Select members** and paste the copied **Display name** from earlier, select it from the list, then click **Select**
 - Click **Next**, then **Review + assign**
 
-### Run the Infra-setup pipeline
+### Run the Infra-setup pipeline (~3 minutes)
 
 Now we can import pipelines from the connected repo to create resources on our Azure subscription
 
@@ -130,3 +130,11 @@ You can use **consume_endpoint.py** as an example to use the endpoint.
 ### Use your own dataset
 
 To use your own dataset add another folder with the same structure as **synthetic_dataset** in the datastore. If you don't have annotations, you can just put in the images folder and use the pixie pipelines to get annotations.
+
+### Other notes
+
+You can rename pipelines by three dots on right side of the pipeline in the main Pipielines view, then select **Rename/move**.
+
+### Extensions
+
+Feel free to add more pipelines and make a pull request, we are planning to add more soon.
