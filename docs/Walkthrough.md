@@ -82,46 +82,43 @@ In ADO, select the following:
 - Under name enter: **service_principal_id**, under value: **Application (client) ID from above**
 - Select **+Add**
 - Under name enter: **service_principal_password**, under value: **Application (client) Secret Value from above**
+- Click the lock icon next to passwords, keys and secrets to set the variable type to secret
 
 ### Submit a model training job
 
 Now we can train a first model, it will be with a generated dataset. Later you can replace it with your own.
 
-Repeat the same process as above, but set the path to **/azure-pipelines/remote-train.yml**. Each of these pipelines using the variable group will need permission. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
+Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-train.yml**. Each of these pipelines using the variable group will need permission. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
 
-This will train a model and store the weights in AML datastore under yolov5_models. Each model will be stored in its own folder named by its timestamp.
+This will train a model and store the weights in AML datastore under **yolov5_models**. Each model will be stored in its own folder named by its timestamp.
 
 To explore the datastore, select **Datastores** in your AML Studio resource, then **workspaceblobstore (Default)**, then **Browse (preview)**. Otherwise you can download **Azure Storage Explorer** which has a drag and drop interface for navigating datastores.
 
-### Submit a model training job 
+### Submit a model inference job
 
-### Deploy the model 
+Once the model training is complete, we can perform inference on a directory of images.
 
-Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-deployment.yml**. This will also need interactive authentication after about a minute. Make sure the model has finished training before deploying. 
+Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-infer.yml**. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
 
-### Test the deployment
+This will perform inference on all the datasets images. You can change the directory in the function **start_yolo_aml_run.py**. The results will be stored in **yolov5_inferences** in the datastore.
 
-Repeat the same process as above, but set the path to **/azure-pipelines/PIPELINE-auto-testing.yml**. This will require some variables to be set before pressing Run. 
+### Deploy the model
 
-First you will need the endpoint name and key:
+After the model has been trained, we can deploy an inference webservice which return the inference results given an image.
+
+Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/deploy.yml**. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
+
+Once the deployment is complete, you can fetch the endpoint name and key:
 - Go to your [Azure portal](https://portal.azure.com)
 - Search and select **Machine learning** from the search bar
 - Select the one you created from the list (the default is called azoda-amlw, in resource group azoda-rg)
 - **Launch studio**
 - **Endpoints** on the left
-- **syntheticdataset** (the name of the dataset)
+- Select your endpoint
 - **Consume**
 
-Here you can see the **REST endpoint** and **Primary key**. In the next step, we will give these to the pipeline.
+You can use **consume_endpoint.py** as an example to use the endpoint. 
 
-On the Edit page of the pipeline, select the following:
-- **Variables**
-- **New variable**
-- In the **Name** field enter **dataset**, in the **Value** field enter **synthetic_dataset**, then **OK**
-- When entering both \<REST endpoint\> and \<Primary key\>, surround them with double quotes **" "** so that the characters don't lead to misinterpretation. Also remember to check the secret option, so that the information is not visible.
-- **+** , then as above, **Name**: **endpoint**, **Value**: \<"REST endpoint"\>, select **Keep this value secret**, then **OK**
-- **+** , then as above, **Name**: **key**, **Value**: \<"Primary key"\>, select **Keep this value secret**, then **OK**
-- **Save**
-- **Run**
+### Use your own dataset
 
-Once the pipeline is done, the confusion matrix will be shown in the logs.
+To use your own dataset add another folder with the same structure as **synthetic_dataset** in the datastore. If you don't have annotations, you can just put in the images folder and use the pixie pipelines to get annotations.
