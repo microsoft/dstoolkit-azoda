@@ -31,7 +31,7 @@ datastore = ws.get_default_datastore()
 if args.mode == 'train':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='train_coordinator.py',
-                          compute_target='gpu-cluster',
+                          compute_target='gpu-1',
                           environment=env,
                           arguments=['--dataset', args.dataset,
                                      '--cfg', f'{args.model}.yaml',
@@ -45,7 +45,7 @@ if args.mode == 'train':
 elif args.mode == 'infer':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='infer_coordinator.py',
-                          compute_target='gpu-cluster',
+                          compute_target='gpu-1',
                           environment=env.from_pip_requirements('myenv',
                                                                 'model_zoo/ultralytics_yolov5/yolov5/requirements.txt'),
                           arguments=['--images', f'{args.dataset}/images/',
@@ -59,7 +59,7 @@ elif args.mode == 'infer':
 elif args.mode == 'test':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='test_coordinator.py',
-                          compute_target='gpu-cluster',
+                          compute_target='gpu-1',
                           environment=env.from_pip_requirements('myenv',
                                                                 'model_zoo/ultralytics_yolov5/yolov5/requirements.txt'),
                           arguments=['--dataset', args.dataset,
