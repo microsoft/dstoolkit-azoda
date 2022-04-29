@@ -14,7 +14,7 @@ steps:
     inlineScript: |
       
       echo '--- Installing required libraries ---'
-      pip install -e src/packages/azure_utils
+      
       pip install azureml-sdk==1.39.0
       az extension add -n ml -y
 

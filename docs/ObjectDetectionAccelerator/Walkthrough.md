@@ -16,7 +16,7 @@ Start a new project [here](https://dev.azure.com) and set it to Private. The Pro
 
 Next we need to get the code.
 
-On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the github URL https://github.com/microsoft/dstoolkit-objectdetection-tensorflow-azureml, then the button **Import**.
+On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-objectdetection-tensorflow-azureml, then the button **Import**.
 
 ### Connect to your Azure subscription
 
@@ -29,7 +29,7 @@ In ADO, select the following:
 - **Azure Resource Manager** then **Next** at the bottom of the window
 - **Service principal (automatic)** then **Next**,
 -  Under Scope level, choose **Subscription**, choose your subscription and a Resource group, then set Service connection name to **ARMSC** and check **Grant access permission to all pipelines**, then **Save**
-- Once complete, select the service connection called **ARMSC**, click **Manage Service Principal**, then copy the **Display name**
+- Once complete, select the service connection called **ARMSC**, click **Manage Service Principal**, then copy the **Display name**. Keep this tab open for later.
 - Open your [Azure portal](https://portal.azure.com)
 - In the Azure search bar type Subscriptions and select **Subscriptions** from the listed Services
 - Select the subscription from the list used above
@@ -49,9 +49,33 @@ In ADO, select the following:
 - **Azure Repos Git**
 - Select your project
 - **Existing Azure Pipelines YAML file**
-- Under **Branch** select **feature/auto_setup**
+- Under **Branch** select **feature/yolo**
 - Under **Path** select **/azure-pipelines/PIPELINE-auto-setup.yml** then **Continue**
 - **Run**
+
+### Get service principal id and password
+
+A service principal acts like a user account that the code can use to authenticate. We will use this to authenticate instead of using our own accounts to interactively authenticate.
+
+In the open service principal tab from above:
+- Store the **Application (client) ID** value
+- Select **Certificates & secrets**
+ 
+
+
+### Setup a variable group
+
+A variable group is a collection of variables which can be used across multiple pipelines. We will store the dataset and service principal information here.
+
+In ADO, select the following:
+- **Pipelines**
+- **Library**
+- **+Variable group**
+- Under Variable group name: **vars**
+- Below under Variables, select **+Add**
+- Under name enter: **dataset**, under value: **synthetic_dataset**
+
+
 
 ### Submit a model training job (~2 minutes)
 

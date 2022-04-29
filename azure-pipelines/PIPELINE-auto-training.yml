@@ -25,7 +25,7 @@ steps:
       acr_name=$(echo azoda$subscription_id | tr -d -)
 
       echo '--- Installing required libraries ---'
-      pip install -e src/packages/azure_utils
+      
       pip install azureml-sdk==1.39.0
 
       echo '--- Writing dev_config.json ---'
