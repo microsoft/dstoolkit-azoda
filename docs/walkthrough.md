@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This walkthrough aims to setup your own object detection project as quickly and easily as possible. We will cover model training, deployment, testing and labelling integration. We will use a code generated dataset, but you can use the pattern to use your own dataset later.
+This walkthrough aims to set up your own object detection project as quickly and easily as possible. We will cover model training, deployment, testing and labelling integration. We will use a code generated dataset, but you can use the pattern to use your own dataset later.
 
 ## Setup
 
