@@ -10,7 +10,7 @@ This walkthrough aims to set up your own object detection project as quickly and
 
 Azure DevOps (ADO) is a product for managing projects.
 
-Start a new project [here](https://dev.azure.com) and set it to Private. The Project name doesn't matter.
+Start a new project [here](https://dev.azure.com) and set it to Private. You may need to create a **New organisation** first if you don't have one yet. The Project name doesn't matter.
 
 ### Get the code
 
@@ -22,16 +22,27 @@ On the left side of ADO, click **Repos**, then the **Import** Button, inside the
 
 Next we will need to connect it to an Azure Subscription to access our Azure resources, this is called a service connection.
 
+First to create a resource group for the service connection:
+- Open your [Azure portal](https://portal.azure.com)
+- In the Azure search bar type **Resource groups** and select it from the list
+- Select **Create**
+- Fill in a name for your resource group
+- Choose a different region for your resource group, if you want
+- **Review + create**
+- **Create**
+
+A resource group is a collection of resources, it is used for finding, tracking and deleting groups of resources.
+
 In ADO, select the following:
-- **Project Settings**
-- **Service connections**
+- **Project Settings** (bottom left)
+- **Service connections** (center left)
 - **Create service connection**
 - **Azure Resource Manager** then **Next** at the bottom of the window
 - **Service principal (automatic)** then **Next**,
--  Under Scope level, choose **Subscription**, choose your subscription and a Resource group, then set Service connection name to **ARMSC** and check **Grant access permission to all pipelines**, then **Save**
+-  Under Scope level, choose **Subscription**, choose your subscription and the resource group you made earlier, then set Service connection name to **ARMSC** and check **Grant access permission to all pipelines**, then **Save**
 - Once complete, select the service connection called **ARMSC**, click **Manage Service Principal**, then copy the **Display name**. Keep this tab open for later.
 - Open your [Azure portal](https://portal.azure.com)
-- In the Azure search bar type Subscriptions and select **Subscriptions** from the listed Services
+- In the Azure search bar type **Subscriptions** and select it from the list
 - Select the subscription from the list used above
 - Select **Access control (IAM)** from the menu on the left
 - Click **+ Add**, then **Add role assignment**
@@ -49,6 +60,7 @@ In ADO, select the following:
 - **Azure Repos Git**
 - Select your project
 - **Existing Azure Pipelines YAML file**
+- Select the intended branch
 - Under **Path** select **/azure-pipelines/setup.yml** then **Continue**
 - **Run**
 
@@ -82,12 +94,13 @@ In ADO, select the following:
 - Select **+Add**
 - Under name enter: **service_principal_password**, under value: **Application (client) Secret Value from above**
 - Click the lock icon next to passwords, keys and secrets to set the variable type to secret
+- Select **Save**
 
 ### Submit a model training job (~25 minutes)
 
 Now we can train a first model, it will be with a generated dataset. Later you can replace it with your own.
 
-Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-train.yml**. Each of these pipelines using the variable group will need permission. After starting the pipeline, click **View** at the top right, then **Permit**, then **Permit** again.
+Repeat the same process as above to start a pipeline, but set the path to **/azure-pipelines/remote-train.yml**. Each of these pipelines using the variable group will need permission. After starting the pipeline, select the **Job**, click **View** at the top right, then **Permit**, then **Permit** again.
 
 This will train a model and store the weights in AML datastore under **yolov5_models**. Each model will be stored in its own folder named by its timestamp.
 
