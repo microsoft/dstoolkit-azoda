@@ -62,10 +62,10 @@ steps:
 
       echo '--- Start remote training job ---'
       python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
-                                          --tenant_id $tenant_id \
-                                          --service_principal_id $(service_principal_id) \
-                                          --service_principal_password $(service_principal_password) \
-                                          --subscription_id $subscription_id \
-                                          --resource_group $resource_group \
-                                          --workspace_name $workspace_name \
-                                          --mode infer
+                                                  --tenant_id $tenant_id \
+                                                  --service_principal_id $(service_principal_id) \
+                                                  --service_principal_password $(service_principal_password) \
+                                                  --subscription_id $subscription_id \
+                                                  --resource_group $resource_group \
+                                                  --workspace_name $workspace_name \
+                                                  --mode infer
