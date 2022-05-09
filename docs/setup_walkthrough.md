@@ -114,7 +114,7 @@ Repeat the same process as above to start a pipeline, but set the path to **/azu
 
 This will perform inference on all the datasets images. You can change the directory in the script **start_yolo_aml_run.py**. The results will be stored in **yolov5_inferences** in the datastore.
 
-### Submit a model test job (~20 minutes)
+### Submit a model test job (~3 minutes)
 
 Once the model training is complete, we can test the model on a dataset.
 
@@ -141,11 +141,11 @@ You can use **consume_endpoint.py** as an example to use the endpoint.
 
 ### Use your own dataset
 
-To use your own dataset add another folder with the same structure as **synthetic_dataset** in the datastore. If you don't have annotations, you can just put in the images folder and use the pixie pipelines to get annotations.
+To use your own dataset add another folder with the same structure as **synthetic_dataset** in the datastore. If you don't have annotations, you can just put in the images folder and use the pixie pipelines to get annotations. Then change the dataset variable in the variable group to the new folder name.
 
 ### Other notes
 
-You can rename pipelines by three dots on right side of the pipeline in the main Pipielines view, then select **Rename/move**.
+You can rename pipelines by selecting the three dots on right side of the pipeline in the main Pipielines view, then select **Rename/move**.
 
 ### Extensions
 

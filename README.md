@@ -11,7 +11,7 @@ In order to setup your solution you will need the following:
 
 ## Getting Started
 
-Follow the walkthrough in docs/ObjectDetectionAccelerator/Walkthrough.md for a full detailed walkthrough. The walkthrough can be finished in under an hour and requires no coding.
+Follow the walkthrough in docs/ObjectDetectionAccelerator/setup_walkthrough.md for a full detailed walkthrough. The walkthrough can be finished in under an hour and requires no coding.
 
 ## Contributing
 
