@@ -1,6 +1,7 @@
-from azureml.core import Workspace, Experiment, ScriptRunConfig
+from azureml.core import Dataset, Experiment, ScriptRunConfig, Workspace
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azureml.core.environment import Environment, DEFAULT_GPU_IMAGE
+from azureml.data.datapath import DataPath
 from datetime import datetime
 import argparse
 
@@ -41,7 +42,7 @@ if args.mode == 'train':
     run = Experiment(workspace=ws, name='azoda_train').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
-    datastore.upload(src_dir='outputs/', target_path=f'yolov5_models/{time_stamp}/', overwrite=False)
+    Dataset.File.upload_directory(src_dir='outputs/', target=DataPath(datastore, f'yolov5_models/{time_stamp}/'))
 elif args.mode == 'infer':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='infer_coordinator.py',
@@ -54,7 +55,7 @@ elif args.mode == 'infer':
     run = Experiment(workspace=ws, name='azoda_infer').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
-    datastore.upload(src_dir='outputs/', target_path=f'yolov5_inferences/{time_stamp}/', overwrite=False)
+    Dataset.File.upload_directory(src_dir='outputs/', target=DataPath(datastore, f'yolov5_inferences/{time_stamp}/'))
 elif args.mode == 'test':
     src = ScriptRunConfig(source_directory='model_zoo/ultralytics_yolov5/',
                           script='test_coordinator.py',
@@ -68,6 +69,6 @@ elif args.mode == 'test':
     run = Experiment(workspace=ws, name='azoda_test').submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files('outputs')
-    datastore.upload(src_dir='outputs/', target_path=f'yolov5_tests/{time_stamp}/', overwrite=False)
+    Dataset.File.upload_directory(src_dir='outputs/', target=DataPath(datastore, f'yolov5_inferences/{time_stamp}/'))
 else:
     print('Invalid argument for mode. Please choose from [\'train\', \'infer\', \'test\']')
