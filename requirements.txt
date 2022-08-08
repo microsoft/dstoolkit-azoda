@@ -101,7 +101,7 @@ tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
 torch==1.10.1
 torchaudio==0.10.1
-torchtext==0.12.0
+torchtext
 torchvision==0.11.2
 tqdm==4.64.0
 typing-extensions==4.3.0
