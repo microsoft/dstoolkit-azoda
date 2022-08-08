@@ -3,7 +3,7 @@ matplotlib==3.5.1
 msrest==0.6.21
 numpy==1.22.3
 pandas==1.4.1
-torch==1.11,
+torch==1.11
 torchvision==0.12
 torchtext==0.12
 torchaudio==0.11
