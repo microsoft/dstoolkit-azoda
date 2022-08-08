@@ -192,7 +192,7 @@ colorlover==0.3.0
 configparser==3.7.4
 contextlib2==21.6.0
 convertdate==2.3.2
-coremltools==2.1.0
+coremltools
 cramjam==2.5.0
 cryptography==36.0.2
 cufflinks==0.17.3
