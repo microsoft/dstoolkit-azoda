@@ -13,7 +13,6 @@ arch==4.14
 argcomplete==1.12.3
 argon2-cffi==21.3.0
 argon2-cffi-bindings==21.2.0
-arviz==0.11.2
 asgiref==3.5.2
 astroid==2.11.6
 asttokens==2.0.5
@@ -550,7 +549,6 @@ tornado==6.1
 tqdm==4.64.0
 traitlets==5.2.1.post0
 transformers==4.5.1
-typing-extensions==4.3.0
 tzdata==2022.1
 tzlocal==4.2
 ujson==5.3.0
