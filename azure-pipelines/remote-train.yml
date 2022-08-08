@@ -21,6 +21,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       python --version
+      nvcc --version
       echo '--- Installing required libraries ---'
       cd model_zoo/ultralytics_yolov5
       git clone https://github.com/ultralytics/yolov5
