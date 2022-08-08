@@ -60,7 +60,7 @@ steps:
       mv $(dataset).yaml model_zoo/ultralytics_yolov5/
       mv $(dataset) model_zoo/ultralytics_yolov5/
 
-      echo '--- Start remote training job ---'
+      echo '--- Start remote inference job ---'
       python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
                                                   --tenant_id $tenant_id \
                                                   --service_principal_id $(service_principal_id) \
