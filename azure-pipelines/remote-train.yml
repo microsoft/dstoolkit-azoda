@@ -28,6 +28,7 @@ steps:
       git checkout fe7de6a82da3444d755453f86f40b508f3b99419
       cd ../../..
       
+      pip install numpy==1.22.3
       pip install --upgrade cython
       pip install Pillow
       pip install -r requirements.txt
