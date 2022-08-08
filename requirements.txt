@@ -149,7 +149,6 @@ azureml-pipeline==1.41.0
 azureml-pipeline-core==1.41.0
 azureml-pipeline-steps==1.41.0
 azureml-responsibleai==1.42.0
-azureml-samples
 azureml-sdk==1.41.0
 azureml-telemetry==1.41.0
 azureml-tensorboard==1.42.0
