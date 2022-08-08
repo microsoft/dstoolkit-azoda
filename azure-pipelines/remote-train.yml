@@ -20,6 +20,7 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
+
       python --version
       nvcc --version
       echo '--- Installing required libraries ---'
