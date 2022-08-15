@@ -3,12 +3,17 @@ name: Yolov5 Remote Model Inferencing
 trigger: none
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-18.04
 
 variables:
 - group: vars
 
 steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.8'
+    addToPath: true
+    architecture: 'x64'
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ARMSC'
@@ -60,7 +65,7 @@ steps:
       mv $(dataset).yaml model_zoo/ultralytics_yolov5/
       mv $(dataset) model_zoo/ultralytics_yolov5/
 
-      echo '--- Start remote training job ---'
+      echo '--- Start remote inference job ---'
       python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
                                                   --tenant_id $tenant_id \
                                                   --service_principal_id $(service_principal_id) \
