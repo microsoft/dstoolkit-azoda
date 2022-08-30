@@ -26,6 +26,7 @@ parser.add_argument("-d", "--dataset", help="Name of project/dataset")
 parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
 args = parser.parse_args()
 
+cv_project_name = "azoda_example_dataset"
 ENDPOINT = f"https://{args.cv_name}.cognitiveservices.azure.com/"
 prediction_key = args.key
 prediction_resource_id = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.CognitiveServices/accounts/{args.cv_name}"
@@ -44,7 +45,8 @@ obj_detection_domain = next(
     if domain.type == "ObjectDetection" and domain.name == "General"
 )
 print("Creating project...")
-project = trainer.create_project(str(uuid.uuid4()), domain_id=obj_detection_domain.id)
+
+project = trainer.create_project(cv_project_name, domain_id=obj_detection_domain.id)
 
 print(project.name)
 
