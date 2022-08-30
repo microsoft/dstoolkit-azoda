@@ -56,7 +56,7 @@ for label in labels:
 base_data_location = args.dataset
 
 if os.path.exists(f"../../{args.dataset}"):
-    base_data_directory = f"../../{args.dataset}"
+    base_data_directory = f"../../{args.dataset}/yolo"
 else:
     base_data_directory = "../../model_zoo/ultralytics_yolov5/synthetic_dataset/yolo"
 
