@@ -58,14 +58,11 @@ base_data_location = args.dataset
 if os.path.exists(f"../../{args.dataset}"):
     base_data_directory = f"../../{args.dataset}"
 else:
-    base_data_directory = "../../model_zoo/ultralytics_yolov5/synthetic_dataset/"
-
-base_image_location = os.path.join(base_data_directory, "images")
+    base_data_directory = "../../model_zoo/ultralytics_yolov5/synthetic_dataset/yolo"
 
 # Load images from folder
-dataset_directory = os.path.join(base_data_directory, "yolo")
-image_groups_directory = os.path.join(dataset_directory, "images")
-label_groups_directory = os.path.join(dataset_directory, "labels")
+image_groups_directory = os.path.join(base_data_directory, "images")
+label_groups_directory = os.path.join(base_data_directory, "labels")
 image_directories = [filename for filename in os.listdir(image_groups_directory)]
 print(image_directories)
 tagged_images_with_regions = []
