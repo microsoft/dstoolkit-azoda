@@ -45,4 +45,4 @@ steps:
       
       echo '--- Exporting dataset to Pixie ---'
       cd src/auto_setup
-      python upload_dataset_to_cv.py --subscription_id $(subscription_id) --resource_group $(cv_rg) --key "$(cv_key)" --dataset $(dataset) --cv_name $(cv_name)
+      python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $(cv_rg) --key "$(cv_key)" --dataset $(dataset) --cv_name $(cv_name)
