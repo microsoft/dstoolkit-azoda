@@ -26,11 +26,11 @@ parser.add_argument("-d", "--dataset", help="Name of project/dataset")
 parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
 args = parser.parse_args()
 
-ENDPOINT = f"https://{res}.cognitiveservices.azure.com/"
-prediction_key = key
-prediction_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.CognitiveServices/accounts/{cv_name}"
+ENDPOINT = f"https://{args.cv_name}.cognitiveservices.azure.com/"
+prediction_key = args.key
+prediction_resource_id = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.CognitiveServices/accounts/{args.cv_name}"
 
-credentials = ApiKeyCredentials(in_headers={"Training-key": key})
+credentials = ApiKeyCredentials(in_headers={"Training-key": args.key})
 trainer = CustomVisionTrainingClient(ENDPOINT, credentials)
 prediction_credentials = ApiKeyCredentials(
     in_headers={"Prediction-key": prediction_key}
