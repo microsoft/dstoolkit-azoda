@@ -1,0 +1,46 @@
+name: Export labels to Custom Vision
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-18.04
+
+variables:
+- group: vars
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.8'
+    addToPath: true
+    architecture: 'x64'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo '--- Installing required libraries ---'
+      az config set extension.use_dynamic_install=yes_without_prompt
+      
+      pip install azureml-sdk==1.39.0
+      az extension add -n ml -y
+      pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
+      sudo apt install ffmpeg -y
+      pip uninstall ffmpeg-python -y
+      pip install ffmpeg-python ffprobe packaging requests numpy opencv-python pandas
+
+      echo '--- Setting variables ---'
+      workspace_name=azoda-amlw
+      resource_group=azoda-rg
+      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
+      aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
+      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+      aml_container=$(echo $aml_container_str | tr -d \")
+
+      echo '--- Loading dataset ---'
+      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d "." --recursive
+      
+      echo '--- Exporting dataset to Pixie ---'
+      cd src/auto_setup
+      python export_images_to_pixie.py --api $(pixie_api) --key "$(pixie_key)" --dataset $(dataset)
