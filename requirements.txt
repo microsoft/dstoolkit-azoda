@@ -1,5 +1,5 @@
-azureml-sdk==1.41.0
-azure-mgmt-compute
+azureml-sdk==1.44.0
+azure-mgmt-compute==27.2.0
 matplotlib==3.5.1
 numpy==1.22.3
 pandas==1.4.1
