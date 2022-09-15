@@ -25,7 +25,7 @@ steps:
       resource_group=azoda-rg
       location=westeurope
       acr_name=$(echo azoda$subscription_id | tr -d -)
-      cv_name=azodacv3
+      cv_name=azodacv5
 
       echo '--- Installing required libraries ---'
       pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
