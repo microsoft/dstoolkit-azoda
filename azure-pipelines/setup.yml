@@ -25,7 +25,7 @@ steps:
       resource_group=azoda-rg
       location=westeurope
       acr_name=$(echo azoda$subscription_id | tr -d -)
-      cv_name=azodacv5
+      cv_name=azodacv7
 
       echo '--- Installing required libraries ---'
       pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
@@ -65,6 +65,7 @@ steps:
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
 
       echo '--- Creating Custom Vision resource ---'
+      az devops configure --defaults organization=https://dev.azure.com/$(organization_name) project=$(project_name)
       az cognitiveservices account create --name $cv_name --resource-group $resource_group --kind CustomVision.Training --sku F0 --location westeurope
       key=$(az cognitiveservices account keys list --name $cv_name --resource-group $resource_group | jq -r ".key1")
       az pipelines variable-group variable create --group-id $(vargroup_id) --name cv_key --secret true --value $key
