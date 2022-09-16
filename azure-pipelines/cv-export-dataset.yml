@@ -46,7 +46,7 @@ steps:
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
 
       echo '--- Get Custom Vision secret from keyvault ---'
-      cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey)
+      cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey | jq -r ".value")
       echo $cv_key
 
       echo '--- Exporting dataset to Custom Vision project ---'
