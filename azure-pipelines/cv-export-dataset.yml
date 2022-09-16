@@ -38,6 +38,7 @@ steps:
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
+      cv_name=azodacv13
 
       echo '--- Loading dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d "." --recursive
@@ -46,9 +47,9 @@ steps:
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
 
       echo '--- Get Custom Vision secret from keyvault ---'
-      cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey | jq -r ".value")
+      cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey)
       echo $cv_key
 
       echo '--- Exporting dataset to Custom Vision project ---'
       cd src/auto_setup
-      python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $(cv_rg) --key $(cv_key) --dataset $(dataset) --cv_name $(cv_name)
+      python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
