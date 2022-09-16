@@ -73,5 +73,9 @@ steps:
       echo '--- Getting Custom Vision key ---'
       key=$(az cognitiveservices account keys list --name $cv_name --resource-group $resource_group | jq -r ".key1")
       
-      echo '--- Store Custom Vision secret in DevOps variable group ---'
-      az pipelines variable-group variable create --group-id $(vargroup_id) --name cv_key --secret true --value $key
+      echo '--- Creating keyvault ---'
+      az config set defaults.location=westeurope
+      az keyvault create --name azoda-kv --resource-group $resource_group
+
+      echo '--- Store Custom Vision secret in keyvault ---'
+      az keyvault secret set --name cvkey --value $key --vault-name azoda-kv
