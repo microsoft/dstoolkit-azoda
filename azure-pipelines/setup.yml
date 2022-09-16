@@ -26,6 +26,8 @@ steps:
       location=westeurope
       acr_name=$(echo azoda$subscription_id | tr -d -)
       cv_name=azodacv7
+      keyvault_name=azoda-kv
+      cv_secret_name=cvkey
 
       echo '--- Installing required libraries ---'
       pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
@@ -56,7 +58,6 @@ steps:
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
 
-      echo '--- Uploading model and dataset to container ---'
       echo '--- Fetching AML container name ---'
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
@@ -75,7 +76,7 @@ steps:
       
       echo '--- Creating keyvault ---'
       az config set defaults.location=westeurope
-      az keyvault create --name azoda-kv --resource-group $resource_group
+      az keyvault create --name $keyvault_name --resource-group $resource_group
 
       echo '--- Store Custom Vision secret in keyvault ---'
-      az keyvault secret set --name cvkey --value $key --vault-name azoda-kv
+      az keyvault secret set --name $cv_secret_name --value $key --vault-name $keyvault_name
