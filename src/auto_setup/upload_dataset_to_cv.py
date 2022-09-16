@@ -9,7 +9,6 @@ from azure.cognitiveservices.vision.customvision.training.models import (
     ImageFileCreateEntry,
     Region,
 )
-from azure.identity import DefaultAzureCredential
 from msrest.authentication import ApiKeyCredentials
 import argparse
 import os
