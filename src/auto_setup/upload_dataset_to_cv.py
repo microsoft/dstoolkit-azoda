@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 cv_project_name = "azoda_example_dataset"
 ENDPOINT = f"https://{args.cv_name}.cognitiveservices.azure.com/"
-prediction_key = args.keyupl
+prediction_key = args.key
 prediction_resource_id = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.CognitiveServices/accounts/{args.cv_name}"
 
 credentials = ApiKeyCredentials(in_headers={"Training-key": args.key})
