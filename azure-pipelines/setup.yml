@@ -64,8 +64,14 @@ steps:
       echo '--- Uploading synthetic dataset to AML container ---'
       az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
 
-      echo '--- Creating Custom Vision resource ---'
+      echo '--- Setting devops configuration ---'
       az devops configure --defaults organization=https://dev.azure.com/$(organization_name) project=$(project_name)
+      
+      echo '--- Creating Custom Vision resource ---'
       az cognitiveservices account create --name $cv_name --resource-group $resource_group --kind CustomVision.Training --sku F0 --location westeurope
+      
+      echo '--- Getting Custom Vision key ---'
       key=$(az cognitiveservices account keys list --name $cv_name --resource-group $resource_group | jq -r ".key1")
+      
+      echo '--- Store Custom Vision secret in DevOps variable group ---'
       az pipelines variable-group variable create --group-id $(vargroup_id) --name cv_key --secret true --value $key
