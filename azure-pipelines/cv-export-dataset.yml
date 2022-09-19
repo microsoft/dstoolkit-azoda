@@ -34,7 +34,6 @@ steps:
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
-      
 
       echo '--- Loading dataset ---'
       az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d "." --recursive
