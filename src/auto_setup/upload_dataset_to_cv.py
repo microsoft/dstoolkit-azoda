@@ -26,17 +26,9 @@ parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource"
 args = parser.parse_args()
 
 cv_project_name = "azoda_example_dataset"
-ENDPOINT = f"https://{args.cv_name}.cognitiveservices.azure.com/"
-prediction_key = args.key
-prediction_resource_id = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.CognitiveServices/accounts/{args.cv_name}"
-
+ENDPOINT = "https://westeurope.api.cognitive.microsoft.com/"
 credentials = ApiKeyCredentials(in_headers={"Training-key": args.key})
-
 trainer = CustomVisionTrainingClient(ENDPOINT, credentials)
-prediction_credentials = ApiKeyCredentials(
-    in_headers={"Prediction-key": prediction_key}
-)
-
 publish_iteration_name = "detectModel"
 obj_detection_domain = next(
     domain
@@ -44,9 +36,7 @@ obj_detection_domain = next(
     if domain.type == "ObjectDetection" and domain.name == "General"
 )
 print("Creating project...")
-
 project = trainer.create_project(cv_project_name, domain_id=obj_detection_domain.id)
-
 print(project.name)
 
 labels = ["circle"]
@@ -68,6 +58,7 @@ image_directories = [filename for filename in os.listdir(image_groups_directory)
 print(image_directories)
 tagged_images_with_regions = []
 batch_size = 32
+
 for image_directory in image_directories:
     for image_filename in os.listdir(
         os.path.join(image_groups_directory, image_directory)
