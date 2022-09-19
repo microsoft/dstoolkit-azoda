@@ -9,11 +9,6 @@ variables:
 - group: vars
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.8'
-    addToPath: true
-    architecture: 'x64'
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ARMSC'
@@ -32,6 +27,10 @@ steps:
       echo '--- Setting variables ---'
       workspace_name=azoda-amlw
       resource_group=azoda-rg
+<<<<<<< HEAD
+=======
+      cv_name=azodacv15
+>>>>>>> 2d7449abbf848c263431ed2d85f620e3b1214625
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
@@ -47,13 +46,21 @@ steps:
       python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
 
       echo '--- Get Custom Vision secret from keyvault ---'
+<<<<<<< HEAD
       cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey)
+=======
+      cv_key=$(echo $(az keyvault secret show --vault-name azoda-kv --name cvkey | jq -r ".value"))
+>>>>>>> 2d7449abbf848c263431ed2d85f620e3b1214625
       echo $cv_key
 
       echo '--- Exporting dataset to Custom Vision project ---'
       cd src/auto_setup
 <<<<<<< HEAD
+<<<<<<< HEAD
       python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
 =======
       python export_images_to_pixie.py --api $(pixie_api) --key "$(pixie_key)" --dataset $(dataset)
 >>>>>>> af739685c541dea5c94e43c68054d0e216b3260e
+=======
+      python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
+>>>>>>> 2d7449abbf848c263431ed2d85f620e3b1214625
