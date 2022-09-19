@@ -52,4 +52,8 @@ steps:
 
       echo '--- Exporting dataset to Custom Vision project ---'
       cd src/auto_setup
+<<<<<<< HEAD
       python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
+=======
+      python export_images_to_pixie.py --api $(pixie_api) --key "$(pixie_key)" --dataset $(dataset)
+>>>>>>> af739685c541dea5c94e43c68054d0e216b3260e
