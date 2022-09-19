@@ -25,7 +25,7 @@ steps:
       resource_group=azoda-rg
       location=westeurope
       acr_name=$(echo azoda$subscription_id | tr -d -)
-      cv_name=azodacv14
+      cv_name=azodacv15
       keyvault_name=azoda-kv
       cv_secret_name=cvkey
 
