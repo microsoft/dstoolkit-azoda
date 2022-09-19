@@ -3,7 +3,7 @@ name: Yolov5 Remote Model Inferencing
 trigger: none
 
 pool:
-  vmImage: ubuntu-18.04
+  vmImage: ubuntu-20.04
 
 variables:
 - group: vars
