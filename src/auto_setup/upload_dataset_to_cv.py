@@ -1,3 +1,4 @@
+# %%
 from azure.cognitiveservices.vision.customvision.training import (
     CustomVisionTrainingClient,
 )
@@ -12,8 +13,6 @@ from azure.cognitiveservices.vision.customvision.training.models import (
 from msrest.authentication import ApiKeyCredentials
 import argparse
 import os
-import uuid
-
 
 # Parse arguments
 parser = argparse.ArgumentParser()
@@ -28,15 +27,13 @@ args = parser.parse_args()
 
 cv_project_name = "azoda_example_dataset"
 ENDPOINT = f"https://{args.cv_name}.cognitiveservices.azure.com/"
+ENDPOINT = "https://westeurope.api.cognitive.microsoft.com/"
 prediction_key = args.key
 prediction_resource_id = f"/subscriptions/{args.subscription_id}/resourceGroups/{args.resource_group}/providers/Microsoft.CognitiveServices/accounts/{args.cv_name}"
 
 credentials = ApiKeyCredentials(in_headers={"Training-key": args.key})
+
 trainer = CustomVisionTrainingClient(ENDPOINT, credentials)
-prediction_credentials = ApiKeyCredentials(
-    in_headers={"Prediction-key": prediction_key}
-)
-predictor = CustomVisionPredictionClient(ENDPOINT, prediction_credentials)
 
 publish_iteration_name = "detectModel"
 obj_detection_domain = next(
@@ -44,6 +41,7 @@ obj_detection_domain = next(
     for domain in trainer.get_domains()
     if domain.type == "ObjectDetection" and domain.name == "General"
 )
+
 print("Creating project...")
 
 project = trainer.create_project(cv_project_name, domain_id=obj_detection_domain.id)
@@ -60,7 +58,7 @@ base_data_location = args.dataset
 if os.path.exists(f"../../{args.dataset}"):
     base_data_directory = f"../../{args.dataset}/yolo"
 else:
-    base_data_directory = "../../model_zoo/ultralytics_yolov5/synthetic_dataset/yolo"
+    base_data_directory = "../../model_zoo/ultralytics_yolov5/synthetic_dataset2/yolo"
 
 # Load images from folder
 image_groups_directory = os.path.join(base_data_directory, "images")
@@ -69,6 +67,7 @@ image_directories = [filename for filename in os.listdir(image_groups_directory)
 print(image_directories)
 tagged_images_with_regions = []
 batch_size = 32
+# %%
 for image_directory in image_directories:
     for image_filename in os.listdir(
         os.path.join(image_groups_directory, image_directory)
@@ -98,7 +97,6 @@ for image_directory in image_directories:
                         top=top,
                         width=width,
                         height=height,
-                        # filename=image_filename,
                     )
                 )
         print("-")
@@ -109,17 +107,13 @@ for image_directory in image_directories:
             tagged_images_with_regions.append(
                 ImageFileCreateEntry(
                     name=image_filename.replace("_", "-"),
-                    # name="testname",
                     contents=image_contents.read(),
                     regions=regions,
-                    # tagIds=["testmeta"]
-                    # tag_ids=["tagtest"], breaking
                 )
             )
         upload_result = trainer.create_images_from_files(
             project.id,
             ImageFileCreateBatch(images=tagged_images_with_regions),
-            # tag_ids=[image_filename.replace("_", "-")],
         )
         if not upload_result.is_batch_successful:
             print("Image batch upload failed.")
@@ -127,3 +121,5 @@ for image_directory in image_directories:
                 print("Image status: ", image.status)
             exit(-1)
         tagged_images_with_regions = []
+
+# %%

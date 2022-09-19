@@ -1,9 +1,9 @@
-name: Export labels to Custom Vision
+name: Import labels from Custom Vision
 
 trigger: none
 
 pool:
-  vmImage: ubuntu-20.04
+  vmImage: ubuntu-18.04
 
 variables:
 - group: vars
@@ -22,11 +22,12 @@ steps:
     inlineScript: |
       echo '--- Installing required libraries ---'
       az config set extension.use_dynamic_install=yes_without_prompt
-      
-      echo 'pip install azureml-sdk==1.39.0'
+
+      pip install azureml-sdk==1.39.0
       az extension add -n ml -y
-      echo 'sudo apt install ffmpeg -y'
-      echo 'pip uninstall ffmpeg-python -y'
+      pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
+      sudo apt install ffmpeg -y
+      pip uninstall ffmpeg-python -y
       pip install numpy pandas azure-cognitiveservices-vision-customvision tqdm pascal_voc_writer opencv-python-headless Pillow
 
       echo '--- Setting variables ---'
@@ -38,18 +39,9 @@ steps:
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
       aml_container=$(echo $aml_container_str | tr -d \")
-      cv_name=azodacv13
 
-      echo '--- Loading dataset ---'
-      az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d "." --recursive
-
-      echo '--- Transform into yolo annotation format ---'
-      python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
-
-      echo '--- Get Custom Vision secret from keyvault ---'
-      cv_key=$(az keyvault secret show --vault-name azoda-kv --name cvkey)
-      echo $cv_key
-
-      echo '--- Exporting dataset to Custom Vision project ---'
+      echo '--- Import new labels from Custom Vision project ---'
       cd src/auto_setup
-      python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
+      output_dir=azoda_test_output
+      python import_dataset_from_cv.py --key $(cv_key) --cv_name $(cv_name) --output_dir $output_dir
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s $output_dir -d '.' --recursive

@@ -1,6 +1,4 @@
-# pip install azure-cognitiveservices-vision-customvision
-# tqdm pascal_voc_writer opencv-python-headless
-# Tick responsible AI Notice - https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesComputerVision
+# pip install azure-cognitiveservices-vision-customvision tqdm pascal_voc_writer opencv-python-headless
 
 from azure.cognitiveservices.vision.customvision.training import (
     CustomVisionTrainingClient,
@@ -12,8 +10,6 @@ import cv2
 import numpy as np
 import os
 import requests
-
-# Manually making a project at https://www.customvision.ai/projects
 
 # Parse arguments
 parser = argparse.ArgumentParser()
@@ -81,14 +77,6 @@ else:
 
 def get_image_name(img_data):
     # If image is downloaded to Custom Vision manually, then it does not have name. In this case use ID as name.
-    try:
-        print(img_data.metadata.get("name"))
-    except:
-        print("No name in metadata")
-    try:
-        print(img_data.id)
-    except:
-        print("No id in img data")
     if img_data.metadata is not None:
         img_name = img_data.metadata.get("name")
     else:
