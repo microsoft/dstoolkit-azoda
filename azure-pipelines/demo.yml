@@ -55,7 +55,7 @@ steps:
       az ml workspace create -n $workspace_name -g $resource_group --file aml_config.yaml
 
       echo '--- Creating GPU compute instance ---'
-      az ml compute create --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute --idle-time-before-scale-down 1800
+      az ml compute create --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute
 
       echo '--- Fetching AML storage account name ---'
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
