@@ -74,8 +74,8 @@ That's it, you've set up the project. The pipeline should take about an hour to 
 
 ### Next Steps
 
-To use your own dataset, follow the steps [here](docs/use_your_dataset.md).
+To use your own dataset, follow the steps [here](use_your_dataset.md).
 
-To clear up all the resources created, follow the steps [here](docs/delete_project_resources.md). 
+To clear up all the resources created, follow the steps [here](delete_project_resources.md).
 
 Feel free to add more pipelines and make a pull request, we are planning to add more soon.
