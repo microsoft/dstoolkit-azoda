@@ -16,28 +16,17 @@ import os
 import yaml
 
 # %%
-# Parse arguments
-if False:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--subscription_id", type=str, help="Subscription ID")
-    parser.add_argument("--resource_group", type=str, help="Resource Group")
-    parser.add_argument(
-        "--key", type=str, help="Key for the specified custom vision deployment"
-    )
-    parser.add_argument("-d", "--dataset", help="Name of project/dataset")
-    parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
-    args = parser.parse_args()
-else:
 
-    class Obj:
-        pass
+parser = argparse.ArgumentParser()
+parser.add_argument("--subscription_id", type=str, help="Subscription ID")
+parser.add_argument("--resource_group", type=str, help="Resource Group")
+parser.add_argument(
+    "--key", type=str, help="Key for the specified custom vision deployment"
+)
+parser.add_argument("-d", "--dataset", help="Name of project/dataset")
+parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
+args = parser.parse_args()
 
-    args = Obj()
-    args.subscription_id = "3f49fc74-6863-4c64-afb1-0f0f83d8e773"
-    args.resource_group = "azoda-rg"
-    args.key = "d1c54cc36ab14bb0bad401e377f2d6a7"
-    args.dataset = "cats_and_dogs_dataset"  # "cats_and_dogs_dataset"
-    args.cv_name = "azodacv"
 # %%
 cv_project_name = "azoda_example_dataset"
 ENDPOINT = "https://westeurope.api.cognitive.microsoft.com/"
