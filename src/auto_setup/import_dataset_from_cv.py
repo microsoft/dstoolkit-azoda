@@ -14,23 +14,14 @@ import requests
 
 # %%
 # Parse arguments
-if False:
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--key", type=str, help="Key for the specified custom vision deployment"
-    )
-    parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
-    parser.add_argument("--output_dir", type=str, help="Download location")
-    args = parser.parse_args()
-else:
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--key", type=str, help="Key for the specified custom vision deployment"
+)
+parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
+parser.add_argument("--output_dir", type=str, help="Download location")
+args = parser.parse_args()
 
-    class Obj:
-        pass
-
-    args = Obj()
-    args.key = "d1c54cc36ab14bb0bad401e377f2d6a7"
-    args.cv_name = "azodacv"
-    args.output_dir = "azoda-rg"
 # %%
 # Replace with valid values
 cv_project_name = "azoda_example_dataset"
