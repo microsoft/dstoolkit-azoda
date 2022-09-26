@@ -73,7 +73,7 @@ else:
     labels = []
 
 # %%
-# labels = ["circle"]
+labels = ["circle"]
 label_tags = []
 for label in labels:
     label_tags.append(trainer.create_tag(project.id, label))
