@@ -4,8 +4,8 @@
 
 This walkthrough aims to set up your own object detection project as quickly and easily as possible. We will cover model training, deployment, testing and labelling integration. We will use a code generated dataset, but you can later replace the starter dataset with your own. The setup consists of the following steps:
 - Setup your Azure DevOps project
-- Import the code
 - Connect to your Azure Subscription
+- Import the code
 - Run the starter pipeline
 
 ## Setup
@@ -15,12 +15,6 @@ This walkthrough aims to set up your own object detection project as quickly and
 Azure DevOps (ADO) is a product for managing projects.
 
 Start a new project [here](https://dev.azure.com) and set it to Private. You may need to create a **New organisation** first if you don't have one yet. The Project name doesn't matter.
-
-### Import the code
-
-Next we need to get the code.
-
-On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-objectdetection-tensorflow-azureml, then the button **Import**.
 
 ### Connect to your Azure Subscription
 
@@ -56,6 +50,12 @@ az pipelines variable-group variable create --group-id $vargroup_id --name proje
 
 The script will take you to a webpage for authentication in order to connect your Azure DevOps account to your Azure subscription and store relevant output variables to the DevOps project.
 
+### Import the code
+
+Next we need to get the code.
+
+On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-azoda, then the button **Import**. While this repo is in Private mode you will need to fetch the PAT from the owner Daniel Baumann.
+
 ### Run the starter pipeline
 
 Now we can import and run pipelines from the connected repo to create resources on the Azure subscription. This will run the demo pipeline that does all the steps combined from setup to deployment.
@@ -73,6 +73,8 @@ In ADO, select the following:
 That's it, you've set up the project. The pipeline should take about an hour to complete all the steps.
 
 ### Next Steps
+
+To use the endpoint, follow the steps [here](use_endpoint.md).
 
 To use your own dataset, follow the steps [here](use_your_dataset.md).
 

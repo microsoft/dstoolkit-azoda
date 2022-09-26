@@ -1,3 +1,4 @@
+# %%
 # pip install azure-cognitiveservices-vision-customvision tqdm pascal_voc_writer opencv-python-headless
 
 from azure.cognitiveservices.vision.customvision.training import (
@@ -11,21 +12,32 @@ import numpy as np
 import os
 import requests
 
+# %%
 # Parse arguments
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--key", type=str, help="Key for the specified custom vision deployment"
-)
-parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
-parser.add_argument("--output_dir", type=str, help="Download location")
-args = parser.parse_args()
+if False:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--key", type=str, help="Key for the specified custom vision deployment"
+    )
+    parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource")
+    parser.add_argument("--output_dir", type=str, help="Download location")
+    args = parser.parse_args()
+else:
 
+    class Obj:
+        pass
+
+    args = Obj()
+    args.key = "d1c54cc36ab14bb0bad401e377f2d6a7"
+    args.cv_name = "azodacv"
+    args.output_dir = "azoda-rg"
+# %%
 # Replace with valid values
 cv_project_name = "azoda_example_dataset"
 key = args.key
 output_dir = args.output_dir
 cv_name = args.cv_name
-ENDPOINT = f"https://{cv_name}.cognitiveservices.azure.com/"
+ENDPOINT = f"https://westeurope.cognitiveservices.azure.com/"
 
 # Create authenticate client based on the given values
 credentials = ApiKeyCredentials(in_headers={"Training-key": key})
@@ -36,7 +48,7 @@ project_id = project.id
 
 # Test that it works. Print number of images in the project.
 print("Number of images in project:", client.get_tagged_image_count(project_id))
-
+# %%
 # Project tags
 tags = client.get_tags(project_id)
 defect_classes = []
@@ -48,7 +60,7 @@ for tag in tags:
 # Sort defect classes and print list
 defect_classes.sort()
 print("\nDefect Classes:\n", sorted(defect_classes))
-
+# %%
 # Define folder where to save imported data
 images_dir = os.path.join(output_dir, "images/")
 annotations_dir = os.path.join(output_dir, "annotations/")
@@ -149,3 +161,5 @@ while count > 0:
 
 # Print results
 print("\nDownloaded and saved", downloaded, "images and their metadata\n")
+
+# %%
