@@ -10,12 +10,15 @@ from azure.cognitiveservices.vision.customvision.training.models import (
     ImageFileCreateEntry,
     Region,
 )
+from datetime import datetime
 from msrest.authentication import ApiKeyCredentials
 import argparse
 import os
+import pandas as pd
 import yaml
 
 # %%
+# Parse arguments
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--subscription_id", type=str, help="Subscription ID")
@@ -28,7 +31,6 @@ parser.add_argument("--cv_name", type=str, help="Name of Custom Vision resource"
 args = parser.parse_args()
 
 # %%
-cv_project_name = "azoda_example_dataset"
 ENDPOINT = "https://westeurope.api.cognitive.microsoft.com/"
 credentials = ApiKeyCredentials(in_headers={"Training-key": args.key})
 trainer = CustomVisionTrainingClient(ENDPOINT, credentials)
@@ -40,7 +42,7 @@ obj_detection_domain = next(
 )
 
 print("Creating project...")
-project = trainer.create_project(cv_project_name, domain_id=obj_detection_domain.id)
+project = trainer.create_project(args.dataset, domain_id=obj_detection_domain.id)
 print(project.name)
 # %%
 base_data_location = args.dataset
@@ -77,6 +79,8 @@ labels = ["circle"]
 label_tags = []
 for label in labels:
     label_tags.append(trainer.create_tag(project.id, label))
+
+id_to_filename_dict = dict()
 
 for image_directory in image_directories:
     for image_filename in os.listdir(
@@ -127,11 +131,22 @@ for image_directory in image_directories:
             project.id,
             ImageFileCreateBatch(images=tagged_images_with_regions),
         )
+        if upload_result.images[-1].image:
+            id_to_filename_dict[upload_result.images[-1].image.id] = image_filename
         if not upload_result.is_batch_successful:
             print("Image batch upload failed.")
             for image in upload_result.images:
                 print("Image status: ", image.status)
             exit(-1)
         tagged_images_with_regions = []
+
+# %%
+for id in id_to_filename_dict:
+    print(id, ":", id_to_filename_dict[id])
+
+# %%
+time_stamp = datetime.now().strftime("%y%m%d%H%M%S")
+df = pd.DataFrame.from_dict(id_to_filename_dict, orient="index")
+df.to_csv(f"ids_to_filenames_{time_stamp}.csv")
 
 # %%

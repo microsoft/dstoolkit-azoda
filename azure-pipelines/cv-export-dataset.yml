@@ -27,7 +27,7 @@ steps:
       echo '--- Setting variables ---'
       workspace_name=azoda-amlw
       resource_group=azoda-rg
-      cv_name=azodacv15
+      cv_name=azodacv
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
