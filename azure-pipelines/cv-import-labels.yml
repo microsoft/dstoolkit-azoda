@@ -44,4 +44,4 @@ steps:
       cd src/auto_setup
       output_dir=azoda_test_output
       python import_dataset_from_cv.py --key $(cv_key) --cv_name $(cv_name) --output_dir $output_dir
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s $output_dir -d '.' --recursive
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s $output_dir -d '$(dataset)/datasets' --recursive
