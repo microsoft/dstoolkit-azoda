@@ -33,7 +33,9 @@ output_dir = args.output_dir
 cv_name = args.cv_name
 ENDPOINT = f"https://westeurope.cognitiveservices.azure.com/"
 
-map_path = util.get_lastest_iteration(".", req_prefix="ids_to_filenames")
+map_path = util.get_lastest_iteration(
+    f"{args.dataset}/datasets/", req_prefix="ids_to_filenames"
+)
 
 df = pd.read_csv(map_path, index_col=0)
 d = df.to_dict("split")
