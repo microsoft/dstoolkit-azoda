@@ -51,7 +51,7 @@ steps:
       python import_dataset_from_cv.py --key $cv_key --cv_name $cv_name --output_dir "temp" --dataset $(dataset)
 
       echo '--- Create train test split ---'
-      python create_dataset_splits.py
+      python create_dataset_splits.py --dataset $(dataset)
 
       echo '--- Move dataset csv files to the datasets directory'
       mv *.csv $(dataset)/datasets/
