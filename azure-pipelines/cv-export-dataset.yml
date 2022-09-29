@@ -27,7 +27,7 @@ steps:
       echo '--- Setting variables ---'
       workspace_name=azoda-amlw
       resource_group=azoda-rg
-      cv_name=azodacv15
+      cv_name=azodacv
       subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
       subscription_id=$(echo $subscription_id_str | tr -d \")
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
@@ -48,3 +48,6 @@ steps:
       echo '--- Exporting dataset to Custom Vision project ---'
       cd src/auto_setup
       python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
+
+      echo '--- Move filename mappings to dataset folder ---'
+      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s "*.csv" -d '$(dataset)/datasets' --recursive
