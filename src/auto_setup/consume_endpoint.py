@@ -6,7 +6,7 @@ import cv2
 import json
 import requests
 
-sample_image_path = "img_0.jpg"
+sample_image_path = "your_image_path"
 # Get this information from your AML endpoint under the Consume tab
 endpoint = "your_endpoint"
 api_key = "your_key"

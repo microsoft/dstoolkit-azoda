@@ -18,16 +18,13 @@ Start a new project [here](https://dev.azure.com) and set it to Private. You may
 
 ### Connect to your Azure Subscription
 
-In a bash terminal, run the following script once you've filled in your specific account details.
-
-The organisation and project names can be seen in the AzureDevOps URL in the format: https://dev.azure.com/<organization_name>/<project_name>/.../.
-To determine your subscription name, go to your [Azure portal](https://portal.azure.com) and search for **Subscriptions**. Here you will see of subscription names that you have access to, choose the one you want to use.
+In a bash terminal, run the following script and answer the three prompts. The organisation and project names can be seen in the AzureDevOps URL in the format: https://dev.azure.com/<organization_name>/<project_name>/.../.
+To determine your subscription name, go to your [Azure portal](https://portal.azure.com) and search for **Subscriptions**. Here you will see of subscription names that you have access to, choose the one you want to use. The script will then take you to a webpage for authentication in order to connect your Azure DevOps account to your Azure subscription and store relevant output variables to the DevOps project.
 
 ```
-organization_name="<input organization>"
-project_name="<input project name>"
-subscription_name="<Subscription name>"
-
+read -p "Enter organization name: " organization_name &&
+read -p "Enter project name: " project_name &&
+read -p "Enter subscription name: " subscription_name &&
 az login &&
 subscription_id=$(az account list --query "[?isDefault].id | [0]" | jq -r .) &&
 sp_name=azoda_sp &&
@@ -48,13 +45,11 @@ az pipelines variable-group variable create --group-id $vargroup_id --name proje
 
 ```
 
-The script will take you to a webpage for authentication in order to connect your Azure DevOps account to your Azure subscription and store relevant output variables to the DevOps project.
-
 ### Import the code
 
 Next we need to get the code.
 
-On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-azoda, then the button **Import**. While this repo is in Private mode you will need to fetch the PAT from the owner Daniel Baumann.
+On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-azoda, while this repo is in Private mode you will need to check the **Requires Authentication** box, then enter the Username and PAT fields (from the owner Daniel Baumann), then finally the button **Import**.
 
 ### Run the starter pipeline
 
@@ -66,7 +61,6 @@ In ADO, select the following:
 - **Azure Repos Git**
 - Select your project
 - **Existing Azure Pipelines YAML file**
-- Select the intended branch
 - Under **Path** select **/azure-pipelines/demo.yml** then **Continue**
 - **Run**
 
