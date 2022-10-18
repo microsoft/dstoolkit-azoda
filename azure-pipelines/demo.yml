@@ -21,10 +21,8 @@ jobs:
       inlineScript: |
       
         echo '--- Setting variables ---'
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
-        tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-        tenant_id=$(echo $tenant_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         workspace_name=azoda-amlw
         resource_group=azoda-rg
         location=westeurope
@@ -61,6 +59,7 @@ jobs:
         az ml compute create --min-instances 0 --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute --idle-time-before-scale-down 1800
         az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 1
         az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 0
+        
         echo '--- Fetching AML storage account name ---'
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
@@ -108,8 +107,7 @@ jobs:
         workspace_name=azoda-amlw
         resource_group=azoda-rg
         cv_name=azodacv
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
@@ -154,11 +152,9 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         echo 'subscription_id='$subscription_id
-        tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-        tenant_id=$(echo $tenant_id_str | tr -d \")
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")                                             
@@ -216,10 +212,8 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
-        tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-        tenant_id=$(echo $tenant_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
@@ -274,10 +268,8 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
-        tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-        tenant_id=$(echo $tenant_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
@@ -333,10 +325,8 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-        subscription_id=$(echo $subscription_id_str | tr -d \")
-        tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-        tenant_id=$(echo $tenant_id_str | tr -d \")
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
