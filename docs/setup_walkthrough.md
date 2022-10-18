@@ -40,9 +40,9 @@ az devops service-endpoint update --id $endpoint_id --enable-for-all &&
 vargroup_id=$(az pipelines variable-group create --name vars --variables dataset=synthetic_dataset service_principal_id=$AZURE_DEVOPS_EXT_AZURE_RM_SERVICE_PRINCIPAL_ID --authorize true | jq -r ".id") &&
 az pipelines variable-group variable create --group-id $vargroup_id --name service_principal_password --secret true --value $AZURE_DEVOPS_EXT_AZURE_RM_SERVICE_PRINCIPAL_KEY &&
 az pipelines variable-group variable create --group-id $vargroup_id --name vargroup_id --secret false --value $vargroup_id &&
-az pipelines variable-group variable create --group-id $vargroup_id --name organization_name --secret false --value $organization_name &&
-az pipelines variable-group variable create --group-id $vargroup_id --name project_name --secret false --value $project_name &&
-az pipelines variable-group variable create --group-id $vargroup_id --name subscription_name --secret false --value $subscription_name
+az pipelines variable-group variable create --group-id $vargroup_id --name organization_name --secret false --value "$organization_name" &&
+az pipelines variable-group variable create --group-id $vargroup_id --name project_name --secret false --value "$project_name" &&
+az pipelines variable-group variable create --group-id $vargroup_id --name subscription_name --secret false --value "$subscription_name"
 
 ```
 
