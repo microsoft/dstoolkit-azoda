@@ -28,7 +28,7 @@ jobs:
         location=westeurope
         acr_name=$(echo azoda$subscription_id | tr -d -)
         cv_name=azodacv
-        keyvault_name=azoda-kv
+        keyvault_name="azoda-kv-${subscription_id:0:12}"
         cv_secret_name=cvkey
 
         az devops service-endpoint list --query "sort_by([].{name:name}[? contains(name, 'ARMSC')], &name)"[0].name
@@ -120,7 +120,8 @@ jobs:
         python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
 
         echo '--- Get Custom Vision secret from keyvault ---'
-        cv_key=$(echo $(az keyvault secret show --vault-name azoda-kv --name cvkey | jq -r ".value"))
+        keyvault_name="azoda-kv-${subscription_id:0:12}"
+        cv_key=$(echo $(az keyvault secret show --vault-name $keyvault_name --name cvkey | jq -r ".value"))
         echo $cv_key
 
         echo '--- Exporting dataset to Custom Vision project ---'
