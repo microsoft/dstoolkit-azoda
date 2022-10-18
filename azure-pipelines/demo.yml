@@ -108,6 +108,7 @@ jobs:
         workspace_name=azoda-amlw
         resource_group=azoda-rg
         cv_name=azodacv
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
@@ -154,6 +155,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         echo 'subscription_id='$subscription_id
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
@@ -214,6 +216,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
@@ -270,6 +273,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
@@ -327,6 +331,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
