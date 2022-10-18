@@ -3,10 +3,13 @@
 To delete the project resources, use the following script:
 
 ```
-az keyvault delete --name azoda-kv --resource-group azoda-rg
-az ad sp delete --id <service principal id>
+subscription_id=<enter your subscription id>
+spn_id=<enter your service principal id>
+keyvault_name="azoda-kv-${subscription_id:0:12}"
+az keyvault delete --name $keyvault_name --resource-group azoda-rg
+az ad sp delete --id $spn_id
 az group delete --name azoda-rg --yes
-az keyvault purge --name azoda-kv
+az keyvault purge --name $keyvault_name
 az cognitiveservices account purge --location westeurope --resource-group azoda-rg --name azodacv
 ```
 
