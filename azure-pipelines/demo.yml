@@ -21,6 +21,7 @@ jobs:
       inlineScript: |
       
         echo '--- Setting variables ---'
+        subscription_name=$(subscription_name)
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         workspace_name=azoda-amlw
