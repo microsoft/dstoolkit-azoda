@@ -26,7 +26,7 @@ read -p "Enter organization name: " organization_name &&
 read -p "Enter project name: " project_name &&
 read -p "Enter subscription name: " subscription_name &&
 az login &&
-subscription_id=$(az account list --query "[?isDefault].id | [0]" | jq -r .) &&
+subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r) &&
 sp_name=azoda_sp &&
 sc_name=ARMSC &&
 az devops configure --defaults organization=https://dev.azure.com/$organization_name project=$project_name &&
