@@ -85,7 +85,15 @@ jobs:
         echo '--- Creating keyvault ---'
         az config set defaults.location=westeurope
         res=$(az keyvault list --resource-group $resource_group --query "[?name=='$keyvault_name'].name | [0]" | jq . -r)
-        if ((${#res}>0)); then   echo "Keyvault resource already exists! Skipping step."; else   az keyvault create --name $keyvault_name --resource-group $resource_group ; fi
+        if ((${#res}>0))
+        then
+          echo "Keyvault resource already exists! Deleting previous version before resetting."
+          az keyvault delete --name $keyvault_name --resource-group $resource_group
+          az keyvault purge --name $keyvault_name
+          az keyvault create --name $keyvault_name --resource-group $resource_group
+        else
+          az keyvault create --name $keyvault_name --resource-group $resource_group
+        fi
 
         echo '--- Store Custom Vision secret in keyvault ---'
         az keyvault secret set --name $cv_secret_name --value $key --vault-name $keyvault_name
@@ -110,7 +118,7 @@ jobs:
         workspace_name=azoda-amlw
         resource_group=azoda-rg
         cv_name=azodacv
-        subscription_name=$(subscription_name)
+        subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
@@ -157,7 +165,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_name=$(subscription_name)
+        subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         echo 'subscription_id='$subscription_id
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
@@ -218,7 +226,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_name=$(subscription_name)
+        subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
@@ -275,7 +283,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_name=$(subscription_name)
+        subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
@@ -333,7 +341,7 @@ jobs:
         echo '--- Setting variables ---'
         workspace_name=azoda-amlw
         resource_group=azoda-rg
-        subscription_name=$(subscription_name)
+        subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         echo 'tenant_id='$tenant_id
