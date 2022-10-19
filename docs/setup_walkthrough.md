@@ -27,7 +27,7 @@ read -p "Enter project name: " project_name &&
 read -p "Enter subscription name: " subscription_name &&
 az login &&
 subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r) &&
-sp_name=azoda_sp &&
+sp_name=azoda_sp_$subscription_id &&
 sc_name=ARMSC &&
 az devops configure --defaults organization=https://dev.azure.com/$organization_name project=$project_name &&
 sp_details=$(az ad sp create-for-rbac --name $sp_name --role Contributor --scopes /subscriptions/$subscription_id) &&
