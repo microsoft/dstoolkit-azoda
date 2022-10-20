@@ -9,11 +9,6 @@ variables:
 - group: vars
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.8'
-    addToPath: true
-    architecture: 'x64'
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'ARMSC'

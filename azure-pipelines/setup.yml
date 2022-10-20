@@ -15,70 +15,78 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
+        echo '--- Setting variables ---'
+        subscription_name="$(subscription_name)"
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
+        workspace_name=azoda-amlw
+        resource_group=azoda-rg
+        location=westeurope
+        acr_name=$(echo azoda$subscription_id | tr -d -)
+        cv_name=azodacv
+        keyvault_name="azoda-kv-${subscription_id:0:12}"
+        cv_secret_name=cvkey
 
-      echo '--- Setting variables ---'
-      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id=$(echo $subscription_id_str | tr -d \")
-      tenant_id_str=$(az account list --query "[?isDefault].tenantId|[0]")
-      tenant_id=$(echo $tenant_id_str | tr -d \")
-      workspace_name=azoda-amlw
-      resource_group=azoda-rg
-      location=westeurope
-      acr_name=$(echo azoda$subscription_id | tr -d -)
-      cv_name=azodacv15
-      keyvault_name=azoda-kv
-      cv_secret_name=cvkey
+        echo '--- Installing required libraries ---'
+        pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
 
-      az devops service-endpoint list --query "sort_by([].{name:name}[? contains(name, 'ARMSC')], &name)"[0].name
+        echo '--- Create resource group ---'
+        az group create --name $resource_group --location $location
 
-      echo '--- Installing required libraries ---'
-      pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
+        echo '--- Create a container registry ---'
+        az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
 
-      echo '--- Create resource group ---'
-      az group create --name $resource_group --location $location
+        echo '--- Setting automatic yes to prompts ---'
+        az config set extension.use_dynamic_install=yes_without_prompt
 
-      echo '--- Create a container registry ---'
-      az acr create --resource-group $resource_group --name $acr_name --sku Standard --admin-enabled true
+        echo '--- Creating a synthetic dataset ---'
+        python src/auto_setup/synthetic_dataset_creation.py
 
-      echo '--- Setting automatic yes to prompts ---'
-      az config set extension.use_dynamic_install=yes_without_prompt
+        echo '--- Creating AML config ---'
+        python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id --resource_group $resource_group --workspace $workspace_name --acr_name $acr_name
 
-      echo '--- Creating a synthetic dataset ---'
-      python src/auto_setup/synthetic_dataset_creation.py
+        echo '--- Creating AML Workspace ---'
+        az extension add -n ml -y
+        az ml workspace create -n $workspace_name -g $resource_group --file aml_config.yaml
 
-      echo '--- Creating AML config ---'
-      python src/auto_setup/write_aml_template_yaml.py --subscription $subscription_id --resource_group $resource_group --workspace $workspace_name --acr_name $acr_name
+        echo '--- Creating GPU compute instance ---'
+        az ml compute create --min-instances 0 --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute --idle-time-before-scale-down 1800
+        az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 1
+        az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 0
+        
+        echo '--- Fetching AML storage account name ---'
+        aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
+        aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
 
-      echo '--- Creating AML Workspace ---'
-      az extension add -n ml -y
-      az ml workspace create -n $workspace_name -g $resource_group --file aml_config.yaml
+        echo '--- Fetching AML container name ---'
+        aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+        aml_container=$(echo $aml_container_str | tr -d \")
 
-      echo '--- Creating GPU compute instance ---'
-      az ml compute create --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute --idle-time-before-scale-down 1800
+        echo '--- Uploading synthetic dataset to AML container ---'
+        az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
 
-      echo '--- Fetching AML storage account name ---'
-      aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
-      aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
+        echo '--- Setting devops configuration ---'
+        az devops configure --defaults organization=https://dev.azure.com/$(organization_name) project=$(project_name)
+        
+        echo '--- Creating Custom Vision resource ---'
+        res=$(az cognitiveservices list --resource-group $resource_group --query "[?name=='$cv_name'].name | [0]" | jq . -r)
+        if ((${#res}>0)); then   echo "Custom Vision resource already exists! Skipping step."; else   az cognitiveservices account create --name $cv_name --resource-group $resource_group --kind CustomVision.Training --sku F0 --location westeurope; fi
+        
+        echo '--- Getting Custom Vision key ---'
+        key=$(az cognitiveservices account keys list --name $cv_name --resource-group $resource_group | jq -r ".key1")
+        
+        echo '--- Creating keyvault ---'
+        az config set defaults.location=westeurope
+        res=$(az keyvault list --resource-group $resource_group --query "[?name=='$keyvault_name'].name | [0]" | jq . -r)
+        if ((${#res}>0))
+        then
+          echo "Keyvault resource already exists! Deleting previous version before resetting."
+          az keyvault delete --name $keyvault_name --resource-group $resource_group
+          az keyvault purge --name $keyvault_name
+          az keyvault create --name $keyvault_name --resource-group $resource_group
+        else
+          az keyvault create --name $keyvault_name --resource-group $resource_group
+        fi
 
-      echo '--- Fetching AML container name ---'
-      aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
-      aml_container=$(echo $aml_container_str | tr -d \")
-
-      echo '--- Uploading synthetic dataset to AML container ---'
-      az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s 'synthetic_dataset/' -d '.' --recursive
-
-      echo '--- Setting devops configuration ---'
-      az devops configure --defaults organization=https://dev.azure.com/$(organization_name) project=$(project_name)
-      
-      echo '--- Creating Custom Vision resource ---'
-      az cognitiveservices account create --name $cv_name --resource-group $resource_group --kind CustomVision.Training --sku F0 --location westeurope
-      
-      echo '--- Getting Custom Vision key ---'
-      key=$(az cognitiveservices account keys list --name $cv_name --resource-group $resource_group | jq -r ".key1")
-      
-      echo '--- Creating keyvault ---'
-      az config set defaults.location=westeurope
-      az keyvault create --name $keyvault_name --resource-group $resource_group
-
-      echo '--- Store Custom Vision secret in keyvault ---'
-      az keyvault secret set --name $cv_secret_name --value $key --vault-name $keyvault_name
+        echo '--- Store Custom Vision secret in keyvault ---'
+        az keyvault secret set --name $cv_secret_name --value $key --vault-name $keyvault_name
