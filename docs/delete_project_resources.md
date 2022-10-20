@@ -5,6 +5,7 @@ To delete the project resources, use the following script:
 ```
 subscription_id=<enter your subscription id>
 spn_id=<enter your service principal id>
+az login
 keyvault_name="azoda-kv-${subscription_id:0:12}"
 az keyvault delete --name $keyvault_name --resource-group azoda-rg
 az ad sp delete --id $spn_id
