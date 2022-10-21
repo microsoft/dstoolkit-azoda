@@ -146,7 +146,6 @@ jobs:
         cd ../../..
         pip install --upgrade cython
         pip install -r requirements.txt
-        pip freeze
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
 
@@ -256,7 +255,6 @@ jobs:
         git checkout fe7de6a82da3444d755453f86f40b508f3b99419
         cd ../../..
         pip install -r requirements.txt
-        pip freeze
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
 
