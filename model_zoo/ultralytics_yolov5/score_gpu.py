@@ -14,6 +14,7 @@ def init():
         path="ultralytics_yolov5/best.pt",
         source="local",
         force_reload=True,
+        device=0,
     )
 
 
