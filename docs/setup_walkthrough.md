@@ -48,7 +48,7 @@ az pipelines variable-group variable create --group-id $vargroup_id --name subsc
 
 ```
 
-If you get any errors, check that you have the prerequisites installed (explained [here](docs/prerequisites.md)) otherwise checked the troubleshooting page [here](docs/troubleshooting.md).
+If you get any errors, check that you have the prerequisites installed (explained [here](prerequisites.md)) otherwise checked the troubleshooting page [here](troubleshooting.md).
 
 ### Import the code
 
