@@ -19,7 +19,6 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-      
         echo '--- Setting variables ---'
         subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
@@ -31,8 +30,6 @@ jobs:
         cv_name=azodacv
         keyvault_name="azoda-kv-${subscription_id:0:12}"
         cv_secret_name=cvkey
-
-        az devops service-endpoint list --query "sort_by([].{name:name}[? contains(name, 'ARMSC')], &name)"[0].name
 
         echo '--- Installing required libraries ---'
         pip install azureml-sdk==1.39.0 numpy==1.22.3 opencv-python==4.5.5.62 pandas==1.4.1
@@ -104,14 +101,9 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-
         echo '--- Installing required libraries ---'
         az config set extension.use_dynamic_install=yes_without_prompt
-        
-        echo 'pip install azureml-sdk==1.39.0'
         az extension add -n ml -y
-        echo 'sudo apt install ffmpeg -y'
-        echo 'pip uninstall ffmpeg-python -y'
         pip install numpy pandas azure-cognitiveservices-vision-customvision tqdm pascal_voc_writer opencv-python-headless Pillow
 
         echo '--- Setting variables ---'
@@ -146,16 +138,12 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-
-        python --version
-        nvcc --version
         echo '--- Installing required libraries ---'
         cd model_zoo/ultralytics_yolov5
         git clone https://github.com/ultralytics/yolov5
         cd yolov5
         git checkout fe7de6a82da3444d755453f86f40b508f3b99419
         cd ../../..
-        
         pip install --upgrade cython
         pip install -r requirements.txt
         pip freeze
@@ -167,15 +155,11 @@ jobs:
         resource_group=azoda-rg
         subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
-        echo 'subscription_id='$subscription_id
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
-        echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")                                             
-        echo 'aml_storage_account_name='$aml_storage_account_name
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
         aml_container=$(echo $aml_container_str | tr -d \")
-        echo 'aml_container='$aml_container
 
         echo '--- Get dataset ---'
         az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
@@ -211,14 +195,12 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-
         echo '--- Installing required libraries ---'
         cd model_zoo/ultralytics_yolov5
         git clone https://github.com/ultralytics/yolov5
         cd yolov5
         git checkout fe7de6a82da3444d755453f86f40b508f3b99419
         cd ../../..
-        
         pip install -r requirements.txt
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
@@ -267,14 +249,12 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-
         echo '--- Installing required libraries ---'
         cd model_zoo/ultralytics_yolov5
         git clone https://github.com/ultralytics/yolov5
         cd yolov5
         git checkout fe7de6a82da3444d755453f86f40b508f3b99419
         cd ../../..
-        
         pip install -r requirements.txt
         pip freeze
         az config set extension.use_dynamic_install=yes_without_prompt
@@ -286,13 +266,11 @@ jobs:
         subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
-        echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
         echo 'aml_storage_account_name='$aml_storage_account_name
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
         aml_container=$(echo $aml_container_str | tr -d \")
-        echo 'aml_container='$aml_container
 
         echo '--- Get dataset ---'
         az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
@@ -327,7 +305,6 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-
         echo '--- Installing required libraries ---'
         cd model_zoo/ultralytics_yolov5
         git clone https://github.com/ultralytics/yolov5
@@ -344,13 +321,10 @@ jobs:
         subscription_name="$(subscription_name)"
         subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
-        echo 'tenant_id='$tenant_id
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
-        echo 'aml_storage_account_name='$aml_storage_account_name
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
         aml_container=$(echo $aml_container_str | tr -d \")
-        echo 'aml_container='$aml_container
         timestamp=$(date +%Y%m%d_%H%M%S)
 
         echo '--- Get latest model timestamp ---'
@@ -363,7 +337,7 @@ jobs:
 
         echo '--- Start inference deployment ---'
         cd model_zoo/ultralytics_yolov5/
-        python deploy_gpu_inference.py --tenant_id $tenant_id \
+        python deploy_cpu_inference.py --tenant_id $tenant_id \
                                       --service_principal_id $(service_principal_id) \
                                       --service_principal_password $(service_principal_password) \
                                       --subscription_id $subscription_id \
