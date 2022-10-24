@@ -61,5 +61,7 @@ In ADO, select the following:
 - Under name enter: **service_principal_id**, under value: **Application (client) ID from above**
 - Select **+Add**
 - Under name enter: **service_principal_password**, under value: **Application (client) Secret Value from above**
+- Repeat for **organization_name** and **project_name**, value in url: `https://dev.azure.com/<organization_name>/<project_name>/...`
+- Repeat for **subscription_name**, use the subscription used earlier, make sure to use the name for the value not the subscription id.
 - Click the lock icon next to passwords, keys and secrets to set the variable type to secret
 - Select **Save**
