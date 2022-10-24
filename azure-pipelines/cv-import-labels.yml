@@ -20,7 +20,6 @@ steps:
 
       pip install azureml-sdk==1.39.0
       az extension add -n ml -y
-      pip install --index-url https://pkgs.dev.azure.com/watchfor/WatchForTools/_packaging/w4Tools/pypi/simple/ watchfor-pixiev3==0.3.16
       sudo apt install ffmpeg -y
       pip uninstall ffmpeg-python -y
       pip install numpy pandas azure-cognitiveservices-vision-customvision tqdm pascal_voc_writer opencv-python-headless Pillow
