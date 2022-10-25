@@ -27,7 +27,7 @@ if response_str == "([], size=(0, 6))":
     bbs = []
 else:
     bbs = ast.literal_eval(response_str)
-image = cv2.imread(sample_image_path)
+image = cv2.imread(sample_image_path)[..., ::-1].copy()
 
 # Confidence threshold in percent
 conf_thres = 50
