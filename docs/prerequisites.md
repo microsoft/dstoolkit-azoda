@@ -18,7 +18,7 @@ Otherwise follow the installation instructions [here](https://learn.microsoft.co
 
 ## Azure DevOps CLI
 
-Azure DevOps CLI is an extension to Azure CLI to manage Azure DevOps Services. To install simply use>
+Azure DevOps CLI is an extension to Azure CLI to manage Azure DevOps Services. To install simply use:
 
 ``` az extension add --name azure-devops ```
 

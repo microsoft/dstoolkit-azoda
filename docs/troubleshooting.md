@@ -26,3 +26,7 @@ You can find your tenant id by searching for Tenant properties in your Azure Por
 ### Insufficient privileges
 
 If you receive an error about privileges, make sure that you have sufficient rights on the chosen subscription to make resources.
+
+### Script doesn't work
+
+If there isn't an easy fix to run the script, you can perform al the steps manually. These steps are described [here](manual_connection_process.md).
