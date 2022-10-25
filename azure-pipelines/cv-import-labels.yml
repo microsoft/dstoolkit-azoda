@@ -28,8 +28,9 @@ steps:
       cv_name=azodacv
       workspace_name=azoda-amlw
       resource_group=azoda-rg
-      subscription_id_str=$(az account list --query "[?isDefault].id | [0]")
-      subscription_id=$(echo $subscription_id_str | tr -d \")
+      subscription_name="$(subscription_name)"
+      subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+      keyvault_name="azoda-kv-${subscription_id:0:12}"
       aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
       aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
       aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
@@ -41,7 +42,7 @@ steps:
 
       echo '--- Import new labels from Custom Vision project ---'
       output_dir=azoda_test_output
-      cv_key=$(echo $(az keyvault secret show --vault-name azoda-kv --name cvkey | jq -r ".value"))
+      cv_key=$(echo $(az keyvault secret show --vault-name $keyvault_name --name cvkey | jq -r ".value"))
       python import_dataset_from_cv.py --key $cv_key --cv_name $cv_name --output_dir "temp" --dataset $(dataset)
 
       echo '--- Create train test split ---'
