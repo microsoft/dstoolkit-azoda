@@ -18,9 +18,9 @@ Start a new project [here](https://dev.azure.com) and set it to Private. You may
 
 ### Connect to your Azure Subscription
 
-If you think you might not have jq, az cli or azure-devops cli installed, click [here](prerequisites.md) for instructions on how to set these up.
+First check that you have az cli, azure-devops cli and jq installed and updated, click [here](prerequisites.md) for instructions on how to set these up.
 
-In a bash terminal, run the script below this paragraph and answer the three prompts. The organisation and project names can be seen in the AzureDevOps URL in the format: https://dev.azure.com/<organization_name>/<project_name>/.../.
+In a bash terminal (preferably using Ubuntu/Debian, git bash may give issues), run the script below this paragraph and answer the three prompts. The organisation and project names can be seen in the AzureDevOps URL in the format: https://dev.azure.com/<organization_name>/<project_name>/.../.
 To determine your subscription name, go to your [Azure portal](https://portal.azure.com) and search for **Subscriptions**. Here you will see of subscription names that you have access to, choose the one you want to use. The script will then take you to a webpage for authentication in order to connect your Azure DevOps account to your Azure subscription and store relevant output variables to the DevOps project.
 
 ```
@@ -48,7 +48,7 @@ az pipelines variable-group variable create --group-id $vargroup_id --name subsc
 
 ```
 
-If you get any errors, check that you have the prerequisites installed (explained [here](prerequisites.md)) otherwise checked the troubleshooting page [here](troubleshooting.md).
+If you get any errors, check that you have the prerequisites installed and updated (explained [here](prerequisites.md)) otherwise checked the troubleshooting page [here](troubleshooting.md).
 
 ### Import the code
 
