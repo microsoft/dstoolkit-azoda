@@ -131,6 +131,10 @@ jobs:
         echo '--- Exporting dataset to Custom Vision project ---'
         cd src/auto_setup
         python upload_dataset_to_cv.py --subscription_id $subscription_id --resource_group $resource_group --key $cv_key --dataset $(dataset) --cv_name $cv_name
+
+        echo '--- Move filename mappings to dataset folder ---'
+        az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s "*.csv" -d '$(dataset)/datasets' --recursive
+
   - task: AzureCLI@2
     displayName: Yolov5 Remote Model Training
     inputs:
