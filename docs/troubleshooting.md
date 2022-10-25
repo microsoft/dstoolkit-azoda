@@ -30,3 +30,7 @@ If you receive an error about privileges, make sure that you have sufficient rig
 ### Script doesn't work
 
 If there isn't an easy fix to run the script, you can perform al the steps manually. These steps are described [here](manual_connection_process.md).
+
+### Azure-devops won't update to the right version
+
+First remove the extension: `az extension remove --name azure-devops` then add it again: `az extension add --name azure-devops`.
