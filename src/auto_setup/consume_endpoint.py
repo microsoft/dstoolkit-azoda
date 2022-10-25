@@ -49,3 +49,4 @@ for bb in bbs:
 # Display results in interactive window
 Image.fromarray(image)
 # %%
+cv2.imwrite("output.png", image[..., ::-1].copy())
