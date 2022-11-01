@@ -54,7 +54,7 @@ If you get any errors, check that you have the prerequisites installed and updat
 
 Next we need to get the code.
 
-On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-azoda, while this repo is in Private mode you will need to check the **Requires Authentication** box, then enter the Username and PAT fields (from the owner Daniel Baumann), then finally the button **Import**.
+On the left side of ADO, click **Repos**, then the **Import** Button, inside the **Clone URL** field enter in the HTTPS github URL https://github.com/microsoft/dstoolkit-azoda, then the button **Import**.
 
 ### Run the starter pipeline
 
