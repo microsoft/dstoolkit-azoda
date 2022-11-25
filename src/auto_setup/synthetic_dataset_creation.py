@@ -5,11 +5,13 @@ import os
 import pandas as pd
 
 
-def add_rect(img: np.array):
+def add_rect(img: np.array, width: int, height: int):
     """Add a rectangle to the image in place.
 
     Args:
-        img (np.array): Array containing the image to add the rectangle to."""
+        img (np.array): Array containing the image to add the rectangle to.
+        width (int): Width of the image.
+        height (int): Height of the image."""
 
     # Generate two points
     pt1_x = np.random.randint(low=0, high=width)
@@ -36,11 +38,13 @@ def add_rect(img: np.array):
     )
 
 
-def add_circle(img: np.array, thickness="random", central=True) -> list:
+def add_circle(img: np.array, width: int, height: int, thickness="random", central=True) -> list:
     """Add a circle to the image in place.
 
     Args:
         img (np.array): Array containing the image to add the circle to.
+        width (int): Width of the image.
+        height (int): Height of the image.
         thickness (str, optional): Thickness of the circle. Defaults is "random".
         central (bool, optional): Whether the circle should be central. Defaults is True.
 
@@ -98,11 +102,13 @@ def add_circle(img: np.array, thickness="random", central=True) -> list:
     return [x_min, x_max, y_min, y_max]
 
 
-def add_line(img: np.array):
+def add_line(img: np.array, width: int, height: int):
     """Add a line to the image in place.
 
     Args:
-        img (np.array): Array containing the image to add the line to."""
+        img (np.array): Array containing the image to add the line to.
+        width (int): Width of the image.
+        height (int): Height of the image."""
 
     # Generate two points
     pt1_x = np.random.randint(low=0, high=width)
@@ -193,12 +199,12 @@ def generate_dataset(
 
         # Add 20 circles to the image and blur it
         for _ in range(20):
-            _ = add_circle(img, thickness=-1, central=False)
+            _ = add_circle(img, width, height, thickness=-1, central=False)
             img = add_blur(img)
 
         for _ in range(2):
             if np.random.rand() > 0.2:
-                bounding_box = add_circle(img)
+                bounding_box = add_circle(img, width, height)
 
                 # If this is a training image, add the bounding box to the training data or the test data accordingly
                 if img_number < (train_split * img_count):
@@ -226,13 +232,13 @@ def generate_dataset(
 
             # Add lines and rectangles with randomly probability
             if np.random.rand() > 0.2:
-                add_rect(img)
+                add_rect(img, width, height)
             if np.random.rand() > 0.2:
-                add_line(img)
+                add_line(img, width, height)
             if np.random.rand() > 0.2:
-                add_rect(img)
+                add_rect(img, width, height)
             if np.random.rand() > 0.2:
-                add_line(img)
+                add_line(img, width, height)
 
         cv2.imwrite(output_images + filename, img)
 
