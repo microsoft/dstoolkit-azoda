@@ -185,9 +185,6 @@ def generate_dataset(
     # Generate the output directories
     output_base, output_images, _ = make_directories(exp_name)
 
-    time_stamp = datetime.now().strftime("%y%m%d%H%M%S")
-    export_path_train = output_base + f"datasets/train_{exp_name}_{time_stamp}.csv"
-    export_path_test = output_base + f"datasets/test_{exp_name}_{time_stamp}.csv"
     row_data_train = []
     row_data_test = []
     np.random.seed(2022)
@@ -245,6 +242,13 @@ def generate_dataset(
         cv2.imwrite(output_images + filename, img)
 
     # Save the training data to a csv file
+    time_stamp = datetime.now().strftime("%y%m%d%H%M%S")
+    export_path_train = output_base + f"datasets/train_{exp_name}_{time_stamp}.csv"
+    export_path_test = output_base + f"datasets/test_{exp_name}_{time_stamp}.csv"
+
+    print(export_path_test)
+    print(export_path_train)
+
     column_names = ["filename", "xmin", "xmax", "ymin", "ymax", "class"]
     df_train = pd.DataFrame(row_data_train)
     df_train.columns = column_names
