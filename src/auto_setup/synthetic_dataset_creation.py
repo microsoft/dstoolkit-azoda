@@ -5,16 +5,28 @@ import os
 import pandas as pd
 
 
-def add_rect(img):
+def add_rect(img: np.array):
+    """Add a rectangle to the image in place.
+    
+    Args:
+        img (np.array): Array containing the image to add the rectangle to."""
+
+    # Generate two points
     pt1_x = np.random.randint(low=0, high=width)
     pt1_y = np.random.randint(low=0, high=height)
     pt2_x = np.random.randint(low=0, high=width)
     pt2_y = np.random.randint(low=0, high=height)
+
+    # Generate a random color
     clr1 = np.random.randint(low=0, high=255)
     clr2 = np.random.randint(low=0, high=255)
     clr3 = np.random.randint(low=0, high=255)
     rnd_clr = (clr1, clr2, clr3)
+
+    # Create a random thickness
     rnd_thickness = np.random.randint(low=2, high=10)
+
+    # Add the rectangle onto the image
     _ = cv2.rectangle(
         img,
         pt1=(pt1_x, pt1_y),
@@ -24,9 +36,21 @@ def add_rect(img):
     )
 
 
-def add_circle(img, thickness="random", central=True):
+def add_circle(img: np.array, thickness="random", central=True) -> list:
+    """Add a circle to the image in place.
+
+    Args:
+        img (np.array): Array containing the image to add the circle to.
+        thickness (str, optional): Thickness of the circle. Defaults is "random".
+        central (bool, optional): Whether the circle should be central. Defaults is True.
+        
+    Returns:
+        list: List containing a bounding box for the circle."""
+
     min_dim = min(width, height)
+
     if central:
+        # Calculate the center of the image
         lower_bound_width = width // 4
         upper_bound_width = 3 * width // 4
         lower_bound_height = height // 4
@@ -37,17 +61,26 @@ def add_circle(img, thickness="random", central=True):
         upper_bound_width = width
         lower_bound_height = 0
         upper_bound_height = height
+
+        # Generate a random radius
         radius = np.random.randint(low=5, high=min_dim)
+    
+    # Generate random point
     pt1_x = np.random.randint(low=lower_bound_width, high=upper_bound_width)
     pt1_y = np.random.randint(low=lower_bound_height, high=upper_bound_height)
+
+    # Generate random colour
     clr1 = np.random.randint(low=0, high=255)
     clr2 = np.random.randint(low=0, high=255)
     clr3 = np.random.randint(low=0, high=255)
     rnd_clr = (clr1, clr2, clr3)
+
     if thickness == -1:
         rnd_thickness = -1
     else:
         rnd_thickness = np.random.randint(low=2, high=10)
+
+    # Add the circle onto the image
     _ = cv2.circle(
         img,
         center=(pt1_x, pt1_y),
@@ -55,6 +88,8 @@ def add_circle(img, thickness="random", central=True):
         color=rnd_clr,
         thickness=rnd_thickness,
     )
+
+    # Return the bounding box for the circle
     x_min = pt1_x - radius
     x_max = pt1_x + radius
     y_min = pt1_y - radius
@@ -62,16 +97,28 @@ def add_circle(img, thickness="random", central=True):
     return [x_min, x_max, y_min, y_max]
 
 
-def add_line(img):
+def add_line(img: np.array):
+    """Add a line to the image in place.
+
+    Args:
+        img (np.array): Array containing the image to add the line to."""
+
+    # Generate two points
     pt1_x = np.random.randint(low=0, high=width)
     pt1_y = np.random.randint(low=0, high=height)
     pt2_x = np.random.randint(low=0, high=width)
     pt2_y = np.random.randint(low=0, high=height)
+
+    # Generate a random color
     clr1 = np.random.randint(low=0, high=255)
     clr2 = np.random.randint(low=0, high=255)
     clr3 = np.random.randint(low=0, high=255)
     rnd_clr = (clr1, clr2, clr3)
+
+    # Create a random thickness
     rnd_thickness = np.random.randint(low=2, high=10)
+
+    # Add the line onto the image
     _ = cv2.line(
         img,
         pt1=(pt1_x, pt1_y),
@@ -81,7 +128,15 @@ def add_line(img):
     )
 
 
-def add_blur(img):
+def add_blur(img: np.array) -> np.array:
+    """Add a blur to the image.
+    
+    Args:
+        img (np.array): Array containing the image to add the blur to.
+        
+    Returns:
+        np.array: Array containing the blurred image."""
+
     ksize = (101, 101)
     return cv2.blur(img, ksize, cv2.BORDER_DEFAULT)
 
