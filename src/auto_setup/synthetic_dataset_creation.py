@@ -38,7 +38,9 @@ def add_rect(img: np.array, width: int, height: int):
     )
 
 
-def add_circle(img: np.array, width: int, height: int, thickness="random", central=True) -> list:
+def add_circle(
+    img: np.array, width: int, height: int, thickness="random", central=True
+) -> list:
     """Add a circle to the image in place.
 
     Args:
@@ -197,7 +199,7 @@ def generate_dataset(
         # Create a blank image
         img = 255 * np.ones(shape=[height, width, 3], dtype=np.uint8)
 
-        # Add 20 circles to the image and blur it
+        # Add 20 circles to the image and blur it to create the background
         for _ in range(20):
             _ = add_circle(img, width, height, thickness=-1, central=False)
             img = add_blur(img)
