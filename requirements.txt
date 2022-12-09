@@ -1,4 +1,4 @@
-azureml-sdk==1.44.0
+azureml-sdk==1.45.0
 azure-mgmt-compute==27.2.0
 matplotlib==3.5.1
 numpy==1.22.3
