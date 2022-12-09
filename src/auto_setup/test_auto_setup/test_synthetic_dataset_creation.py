@@ -31,7 +31,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdirname:
             directory_name = tmpdirname + "/unit_test_generate_dataset"
 
-            test_image_file_count = 10
+            test_image_file_count = 100
             test_train_split = 0.8
             generate_dataset(
                 test_image_file_count, test_train_split, 100, 100, directory_name
