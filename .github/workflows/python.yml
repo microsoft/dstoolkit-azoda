@@ -22,7 +22,7 @@ jobs:
       - name: Run tests with UnitTest
         run: |
           ls
-          cd .\src\auto_setup\
+          cd src/auto_setup
           python -m unittest discover
 
   # job-lint:
