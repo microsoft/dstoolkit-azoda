@@ -182,6 +182,18 @@ def generate_dataset(
         height (int): Height of the image.
         directory_name (str): Name of the directory."""
 
+    if img_count < 0:
+        raise ValueError("img_count must be greater than 0")
+
+    if train_split <= 0 or train_split >= 1:
+        raise ValueError("train_split must be between 0 and 1")
+
+    if width < 0:
+        raise ValueError("width must be greater than 0")
+
+    if height < 0:
+        raise ValueError("height must be greater than 0")
+
     # Generate the output directories
     output_base, output_images, _ = make_directories(directory_name)
 
@@ -247,9 +259,6 @@ def generate_dataset(
     time_stamp = datetime.now().strftime("%y%m%d%H%M%S")
     export_path_train = output_base + f"datasets/train_{exp_name}_{time_stamp}.csv"
     export_path_test = output_base + f"datasets/test_{exp_name}_{time_stamp}.csv"
-
-    print(export_path_test)
-    print(export_path_train)
 
     column_names = ["filename", "xmin", "xmax", "ymin", "ymax", "class"]
     df_train = pd.DataFrame(row_data_train)
