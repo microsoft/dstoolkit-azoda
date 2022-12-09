@@ -13,27 +13,63 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         self.test_dir.close()
 
     def test_make_directories(self):
+        """Test the make_directories function."""
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as tmpdirname:
-            exp_name = tmpdirname + "/unit_test_make_directories"
-            _, _, _ = make_directories(exp_name)
+            directory_name = tmpdirname + "/unit_test_make_directories"
+            _, _, _ = make_directories(directory_name)
 
-            self.assertTrue(os.path.exists(exp_name))
-            self.assertTrue(os.path.exists(exp_name + "/images"))
-            self.assertTrue(os.path.exists(exp_name + "/datasets"))
+            self.assertTrue(os.path.exists(directory_name))
+            self.assertTrue(os.path.exists(directory_name + "/images"))
+            self.assertTrue(os.path.exists(directory_name + "/datasets"))
 
     def test_generate_dataset(self):
+        """Test the generate_dataset function."""
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as tmpdirname:
-            exp_name = tmpdirname + "/unit_test_generate_dataset"
+            directory_name = tmpdirname + "/unit_test_generate_dataset"
 
-            generate_dataset(10, 0.8, 100, 100, exp_name)
+            generate_dataset(10, 0.8, 100, 100, directory_name)
 
             # Check how many images were created
-            _, _, image_files = next(os.walk(exp_name + "/images"))
+            _, _, image_files = next(os.walk(directory_name + "/images"))
             image_file_count = len(image_files)
 
             self.assertEqual(image_file_count, 10)
+
+    def test_generate_dataset_invalid_img_count(self):
+        """Test the generate_dataset function with an invalid image count."""
+        with self.assertRaises(ValueError):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                directory_name = (
+                    tmpdirname + "/unit_test_generate_dataset_invalid_img_count"
+                )
+                generate_dataset(-5, 0.8, 100, 100, directory_name)
+
+    def test_generate_dataset_invalid_train_split(self):
+        """Test the generate_dataset function with an invalid train split."""
+        with self.assertRaises(ValueError):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                directory_name = tmpdirname + "/unit_test_generate_dataset_train_split"
+                generate_dataset(5, 1.8, 100, 100, directory_name)
+
+    def test_generate_dataset_invalid_width(self):
+        """Test the generate_dataset function with an invalid width."""
+        with self.assertRaises(ValueError):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                directory_name = (
+                    tmpdirname + "/unit_test_generate_dataset_invalid_width"
+                )
+                generate_dataset(5, 0.8, -100, 100, directory_name)
+
+    def test_generate_dataset_invalid_height(self):
+        """Test the generate_dataset function with an invalid height."""
+        with self.assertRaises(ValueError):
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                directory_name = (
+                    tmpdirname + "/unit_test_generate_dataset_invalid_height"
+                )
+                generate_dataset(5, 0.8, 100, -100, directory_name)
 
 
 if __name__ == "__main__":
