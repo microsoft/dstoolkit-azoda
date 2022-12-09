@@ -31,7 +31,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdirname:
             directory_name = tmpdirname + "/unit_test_generate_dataset"
 
-            test_image_file_count = 100
+            test_image_file_count = 10
             test_train_split = 0.8
             generate_dataset(
                 test_image_file_count, test_train_split, 100, 100, directory_name
@@ -54,7 +54,14 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
                 "{}/datasets/{}".format(directory_name, dataset_files[1])
             )
 
-            self.assertGreater(train_data.shape[0], test_data.shape[0])
+            self.assertLessEqual(
+                test_data.shape[0],
+                2 * ceil(test_image_file_count * (1 - test_train_split)),
+            )
+
+            self.assertLessEqual(
+                train_data.shape[0], 2 * ceil(test_image_file_count * test_train_split)
+            )
 
     def test_generate_dataset_invalid_img_count(self):
         """Test the generate_dataset function with an invalid image count."""
