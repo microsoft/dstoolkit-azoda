@@ -1,6 +1,8 @@
 import unittest
 import os
 import tempfile
+import pandas as pd
+from math import ceil
 
 from synthetic_dataset_creation import make_directories, generate_dataset
 
@@ -29,13 +31,38 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdirname:
             directory_name = tmpdirname + "/unit_test_generate_dataset"
 
-            generate_dataset(10, 0.8, 100, 100, directory_name)
+            test_image_file_count = 10
+            test_train_split = 0.8
+            generate_dataset(
+                test_image_file_count, test_train_split, 100, 100, directory_name
+            )
 
             # Check how many images were created
             _, _, image_files = next(os.walk(directory_name + "/images"))
             image_file_count = len(image_files)
 
-            self.assertEqual(image_file_count, 10)
+            self.assertEqual(image_file_count, test_image_file_count)
+
+            # Check records in the test and train datasets. The exact number is not known but train should be greater than test
+            _, _, dataset_files = next(os.walk(directory_name + "/datasets"))
+
+            test_data = pd.read_csv(
+                "{}/datasets/{}".format(directory_name, dataset_files[0])
+            )
+
+            train_data = pd.read_csv(
+                "{}/datasets/{}".format(directory_name, dataset_files[1])
+            )
+
+            self.assertGreater(
+                test_data.shape[0], ceil(test_image_file_count * (1 - test_train_split))
+            )
+
+            self.assertGreater(
+                train_data.shape[0], ceil(test_image_file_count * test_train_split)
+            )
+
+            self.assertGreater(train_data.shape[0], test_data.shape[0])
 
     def test_generate_dataset_invalid_img_count(self):
         """Test the generate_dataset function with an invalid image count."""
