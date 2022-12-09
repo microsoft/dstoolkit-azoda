@@ -161,9 +161,9 @@ def make_directories(exp_name: str):
         str: Path to the directory to put the images in.
         str: Path to the directory to put the labels in."""
 
-    output_base = f"{exp_name}/"
-    output_images = output_base + "images/"
-    output_datasets = output_base + "datasets/"
+    output_base = f"{exp_name}"
+    output_images = os.path.join(output_base, "images")
+    output_datasets = os.path.join(output_base, "datasets")
     os.makedirs(output_datasets)
     os.makedirs(output_images)
 
@@ -195,9 +195,9 @@ def generate_dataset(
         raise ValueError("height must be greater than 0")
 
     # Generate the output directories
-    output_base, output_images, _ = make_directories(directory_name)
+    _, output_images, output_datasets = make_directories(directory_name)
 
-    exp_name = directory_name.split("/")[-1]
+    exp_name = directory_name.split(os.sep)[-1]
 
     row_data_train = []
     row_data_test = []
@@ -219,7 +219,7 @@ def generate_dataset(
             if np.random.rand() > 0.2:
                 bounding_box = add_circle(img, width, height)
 
-                # If this is a training image, add the bounding box to the training data or the test data accordingly
+                # Add the bounding box to the training data or the test data accordingly
                 if img_number < (train_split * img_count):
                     row_data_train.append(
                         [
@@ -253,12 +253,16 @@ def generate_dataset(
             if np.random.rand() > 0.2:
                 add_line(img, width, height)
 
-        cv2.imwrite(output_images + filename, img)
+        cv2.imwrite(os.path.join(output_images, filename), img)
 
     # Save the training data to a csv file
     time_stamp = datetime.now().strftime("%y%m%d%H%M%S")
-    export_path_train = output_base + f"datasets/train_{exp_name}_{time_stamp}.csv"
-    export_path_test = output_base + f"datasets/test_{exp_name}_{time_stamp}.csv"
+    export_path_train = os.path.join(
+        output_datasets, f"train_{exp_name}_{time_stamp}.csv"
+    )
+    export_path_test = os.path.join(
+        output_datasets, f"test_{exp_name}_{time_stamp}.csv"
+    )
 
     column_names = ["filename", "xmin", "xmax", "ymin", "ymax", "class"]
     df_train = pd.DataFrame(row_data_train)
