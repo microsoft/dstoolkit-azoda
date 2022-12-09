@@ -10,7 +10,7 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -21,10 +21,11 @@ jobs:
           pip install -r requirements.txt
       - name: Run tests with pytest
         run: |
-          cd "src\auto_setup"
+          cd ".\src\auto_setup"
           python -m unittest discover
 
   job-lint:
+    name: Run Python Linting
     runs-on: ubuntu-latest
     strategy:
       matrix:
