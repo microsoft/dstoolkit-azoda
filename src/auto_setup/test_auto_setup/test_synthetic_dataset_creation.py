@@ -33,7 +33,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
             _, _, image_files = next(os.walk(exp_name + "/images"))
             image_file_count = len(image_files)
 
-            self.assert_equal(image_file_count, 10)
+            self.assertEqual(image_file_count, 10)
 
 
 if __name__ == "__main__":

@@ -171,7 +171,7 @@ def make_directories(exp_name: str):
 
 
 def generate_dataset(
-    img_count: int, train_split: float, width: int, height: int, exp_name: str
+    img_count: int, train_split: float, width: int, height: int, directory_name: str
 ):
     """Generate the dataset.
 
@@ -180,10 +180,12 @@ def generate_dataset(
         train_split (float): Split of images to use for training.
         width (int): Width of the image.
         height (int): Height of the image.
-        exp_name (str): Name of the experiment."""
+        directory_name (str): Name of the directory."""
 
     # Generate the output directories
-    output_base, output_images, _ = make_directories(exp_name)
+    output_base, output_images, _ = make_directories(directory_name)
+
+    exp_name = directory_name.split("/")[-1]
 
     row_data_train = []
     row_data_test = []
