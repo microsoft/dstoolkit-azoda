@@ -54,14 +54,6 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
                 "{}/datasets/{}".format(directory_name, dataset_files[1])
             )
 
-            self.assertGreater(
-                test_data.shape[0], ceil(test_image_file_count * (1 - test_train_split))
-            )
-
-            self.assertGreater(
-                train_data.shape[0], ceil(test_image_file_count * test_train_split)
-            )
-
             self.assertGreater(train_data.shape[0], test_data.shape[0])
 
     def test_generate_dataset_invalid_img_count(self):
