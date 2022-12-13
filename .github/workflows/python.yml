@@ -1,0 +1,46 @@
+name: Python Testing & Linting
+
+on: [push]
+
+jobs:
+  job-test:
+    name: Run Python Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests with UnitTest
+        run: |
+          ls
+          cd src/auto_setup
+          python -m unittest discover
+
+  # job-lint:
+  #   name: Run Python Linting
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.8", "3.9"]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Set up Python ${{ matrix.python-version }}
+  #       uses: actions/setup-python@v3
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install pylint
+  #     - name: Analysing the code with pylint
+  #       run: |
+  #         pylint $(git ls-files '*.py')
