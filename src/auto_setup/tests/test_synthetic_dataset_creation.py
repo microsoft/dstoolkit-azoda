@@ -75,7 +75,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with self.assertRaises(ValueError):
             with tempfile.TemporaryDirectory() as tmpdirname:
                 directory_name = os.path.join(
-                    tmpdirname, "/unit_test_generate_dataset_invalid_img_count"
+                    tmpdirname, "unit_test_generate_dataset_invalid_img_count"
                 )
                 generate_dataset(-5, 0.8, 100, 100, directory_name)
 
@@ -84,7 +84,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with self.assertRaises(ValueError):
             with tempfile.TemporaryDirectory() as tmpdirname:
                 directory_name = os.path.join(
-                    tmpdirname, "/unit_test_generate_dataset_train_split"
+                    tmpdirname, "unit_test_generate_dataset_train_split"
                 )
                 generate_dataset(5, 1.8, 100, 100, directory_name)
 
@@ -93,7 +93,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with self.assertRaises(ValueError):
             with tempfile.TemporaryDirectory() as tmpdirname:
                 directory_name = os.path.join(
-                    tmpdirname, "/unit_test_generate_dataset_invalid_width"
+                    tmpdirname, "unit_test_generate_dataset_invalid_width"
                 )
                 generate_dataset(5, 0.8, -100, 100, directory_name)
 
@@ -102,7 +102,7 @@ class TestSyntheticDatasetCreation(unittest.TestCase):
         with self.assertRaises(ValueError):
             with tempfile.TemporaryDirectory() as tmpdirname:
                 directory_name = os.path.join(
-                    tmpdirname, "/unit_test_generate_dataset_invalid_height"
+                    tmpdirname, "unit_test_generate_dataset_invalid_height"
                 )
                 generate_dataset(5, 0.8, 100, -100, directory_name)
 
