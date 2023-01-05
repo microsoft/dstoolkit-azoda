@@ -3,6 +3,7 @@ from unittest import mock
 import os
 import tempfile
 import argparse
+import yaml
 
 from write_aml_template_yaml import (
     generate_aml_config,
@@ -127,16 +128,16 @@ class TestWriteAMLTemplateYAML(unittest.TestCase):
     def test_save_aml_config(self):
         """Test the save_aml_config function."""
         # Create a temporary directory
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            config_file_name = os.path.join(
-                tmpdirname, "unit_test_save_aml_config", "aml_config.yml"
-            )
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            # Close the file so it can be used in another function
+            tmpfile.close()
 
             subscription = "azoda-sub"
             resource_group = "azoda-rg"
             acr_name = "azoda-cr"
             workspace = "azoda-amlw"
 
+            # Create config
             config_dict = generate_aml_config(
                 subscription,
                 resource_group,
@@ -146,10 +147,23 @@ class TestWriteAMLTemplateYAML(unittest.TestCase):
 
             save_aml_config(
                 config_dict,
-                config_file_name,
+                tmpfile.name,
             )
 
-            self.assertTrue(os.path.exists(config_file_name))
+            # Check if file exists
+            self.assertTrue(os.path.exists(tmpfile.name))
+
+            with open(tmpfile.name, "r") as file:
+                # Load and check contents
+                config = yaml.safe_load(file)
+
+                container_reg = (
+                    f"/subscriptions/{subscription}/resourceGroups/{resource_group}/"
+                    f"providers/Microsoft.ContainerRegistry/registries/{acr_name}"
+                )
+
+                self.assertEqual(config["name"], workspace)
+                self.assertEqual(config["container_registry"], container_reg)
 
 
 if __name__ == "__main__":

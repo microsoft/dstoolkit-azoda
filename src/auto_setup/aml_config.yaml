@@ -1,0 +1,9 @@
+$schema: https://azuremlschemas.azureedge.net/latest/workspace.schema.json
+container_registry: /subscriptions/azoda-sub/resourceGroups/azoda-rg/providers/Microsoft.ContainerRegistry/registries/azoda-cr
+description: ''
+display_name: Basic workspace
+hbi_workspace: false
+location: westeurope
+name: azoda-amlw
+tags:
+  purpose: setup
