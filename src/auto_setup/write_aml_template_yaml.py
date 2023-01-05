@@ -77,7 +77,6 @@ def save_aml_config(config_dict, filename):
         config_dict (dict): Dictionary containing the config for Azure ML.
         filename (str): Filename to save the config to.
     """
-
     with open(filename, "w") as file:
         yaml.dump(config_dict, file)
 
