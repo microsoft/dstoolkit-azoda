@@ -10,8 +10,10 @@ import util
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--dataset", help="Name of dataset/project")
+parser.add_argument("-m", "--model", help="Name of model", default="yolo")
 args = parser.parse_args()
 dataset_name = args.dataset
+model_name = args.model
 base_dir = f"{dataset_name}"
 datasets_dir = os.path.join(base_dir, "datasets/")
 os.makedirs(datasets_dir, exist_ok=True)
@@ -118,13 +120,21 @@ for annotation_path in dataset_paths:
 
 # Make yaml
 class_list = str(sorted(list(class_id_dict)))
-lines = (
-    f"path: ../../{dataset_name}/yolo\n"
-    f"train: images/{os.path.basename(train_path)[:-4]}\n"
-    f"val: images/{os.path.basename(test_path)[:-4]}\n"
-    f"nc: {len(list(class_id_dict))}\n"
-    f"names: {class_list}\n"
-)
+if model_name.startswith("yolo"):
+    lines = (
+        f"train: ../../{dataset_name}/yolo/images/{os.path.basename(train_path)[:-4]}\n"
+        f"val: ../../{dataset_name}/yolo/images/{os.path.basename(test_path)[:-4]}\n"
+        f"nc: {len(list(class_id_dict))}\n"
+        f"names: {class_list}\n"
+    )
+else:
+    lines = (
+        f"path: ../../{dataset_name}/yolo\n"
+        f"train: images/{os.path.basename(train_path)[:-4]}\n"
+        f"val: images/{os.path.basename(test_path)[:-4]}\n"
+        f"nc: {len(list(class_id_dict))}\n"
+        f"names: {class_list}\n"
+    )
 
 with open(f"{dataset_name}.yaml", "w") as f:
     f.writelines(lines)
