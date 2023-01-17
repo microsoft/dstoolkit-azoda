@@ -18,7 +18,13 @@ parser.add_argument("--workspace_name", type=str, help="Workspace Name")
 parser.add_argument("--mode", type=str, help="train/infer/test")
 parser.add_argument("--epochs", type=str, default="5", help="Number of training epochs")
 parser.add_argument(
-    "--model", type=str, default="yolov5s", help="Number of training epochs"
+    "--model", type=str, default="yolov5s", help="Name of pretrained model"
+)
+parser.add_argument(
+    "--model_source",
+    type=str,
+    default="wongkinyiu_yolov7",
+    help="Choice of model from model zoo",
 )
 
 args = parser.parse_args()
@@ -39,9 +45,17 @@ env = Environment.from_conda_specification(
 )
 env.docker.base_image = DEFAULT_GPU_IMAGE
 datastore = ws.get_default_datastore()
+
+if args.model_source == "ultralytics_yolov5":
+    model_src_dir = "model_zoo/ultralytics_yolov5/"
+elif args.model_source == "wongkinyiu_yolov7":
+    model_src_dir = "model_zoo/wongkinyiu_yolov7/"
+else:
+    raise ValueError("Invalid model class. Please check the model_source argument")
+
 if args.mode == "train":
     src = ScriptRunConfig(
-        source_directory="model_zoo/ultralytics_yolov5/",
+        source_directory=model_src_dir,
         script="train_coordinator.py",
         compute_target="gpu-1",
         environment=env,
@@ -65,7 +79,7 @@ if args.mode == "train":
     )
 elif args.mode == "infer":
     src = ScriptRunConfig(
-        source_directory="model_zoo/ultralytics_yolov5/",
+        source_directory=model_src_dir,
         script="infer_coordinator.py",
         compute_target="gpu-1",
         environment=env,
@@ -88,7 +102,7 @@ elif args.mode == "infer":
     )
 elif args.mode == "test":
     src = ScriptRunConfig(
-        source_directory="model_zoo/ultralytics_yolov5/",
+        source_directory=model_src_dir,
         script="test_coordinator.py",
         compute_target="gpu-1",
         environment=env,
