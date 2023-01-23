@@ -13,7 +13,7 @@ print("Editing config")
 with open(f"{args.dataset}.yaml") as f:
     lines = f.readlines()
 print(lines)
-lines[0] = f"\n"
+# lines[0] = f"\n"
 print("After edit:")
 print(lines)
 with open(f"{args.dataset}.yaml", "w") as f:
@@ -22,10 +22,10 @@ with open(f"{args.dataset}.yaml", "w") as f:
 # project must be set to outputs, since the AML saves results in the outputs directory
 print("Start training")
 os.system(
-    f"python yolov5/train.py \
+    f"python yolov7/train.py \
           --batch-size {args.batch_size} \
-          --cfg {args.cfg} \
           --data {args.dataset}.yaml \
           --epochs {args.epochs} \
-          --project outputs/"
+          --project outputs/ \
+          --weights ''"
 )

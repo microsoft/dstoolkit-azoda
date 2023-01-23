@@ -40,18 +40,31 @@ ws = Workspace.get(
     auth=sp,
 )
 time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-env = Environment.from_conda_specification(
-    name="myenv", file_path="model_zoo/ultralytics_yolov5/myenv.yml"
-)
-env.docker.base_image = DEFAULT_GPU_IMAGE
 datastore = ws.get_default_datastore()
 
 if args.model_source == "ultralytics_yolov5":
     model_src_dir = "model_zoo/ultralytics_yolov5/"
+    env = Environment.from_conda_specification(
+        name="myenv", file_path="model_zoo/ultralytics_yolov5/myenv.yml"
+    )
+    env.docker.base_image = DEFAULT_GPU_IMAGE
 elif args.model_source == "wongkinyiu_yolov7":
-    model_src_dir = "model_zoo/wongkinyiu_yolov7/"
+    model_src_dir = "model_zoo/wongkinyiu_yolov7/yolov7"
+    env = Environment.from_conda_specification(
+        "myenv", file_path="model_zoo/wongkinyiu_yolov7/myenv.yml"
+    )
+    env.docker.base_image = DEFAULT_GPU_IMAGE
 else:
     raise ValueError("Invalid model class. Please check the model_source argument")
+
+dockerfile = r"""
+FROM mcr.microsoft.com/azureml/openmpi3.1.2-cuda10.1-cudnn7-ubuntu18.04
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6 -y
+"""
+env.docker.base_image = None
+env.docker.base_dockerfile = dockerfile
+
 
 if args.mode == "train":
     src = ScriptRunConfig(
