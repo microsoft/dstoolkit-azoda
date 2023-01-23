@@ -1,0 +1,56 @@
+name: Yolov5 Model Deployment
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-20.04
+
+variables:
+- group: vars
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+        echo '--- Installing required libraries ---'
+        cd model_zoo/ultralytics_yolov5
+        git clone https://github.com/ultralytics/yolov5
+        cd yolov5
+        git checkout fe7de6a82da3444d755453f86f40b508f3b99419
+        cd ../../..
+        pip install -r requirements.txt
+        az config set extension.use_dynamic_install=yes_without_prompt
+        az extension add -n ml -y
+
+        echo '--- Setting variables ---'
+        workspace_name=azoda-amlw
+        resource_group=azoda-rg
+        subscription_name="$(subscription_name)"
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
+        aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
+        aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
+        aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+        aml_container=$(echo $aml_container_str | tr -d \")
+        timestamp=$(date +%Y%m%d_%H%M%S)
+
+        echo '--- Get latest model timestamp ---'
+        latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov5_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+        latest_timestamp=${latest_checkpoint:15:13}
+        echo 'latest model='$latest_timestamp
+
+        echo '--- Get model ---'
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/best.pt -d model_zoo/ultralytics_yolov5/
+
+        echo '--- Start inference deployment ---'
+        cd model_zoo/ultralytics_yolov5/
+        python deploy_cpu_inference.py --tenant_id $tenant_id \
+                                      --service_principal_id $(service_principal_id) \
+                                      --service_principal_password $(service_principal_password) \
+                                      --subscription_id $subscription_id \
+                                      --resource_group $resource_group \
+                                      --workspace_name $workspace_name \
+                                      --dataset $(dataset)
