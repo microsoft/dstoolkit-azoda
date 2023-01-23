@@ -4,6 +4,7 @@ from azureml.core.environment import Environment, DEFAULT_GPU_IMAGE
 from azureml.data.datapath import DataPath
 from datetime import datetime
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, help="Dataset name")
@@ -48,12 +49,14 @@ if args.model_source == "ultralytics_yolov5":
         name="myenv", file_path="model_zoo/ultralytics_yolov5/myenv.yml"
     )
     env.docker.base_image = DEFAULT_GPU_IMAGE
+    upload_base_dir = "yolov5"
 elif args.model_source == "wongkinyiu_yolov7":
-    model_src_dir = "model_zoo/wongkinyiu_yolov7/yolov7"
+    model_src_dir = "model_zoo/wongkinyiu_yolov7/"
     env = Environment.from_conda_specification(
         "myenv", file_path="model_zoo/wongkinyiu_yolov7/myenv.yml"
     )
     env.docker.base_image = DEFAULT_GPU_IMAGE
+    upload_base_dir = "yolov7"
 else:
     raise ValueError("Invalid model class. Please check the model_source argument")
 
@@ -64,7 +67,6 @@ RUN apt-get install ffmpeg libsm6 libxext6 -y
 """
 env.docker.base_image = None
 env.docker.base_dockerfile = dockerfile
-
 
 if args.mode == "train":
     src = ScriptRunConfig(
@@ -87,8 +89,12 @@ if args.mode == "train":
     run = Experiment(workspace=ws, name="azoda_train").submit(config=src)
     run.wait_for_completion(show_output=True)
     run.download_files("outputs")
+    os.system("echo After download:")
+    os.system("pwd")
+    os.system("ls -l")
     Dataset.File.upload_directory(
-        src_dir="outputs/", target=DataPath(datastore, f"yolov5_models/{time_stamp}/")
+        src_dir="outputs/",
+        target=DataPath(datastore, f"{upload_base_dir}_models/{time_stamp}/"),
     )
 elif args.mode == "infer":
     src = ScriptRunConfig(
@@ -111,7 +117,7 @@ elif args.mode == "infer":
     run.download_files("outputs")
     Dataset.File.upload_directory(
         src_dir="outputs/",
-        target=DataPath(datastore, f"yolov5_inferences/{time_stamp}/"),
+        target=DataPath(datastore, f"{upload_base_dir}_inferences/{time_stamp}/"),
     )
 elif args.mode == "test":
     src = ScriptRunConfig(
@@ -133,9 +139,10 @@ elif args.mode == "test":
     print("Starting run")
     run = Experiment(workspace=ws, name="azoda_test").submit(config=src)
     run.wait_for_completion(show_output=True)
-    run.download_files("outputs")
+    run.download_files("outputs/")
     Dataset.File.upload_directory(
-        src_dir="outputs/", target=DataPath(datastore, f"yolov5_tests/{time_stamp}/")
+        src_dir="outputs/",
+        target=DataPath(datastore, f"{upload_base_dir}_tests/{time_stamp}/"),
     )
 else:
     print("Invalid argument for mode. Please choose from ['train', 'infer', 'test']")

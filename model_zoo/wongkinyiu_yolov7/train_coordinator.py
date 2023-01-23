@@ -10,22 +10,27 @@ args = parser.parse_args()
 
 print("Editing config")
 # Updates the dataset location
-with open(f"{args.dataset}.yaml") as f:
+with open(f"yolov7/{args.dataset}.yaml") as f:
     lines = f.readlines()
 print(lines)
 # lines[0] = f"\n"
 print("After edit:")
 print(lines)
-with open(f"{args.dataset}.yaml", "w") as f:
+with open(f"yolov7/{args.dataset}.yaml", "w") as f:
     f.writelines(lines)
 
 # project must be set to outputs, since the AML saves results in the outputs directory
 print("Start training")
+os.chdir("yolov7/")
+os.system("pwd")
+os.system("ls -l")
 os.system(
-    f"python yolov7/train.py \
+    f"python train.py \
           --batch-size {args.batch_size} \
           --data {args.dataset}.yaml \
           --epochs {args.epochs} \
           --project outputs/ \
-          --weights ''"
+          --weights yolov7.pt"
 )
+os.system("echo After training:")
+os.system("ls -l")

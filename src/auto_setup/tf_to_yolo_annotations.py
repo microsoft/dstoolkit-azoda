@@ -122,8 +122,8 @@ for annotation_path in dataset_paths:
 class_list = str(sorted(list(class_id_dict)))
 if model_name.startswith("yolov7"):
     lines = (
-        f"train: ../../../{dataset_name}/yolo/images/{os.path.basename(train_path)[:-4]}\n"
-        f"val: ../../../{dataset_name}/yolo/images/{os.path.basename(test_path)[:-4]}\n"
+        f"train: ../{dataset_name}/yolo/images/{os.path.basename(train_path)[:-4]}\n"
+        f"val: ../{dataset_name}/yolo/images/{os.path.basename(test_path)[:-4]}\n"
         f"nc: {len(list(class_id_dict))}\n"
         f"names: {class_list}\n"
     )

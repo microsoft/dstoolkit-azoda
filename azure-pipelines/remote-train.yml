@@ -17,8 +17,6 @@ steps:
     inlineScript: |
         echo '--- Installing required libraries ---'
         cd model_zoo/ultralytics_yolov5
-
-        
         git clone https://github.com/ultralytics/yolov5
         cd yolov5
         git checkout fe7de6a82da3444d755453f86f40b508f3b99419
@@ -43,7 +41,7 @@ steps:
         az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
 
         echo '--- Transform into yolo annotation format ---'
-        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
+        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model yolov5
 
         echo '--- Writing aml config.json ---'
         jq -n --arg subscription_id $subscription_id \
@@ -65,4 +63,5 @@ steps:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 40
+                                                    --epochs 1 \
+                                                    --model_source ultralytics_yolov5

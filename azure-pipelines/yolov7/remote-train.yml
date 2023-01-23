@@ -53,7 +53,7 @@ steps:
         cat config.json
         
         cat $(dataset).yaml
-        mv $(dataset).yaml model_zoo/wongkinyiu_yolov7/
+        mv $(dataset).yaml model_zoo/wongkinyiu_yolov7/yolov7/
         mv $(dataset) model_zoo/wongkinyiu_yolov7/
 
         echo '--- Start remote training job ---'
@@ -65,4 +65,4 @@ steps:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 4
+                                                    --epochs 1
