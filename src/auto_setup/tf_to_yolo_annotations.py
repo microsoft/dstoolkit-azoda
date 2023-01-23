@@ -10,7 +10,7 @@ import util
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--dataset", help="Name of dataset/project")
-parser.add_argument("-m", "--model", help="Name of model", default="yolo")
+parser.add_argument("-m", "--model", help="Name of model", default="yolov7")
 args = parser.parse_args()
 dataset_name = args.dataset
 model_name = args.model
@@ -120,10 +120,10 @@ for annotation_path in dataset_paths:
 
 # Make yaml
 class_list = str(sorted(list(class_id_dict)))
-if model_name.startswith("yolo"):
+if model_name.startswith("yolov7"):
     lines = (
-        f"train: ../../{dataset_name}/yolo/images/{os.path.basename(train_path)[:-4]}\n"
-        f"val: ../../{dataset_name}/yolo/images/{os.path.basename(test_path)[:-4]}\n"
+        f"train: ../../../{dataset_name}/yolo/images/{os.path.basename(train_path)[:-4]}\n"
+        f"val: ../../../{dataset_name}/yolo/images/{os.path.basename(test_path)[:-4]}\n"
         f"nc: {len(list(class_id_dict))}\n"
         f"names: {class_list}\n"
     )

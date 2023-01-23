@@ -16,7 +16,6 @@ import argparse
 import os
 import pandas as pd
 import util
-import yaml
 
 # %%
 # Parse arguments
