@@ -516,3 +516,4 @@ cython_debug/
 azure-pipelines/yolov7/
 model_zoo/ultralytics/
 model_zoo/wongkinyiu_yolov7/yolov7/
+model_zoo/wongkinyiu_yolov7/runs/
