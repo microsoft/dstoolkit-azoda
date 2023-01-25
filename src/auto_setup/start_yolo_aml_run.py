@@ -61,6 +61,15 @@ elif args.model_source == "wongkinyiu_yolov7":
     upload_base_dir = "yolov7"
     images_dir = f"../{args.dataset}/images/"
     weights_dir = "../loaded_weights/best.pt"
+elif args.model_source == "ultralytics_yolov8":
+    model_src_dir = "model_zoo/ultralytics_yolov8/"
+    env = Environment.from_conda_specification(
+        "myenv", file_path="model_zoo/ultralytics_yolov8/myenv.yml"
+    )
+    env.docker.base_image = DEFAULT_GPU_IMAGE
+    upload_base_dir = "yolov8"
+    images_dir = f"../{args.dataset}/images/"
+    weights_dir = "../loaded_weights/best.pt"
 else:
     raise ValueError("Invalid model class. Please check the model_source argument")
 
