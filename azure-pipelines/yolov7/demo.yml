@@ -136,7 +136,7 @@ jobs:
         az storage blob directory upload -c $aml_container --account-name $aml_storage_account_name -s "*.csv" -d '$(dataset)/datasets' --recursive
 
   - task: AzureCLI@2
-    displayName: Yolov5 Remote Model Training
+    displayName: Yolov7 Remote Model Training
     inputs:
       azureSubscription: 'ARMSC'
       scriptType: 'bash'
@@ -192,9 +192,10 @@ jobs:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 40
+                                                    --epochs 40 \
+                                                    --model_source wongkinyiu_yolov7
   - task: AzureCLI@2
-    displayName: Yolov5 Remote Model Testing
+    displayName: Yolov7 Remote Model Testing
     inputs:
       azureSubscription: 'ARMSC'
       scriptType: 'bash'
@@ -230,7 +231,7 @@ jobs:
         echo $latest_timestamp
         
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov7_models/$latest_timestamp/exp/weights/ -d model_zoo/wongkinyiu_yolov7/loaded_weights/ --recursive
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov7_models/$latest_timestamp/exp/weights/best.pt -d model_zoo/wongkinyiu_yolov7/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
         python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
@@ -249,7 +250,7 @@ jobs:
                                                     --mode test \
                                                     --model_source wongkinyiu_yolov7
   - task: AzureCLI@2
-    displayName: Yolov5 Remote Model Inferencing
+    displayName: Yolov7 Remote Model Inferencing
     inputs:
       azureSubscription: 'ARMSC'
       scriptType: 'bash'
@@ -304,7 +305,7 @@ jobs:
                                                     --mode infer \
                                                     --model_source wongkinyiu_yolov7
   - task: AzureCLI@2
-    displayName: Yolov5 Model Deployment
+    displayName: Yolov7 Model Deployment
     inputs:
       azureSubscription: 'ARMSC'
       scriptType: 'bash'

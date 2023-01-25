@@ -65,4 +65,5 @@ steps:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 1
+                                                    --epochs 1 \
+                                                    --model_source wongkinyiu_yolov7

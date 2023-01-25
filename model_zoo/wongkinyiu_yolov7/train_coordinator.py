@@ -30,7 +30,7 @@ os.system(
           --batch-size {args.batch_size} \
           --data {args.dataset}.yaml \
           --epochs {args.epochs} \
-          --project outputs/ \
+          --project ../outputs/ \
           --weights yolov7.pt"
 )
 os.system("echo After training:")
