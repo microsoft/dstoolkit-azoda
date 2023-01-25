@@ -8,7 +8,10 @@ dependencies:
   - azureml-contrib-services
   - azureml-core==1.44
   - Cython==0.29.17
+  - Flask==1.1.1
   - ipython
+  - itsdangerous==2.0.1
+  - Jinja2==3.0.3
   - matplotlib>=3.2.2
   - numpy>=1.18.5,<1.24.0
   - opencv-python>=4.1.1
@@ -25,8 +28,9 @@ dependencies:
   - torch==1.7.1
   - torchvision==0.8.2
   - torchaudio==0.7.2
-  - tqdm>=4.41.0
+  - tqdm>=4.41.
+  - werkzeug==2.0.3
 channels:
 - pytorch
 - conda-forge
-- defaults
+- defaults 

@@ -8,12 +8,15 @@ parser.add_argument("--conf", type=str, help="Confidence threshold")
 args = parser.parse_args()
 
 # project must be set to outputs, since the AML saves results in the outputs directory
-print('Start inferencing')
-os.system(f"python yolov5/detect.py \
+print("Start inferencing")
+os.chdir("yolov7/")
+os.system(
+    f"python detect.py \
           --conf-thres {args.conf} \
-          --project outputs/ \
+          --project ../outputs/ \
           --save-conf \
           --save-txt \
           --source {args.images} \
-          --weights {args.weights}")
-print('Inferencing complete')
+          --weights {args.weights}"
+)
+print("Inferencing complete")

@@ -50,6 +50,8 @@ if args.model_source == "ultralytics_yolov5":
     )
     env.docker.base_image = DEFAULT_GPU_IMAGE
     upload_base_dir = "yolov5"
+    images_dir = f"{args.dataset}/images/"
+    weights_dir = "loaded_weights/weights/best.pt"
 elif args.model_source == "wongkinyiu_yolov7":
     model_src_dir = "model_zoo/wongkinyiu_yolov7/"
     env = Environment.from_conda_specification(
@@ -57,6 +59,8 @@ elif args.model_source == "wongkinyiu_yolov7":
     )
     env.docker.base_image = DEFAULT_GPU_IMAGE
     upload_base_dir = "yolov7"
+    images_dir = f"../{args.dataset}/images/"
+    weights_dir = "../loaded_weights/best.pt"
 else:
     raise ValueError("Invalid model class. Please check the model_source argument")
 
@@ -104,9 +108,9 @@ elif args.mode == "infer":
         environment=env,
         arguments=[
             "--images",
-            f"{args.dataset}/images/",
+            images_dir,
             "--weights",
-            "loaded_weights/weights/best.pt",
+            weights_dir,
             "--conf",
             "0.5",
         ],
@@ -129,7 +133,7 @@ elif args.mode == "test":
             "--dataset",
             args.dataset,
             "--weights",
-            "loaded_weights/weights/best.pt",
+            weights_dir,
             "--conf",
             "0.5",
             "--iou",

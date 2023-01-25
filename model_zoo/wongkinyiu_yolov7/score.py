@@ -9,9 +9,9 @@ import os
 def init():
     global model
     model = torch.hub.load(
-        "ultralytics_yolov5/yolov5",
+        "wongkinyiu_yolov7/yolov7",
         "custom",
-        path="ultralytics_yolov5/best.pt",
+        path_or_model="wongkinyiu_yolov7/best.pt",
         source="local",
         force_reload=True,
     )

@@ -23,6 +23,7 @@ with open(f"yolov7/{args.dataset}.yaml", "w") as f:
 print("Start training")
 os.chdir("yolov7/")
 os.system("pwd")
+os.makedirs("outputs", exist_ok=True)
 os.system("ls -l")
 os.system(
     f"python train.py \
@@ -34,3 +35,6 @@ os.system(
 )
 os.system("echo After training:")
 os.system("ls -l")
+os.chdir("outputs")
+os.system("ls -l")
+os.chdir("../..")
