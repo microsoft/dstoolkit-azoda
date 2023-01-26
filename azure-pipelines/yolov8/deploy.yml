@@ -1,4 +1,4 @@
-name: Yolov8 Remote Model Inferencing
+name: Yolov8 Model Deployment
 
 trigger: none
 
@@ -35,33 +35,24 @@ steps:
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
-        echo 'aml_storage_account_name='$aml_storage_account_name
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
         aml_container=$(echo $aml_container_str | tr -d \")
-
-        echo '--- Get dataset ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
+        timestamp=$(date +%Y%m%d_%H%M%S)
 
         echo '--- Get latest model timestamp ---'
         latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov8_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
         latest_timestamp=${latest_checkpoint:15:13}
-        echo $latest_timestamp
+        echo 'latest model='$latest_timestamp
 
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov8_models/$latest_timestamp/train/weights/best.pt -d model_zoo/ultralytics_yolov8/loaded_weights/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov8_models/$latest_timestamp/train/weights/best.pt -d model_zoo/ultralytics_yolov8/best.pt
 
-        echo '--- Transform into yolo annotation format ---'
-        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model yolov8
-
-        mv $(dataset) model_zoo/ultralytics_yolov8/
-
-        echo '--- Start remote inference job ---'
-        python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
-                                                    --tenant_id $tenant_id \
-                                                    --service_principal_id $(service_principal_id) \
-                                                    --service_principal_password $(service_principal_password) \
-                                                    --subscription_id $subscription_id \
-                                                    --resource_group $resource_group \
-                                                    --workspace_name $workspace_name \
-                                                    --mode infer \
-                                                    --model_source ultralytics_yolov8
+        echo '--- Start inference deployment ---'
+        cd model_zoo/ultralytics_yolov8/
+        python deploy_cpu_inference.py --tenant_id $tenant_id \
+                                      --service_principal_id $(service_principal_id) \
+                                      --service_principal_password $(service_principal_password) \
+                                      --subscription_id $subscription_id \
+                                      --resource_group $resource_group \
+                                      --workspace_name $workspace_name \
+                                      --dataset $(dataset)

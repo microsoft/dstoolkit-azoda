@@ -1,0 +1,39 @@
+name: project_environment
+dependencies:
+- python=3.8.10
+
+- pip:
+  - azureml-defaults>=1.0.45
+  - azureml-sdk==1.44.0
+  - azureml-contrib-services
+  - azureml-core==1.44
+  - Cython==0.29.17
+  - Flask==1.1.1
+  - GitPython>=3.1.24
+  - hydra-core>=1.2.0
+  - ipython
+  - itsdangerous==2.0.1
+  - Jinja2==3.0.3
+  - matplotlib>=3.2.2
+  - numpy>=1.18.5
+  - opencv-python>=4.1.1
+  - pandas>=1.1.4
+  - Pillow>=7.1.2
+  - protobuf<4.21.3
+  - psutil
+  - PyYAML>=5.3.1
+  - requests>=2.23.0
+  - scipy>=1.4.1
+  - seaborn>=0.11.0
+  - tensorboard>=2.4.1
+  - thop>=0.1.1
+  - torch>=1.7.0
+  - torchvision>=0.8.1
+  - torchaudio==0.7.2
+  - tqdm>=4.64.0
+  - ultralytics==8.0.19
+  - werkzeug==2.0.3
+channels:
+- pytorch
+- conda-forge
+- defaults 
