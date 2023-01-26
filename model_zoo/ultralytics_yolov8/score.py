@@ -3,15 +3,14 @@ from PIL import Image
 import json
 import base64
 import torch
-import os
 
 
 def init():
     global model
     model = torch.hub.load(
-        "wongkinyiu_yolov7/yolov7",
+        "ultralytics_yolov8/yolov8",
         "custom",
-        path_or_model="wongkinyiu_yolov7/best.pt",
+        path_or_model="ultralytics_yolov8/best.pt",
         source="local",
         force_reload=True,
     )

@@ -66,7 +66,7 @@ inference_config = InferenceConfig(
 )
 
 # get the registered model
-model = Model.register(ws, model_name="yolov7model", model_path="best.pt")
+model = Model.register(ws, model_name="yolov8model", model_path="best.pt")
 
 # Name of the web service that is deployed
 aks_service_name = "aks-" + str(uuid.uuid4())[:4]

@@ -1,4 +1,4 @@
-name: Yolov5 Remote Model Inferencing
+name: Yolov8 Remote Model Inferencing
 
 trigger: none
 
@@ -16,13 +16,14 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
         echo '--- Installing required libraries ---'
-        cd model_zoo/ultralytics_yolov5
-        git clone https://github.com/ultralytics/yolov5
-        cd yolov5
-        git checkout fe7de6a82da3444d755453f86f40b508f3b99419
+        cd model_zoo/ultralytics_yolov8
+        git clone https://github.com/ultralytics/ultralytics.git
+        mv ultralytics yolov8
+        cd yolov8
+        git checkout 59d43356644dd0df056e8d25cd5be92e0a1db88f
         cd ../../..
+
         pip install -r requirements.txt
-        pip freeze
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
 
@@ -42,18 +43,17 @@ steps:
         az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
 
         echo '--- Get latest model timestamp ---'
-        latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov5_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+        latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov8_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
         latest_timestamp=${latest_checkpoint:15:13}
         echo $latest_timestamp
-        
+
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov5_models/$latest_timestamp/exp/weights/ -d model_zoo/ultralytics_yolov5/loaded_weights/ --recursive
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov8_models/$latest_timestamp/train/weights/best.pt -d model_zoo/ultralytics_yolov8/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
-        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset)
-        
-        mv $(dataset).yaml model_zoo/ultralytics_yolov5/
-        mv $(dataset) model_zoo/ultralytics_yolov5/
+        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model yolov8
+
+        mv $(dataset) model_zoo/ultralytics_yolov8/
 
         echo '--- Start remote inference job ---'
         python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
@@ -63,4 +63,5 @@ steps:
                                                     --subscription_id $subscription_id \
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
-                                                    --mode infer
+                                                    --mode infer \
+                                                    --model_source ultralytics_yolov8

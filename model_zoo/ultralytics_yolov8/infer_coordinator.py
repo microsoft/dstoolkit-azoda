@@ -9,14 +9,13 @@ args = parser.parse_args()
 
 # project must be set to outputs, since the AML saves results in the outputs directory
 print("Start inferencing")
-os.chdir("yolov7/")
+os.chdir("yolov8/")
 os.system(
-    f"python detect.py \
-          --conf-thres {args.conf} \
-          --project ../outputs/ \
-          --save-conf \
-          --save-txt \
-          --source {args.images} \
-          --weights {args.weights}"
+    f"yolo detect predict \
+          conf={args.conf} \
+          project=../outputs/ \
+          save_json=True \
+          source={args.images} \
+          model={args.weights}"
 )
 print("Inferencing complete")

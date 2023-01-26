@@ -26,12 +26,12 @@ os.system("pwd")
 os.makedirs("outputs", exist_ok=True)
 os.system("ls -l")
 os.system(
-    f"python train.py \
-          --batch-size {args.batch_size} \
-          --data {args.dataset}.yaml \
-          --epochs {args.epochs} \
-          --project ../outputs/ \
-          --weights yolov8n.pt"
+    f"yolo train \
+          batch={args.batch_size} \
+          data={args.dataset}.yaml \
+          epochs={args.epochs} \
+          project=../outputs/ \
+          model=yolov8n.pt"
 )
 os.system("echo After training:")
 os.system("ls -l")
