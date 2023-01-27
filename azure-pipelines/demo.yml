@@ -226,13 +226,13 @@ jobs:
           git_url=https://github.com/ultralytics/yolov5
           git_commit_sha=fe7de6a82da3444d755453f86f40b508f3b99419
           dataset_yaml_dir=model_zoo/$repo_id/
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         elif [ $model_name == yolov7 ]; then
           repo_id=wongkinyiu_yolov7
           git_url=https://github.com/WongKinYiu/yolov7.git
           git_commit_sha=2fdc7f14395f6532ad05fb3e6970150a6a83d290
           dataset_yaml_dir=model_zoo/$repo_id/$model_name/
-          remote_model_path="$model_name"_models/$latest_timestamp/exp/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         else
           if [ $model_name != yolov8 ]; then
             echo 'model_name not detected, defaulting to yolov8'
@@ -241,7 +241,7 @@ jobs:
           git_url=https://github.com/ultralytics/ultralytics.git
           git_commit_sha=59d43356644dd0df056e8d25cd5be92e0a1db88f
           dataset_yaml_dir=model_zoo/$repo_id/$model_name/
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=train/weights/best.pt
         fi
 
         echo '--- Installing required libraries ---'
@@ -274,7 +274,7 @@ jobs:
         echo $latest_timestamp
         
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s "$model_name"_models/$latest_timestamp/$remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
         python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model $model_name
@@ -305,12 +305,12 @@ jobs:
           repo_id=ultralytics_yolov5
           git_url=https://github.com/ultralytics/yolov5
           git_commit_sha=fe7de6a82da3444d755453f86f40b508f3b99419
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         elif [ $model_name == yolov7 ]; then
           repo_id=wongkinyiu_yolov7
           git_url=https://github.com/WongKinYiu/yolov7.git
           git_commit_sha=2fdc7f14395f6532ad05fb3e6970150a6a83d290
-          remote_model_path="$model_name"_models/$latest_timestamp/exp/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         else
           if [ $model_name != yolov8 ]; then
             echo 'model_name not detected, defaulting to yolov8'
@@ -318,7 +318,7 @@ jobs:
           repo_id=ultralytics_yolov8
           git_url=https://github.com/ultralytics/ultralytics.git
           git_commit_sha=59d43356644dd0df056e8d25cd5be92e0a1db88f
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=train/weights/best.pt
         fi
 
         echo '--- Installing required libraries ---'
@@ -351,7 +351,7 @@ jobs:
         echo $latest_timestamp
 
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s "$model_name"_models/$latest_timestamp/$remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
         python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model $model_name
@@ -382,13 +382,13 @@ jobs:
           git_url=https://github.com/ultralytics/yolov5
           git_commit_sha=fe7de6a82da3444d755453f86f40b508f3b99419
           dataset_yaml_dir=model_zoo/$repo_id/
-          remote_model_path="$model_name"_models/$latest_timestamp/exp/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         elif [ $model_name == yolov7 ]; then
           repo_id=wongkinyiu_yolov7
           git_url=https://github.com/WongKinYiu/yolov7.git
           git_commit_sha=2fdc7f14395f6532ad05fb3e6970150a6a83d290
           dataset_yaml_dir=model_zoo/$repo_id/$model_name/
-          remote_model_path="$model_name"_models/$latest_timestamp/exp/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         else
           if [ $model_name != yolov8 ]; then
             echo 'model_name not detected, defaulting to yolov8'
@@ -397,7 +397,7 @@ jobs:
           git_url=https://github.com/ultralytics/ultralytics.git
           git_commit_sha=59d43356644dd0df056e8d25cd5be92e0a1db88f
           dataset_yaml_dir=model_zoo/$repo_id/$model_name/
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=train/weights/best.pt
         fi
 
         echo '--- Installing required libraries ---'
@@ -410,13 +410,24 @@ jobs:
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
 
+        echo '--- Setting variables ---'
+        workspace_name=azoda-amlw
+        resource_group=azoda-rg
+        subscription_name="$(subscription_name)"
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
+        aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
+        aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
+        aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
+        aml_container=$(echo $aml_container_str | tr -d \")
+
         echo '--- Get latest model timestamp ---'
         latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d "$model_name"_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
         latest_timestamp=${latest_checkpoint:15:13}
         echo 'latest model='$latest_timestamp
 
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $remote_model_path -d model_zoo/$repo_id/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s "$model_name"_models/$latest_timestamp/$remote_model_path -d model_zoo/$repo_id/best.pt
 
         echo '--- Start inference deployment ---'
         cd model_zoo/$repo_id/

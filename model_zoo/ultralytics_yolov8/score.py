@@ -1,19 +1,13 @@
 from io import BytesIO
 from PIL import Image
+from ultralytics import YOLO
 import json
 import base64
-import torch
 
 
 def init():
     global model
-    model = torch.hub.load(
-        "ultralytics_yolov8/yolov8",
-        "custom",
-        path_or_model="ultralytics_yolov8/best.pt",
-        source="local",
-        force_reload=True,
-    )
+    model = YOLO("ultralytics_yolov8/best.pt")
 
 
 def run(request):

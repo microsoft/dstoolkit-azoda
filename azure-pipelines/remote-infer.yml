@@ -21,12 +21,12 @@ steps:
           repo_id=ultralytics_yolov5
           git_url=https://github.com/ultralytics/yolov5
           git_commit_sha=fe7de6a82da3444d755453f86f40b508f3b99419
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         elif [ $model_name == yolov7 ]; then
           repo_id=wongkinyiu_yolov7
           git_url=https://github.com/WongKinYiu/yolov7.git
           git_commit_sha=2fdc7f14395f6532ad05fb3e6970150a6a83d290
-          remote_model_path="$model_name"_models/$latest_timestamp/exp/weights/best.pt
+          remote_model_path=exp/weights/best.pt
         else
           if [ $model_name != yolov8 ]; then
             echo 'model_name not detected, defaulting to yolov8'
@@ -34,7 +34,7 @@ steps:
           repo_id=ultralytics_yolov8
           git_url=https://github.com/ultralytics/ultralytics.git
           git_commit_sha=59d43356644dd0df056e8d25cd5be92e0a1db88f
-          remote_model_path="$model_name"_models/$latest_timestamp/train/weights/best.pt
+          remote_model_path=train/weights/best.pt
         fi
 
         echo '--- Installing required libraries ---'
@@ -67,7 +67,7 @@ steps:
         echo $latest_timestamp
 
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s "$model_name"_models/$latest_timestamp/$remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
         python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model $model_name
