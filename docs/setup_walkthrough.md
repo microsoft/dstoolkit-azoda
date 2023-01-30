@@ -44,7 +44,9 @@ az pipelines variable-group variable create --group-id $vargroup_id --name servi
 az pipelines variable-group variable create --group-id $vargroup_id --name vargroup_id --secret false --value $vargroup_id &&
 az pipelines variable-group variable create --group-id $vargroup_id --name organization_name --secret false --value "$organization_name" &&
 az pipelines variable-group variable create --group-id $vargroup_id --name project_name --secret false --value "$project_name" &&
-az pipelines variable-group variable create --group-id $vargroup_id --name subscription_name --secret false --value "$subscription_name"
+az pipelines variable-group variable create --group-id $vargroup_id --name subscription_name --secret false --value "$subscription_name" &&
+az pipelines variable-group variable create --group-id $vargroup_id --name model_name --secret false --value "yolov5" &&
+az pipelines variable-group variable create --group-id $vargroup_id --name epochs --secret false --value "30"
 
 ```
 
@@ -69,7 +71,9 @@ In ADO, select the following:
 - Under **Path** select **/azure-pipelines/demo.yml** then **Continue**
 - **Run**
 
-That's it, you've set up the project. The pipeline should take about an hour to complete all the steps.
+That's it, you've set up the project. The pipeline should take about an hour to complete all the steps. 
+
+Remember to stop the deployment if you're not using it to avoid additional costs. More details [here](delete_project_resources.md).
 
 ### Next Steps
 
