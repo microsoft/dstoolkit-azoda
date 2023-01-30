@@ -41,7 +41,9 @@ try:
 except ComputeTargetException:
     print("Creating a new compute target...")
     # Provision AKS cluster with GPU machine
-    prov_config = AksCompute.provisioning_configuration(vm_size="Standard_D4_v3")
+    prov_config = AksCompute.provisioning_configuration(
+        vm_size="Standard_D4_v3", agent_count=1
+    )
     # Create the cluster
     aks_target = ComputeTarget.create(
         workspace=ws, name=aks_name, provisioning_configuration=prov_config
