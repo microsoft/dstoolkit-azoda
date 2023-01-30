@@ -1,0 +1,35 @@
+name: Delete resources
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-20.04
+
+variables:
+- group: vars
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'ARMSC'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+        echo '--- Cleaning up project resources ---'
+        subscription_name="$(subscription_name)"
+        spn_id=$(service_principal_id)
+        subscription_id=$(az account list --query "[?name=='$subscription_name'].id | [0]" | jq . -r)
+        keyvault_name="azoda-kv-${subscription_id:0:12}"
+
+        echo '--- Deleting keyvault ---'
+        az keyvault delete --name $keyvault_name --resource-group azoda-rg
+        az keyvault purge --name $keyvault_name
+
+        echo '--- Deleting resource group ---'
+        az group delete --name azoda-rg --yes
+
+        echo '--- Deleting custom vision ---'
+        az cognitiveservices account purge --location westeurope --resource-group azoda-rg --name azodacv
+
+        echo '--- Deleting service principal ---'
+        az ad sp delete --id $spn_id
