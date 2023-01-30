@@ -73,7 +73,7 @@ In ADO, select the following:
 
 That's it, you've set up the project. The pipeline should take about an hour to complete all the steps. 
 
-Remember to stop the deployment if you're not using it to avoid additional costs. More details in the [here](delete_project_resources.md).
+Remember to stop the deployment if you're not using it to avoid additional costs. More details [here](delete_project_resources.md).
 
 ### Next Steps
 
