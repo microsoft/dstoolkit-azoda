@@ -45,8 +45,8 @@ az pipelines variable-group variable create --group-id $vargroup_id --name vargr
 az pipelines variable-group variable create --group-id $vargroup_id --name organization_name --secret false --value "$organization_name" &&
 az pipelines variable-group variable create --group-id $vargroup_id --name project_name --secret false --value "$project_name" &&
 az pipelines variable-group variable create --group-id $vargroup_id --name subscription_name --secret false --value "$subscription_name"
-az pipelines variable-group variable create --group-id $vargroup_id --name model_name --secret false --value "yolov8"
-az pipelines variable-group variable create --group-id $vargroup_id --name epochs --secret false --value "20"
+az pipelines variable-group variable create --group-id $vargroup_id --name model_name --secret false --value "yolov5"
+az pipelines variable-group variable create --group-id $vargroup_id --name epochs --secret false --value "30"
 
 ```
 

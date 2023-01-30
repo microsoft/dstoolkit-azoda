@@ -190,7 +190,7 @@ jobs:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 40
+                                                    --epochs 30
   - task: AzureCLI@2
     displayName: Yolov5 Remote Model Testing
     inputs:
