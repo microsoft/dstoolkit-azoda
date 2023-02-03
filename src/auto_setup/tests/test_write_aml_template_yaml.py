@@ -37,6 +37,17 @@ class TestWriteAMLTemplateYAML(unittest.TestCase):
         self.assertEqual(args.acr_name, "azoda-cr")
         self.assertEqual(args.workspace, "azoda-amlw")
 
+    @mock.patch(
+        "argparse.ArgumentParser.parse_args",
+        return_value=argparse.Namespace(
+            random_argument="azoda-sub",
+        ),
+    )
+    def test_parse_arguments_no_correct_args(self, _):
+        """Test the parse_arguments function with no correct arguments."""
+        with self.assertRaises(SystemExit):
+            parse_arguments()
+
     def test_parse_arguments_no_args(self):
         """Test the parse_arguments function with no arguments."""
         with self.assertRaises(SystemExit):
