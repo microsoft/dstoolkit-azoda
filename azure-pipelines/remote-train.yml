@@ -85,5 +85,5 @@ steps:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode train \
-                                                    --epochs 1 \
+                                                    --epochs $(epochs) \
                                                     --model_source $repo_id
