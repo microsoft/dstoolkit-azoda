@@ -1,7 +1,9 @@
-from datetime import datetime
-import cv2
-import numpy as np
+"""Create a synthetic dataset."""
+
 import os
+from datetime import datetime
+from cv2 import cv2
+import numpy as np
 import pandas as pd
 
 
