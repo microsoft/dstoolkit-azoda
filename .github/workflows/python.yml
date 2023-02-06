@@ -1,6 +1,6 @@
 name: Python Testing & Linting
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   job-test:
