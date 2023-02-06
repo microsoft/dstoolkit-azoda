@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   job-test:
-    name: Python Unit Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,7 +26,7 @@ jobs:
           python -m unittest discover
 
   job-lint:
-    name: Run Python Linting
+    name: PyLint Check
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +41,7 @@ jobs:
           pylint $(git ls-files '*.py')
 
   job-format:
-    name: Python Formatting
+    name: Black Formatting Check
     runs-on: ubuntu-latest
 
     steps:
