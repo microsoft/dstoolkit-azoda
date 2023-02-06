@@ -14,6 +14,6 @@ def run(request):
     json_load = json.loads(request)
     decoded_img = base64.b64decode(json_load["img"])
     stream = BytesIO(decoded_img)
-    img = Image.open(stream).convert("RGBA")
+    img = Image.open(stream).convert("RGB")
     results = model([img])
-    return f"{results.xyxy[0]}"
+    return f"{results[0].boxes}"
