@@ -30,6 +30,3 @@ steps:
 
         echo '--- Deleting custom vision ---'
         az cognitiveservices account purge --location westeurope --resource-group azoda-rg --name azodacv
-
-        echo '--- Deleting service principal ---'
-        az ad sp delete --id $spn_id
