@@ -1,3 +1,4 @@
-import synthetic_dataset_creation
+import create_synthetic_dataset
 import util
 import write_aml_template_yaml
+import create_dataset_splits

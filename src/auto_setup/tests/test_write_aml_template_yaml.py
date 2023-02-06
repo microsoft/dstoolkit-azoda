@@ -13,12 +13,6 @@ from write_aml_template_yaml import (
 
 
 class TestWriteAMLTemplateYAML(unittest.TestCase):
-    def setUp(self):
-        self.test_dir = tempfile.TemporaryFile()
-
-    def tearDown(self):
-        self.test_dir.close()
-
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=argparse.Namespace(
@@ -39,8 +33,10 @@ class TestWriteAMLTemplateYAML(unittest.TestCase):
 
     def test_parse_arguments_no_args(self):
         """Test the parse_arguments function with no arguments."""
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit) as cm:
             parse_arguments()
+
+        self.assertEqual(cm.exception.code, 2)
 
     def test_generate_config(self):
         """Test the generate_aml_config function."""

@@ -4,17 +4,11 @@ import tempfile
 import pandas as pd
 from math import ceil
 
-from synthetic_dataset_creation import make_directories, generate_dataset
+from create_synthetic_dataset import make_directories, generate_dataset
 from util import get_lastest_iteration
 
 
-class TestSyntheticDatasetCreation(unittest.TestCase):
-    def setUp(self):
-        self.test_dir = tempfile.TemporaryFile()
-
-    def tearDown(self):
-        self.test_dir.close()
-
+class TestCreateSyntheticDataset(unittest.TestCase):
     def test_make_directories(self):
         """Test the make_directories function."""
         # Create a temporary directory
