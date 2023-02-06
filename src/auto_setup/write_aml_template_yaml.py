@@ -4,7 +4,7 @@ import yaml
 
 def generate_aml_config(
     subscription: str, resource_group: str, acr_name: str, workspace: str
-):
+) -> dict:
     """Generate a config dictionary for Azure ML.
 
     Args:
@@ -49,7 +49,7 @@ def generate_aml_config(
     return config_dict
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments.
 
     Returns:
@@ -58,19 +58,27 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Parse arguments
-    parser.add_argument("-a", "--acr_name", help="Your ACR name", required=True)
     parser.add_argument(
-        "-s", "--subscription", help="Your Azure subscription", required=True
+        "-a", "--acr_name", help="Your ACR name", required=True, type=str
     )
     parser.add_argument(
-        "-r", "--resource_group", help="Your Azure resource group", required=True
+        "-s", "--subscription", help="Your Azure subscription", required=True, type=str
     )
-    parser.add_argument("-w", "--workspace", help="Your AML workspace", required=True)
+    parser.add_argument(
+        "-r",
+        "--resource_group",
+        help="Your Azure resource group",
+        required=True,
+        type=str,
+    )
+    parser.add_argument(
+        "-w", "--workspace", help="Your AML workspace", required=True, type=str
+    )
 
     return parser.parse_args()
 
 
-def save_aml_config(config_dict, filename):
+def save_aml_config(config_dict, filename) -> None:
     """Save the config dictionary to a YAML file.
 
     Args:

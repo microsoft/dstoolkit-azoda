@@ -9,12 +9,6 @@ from util import get_lastest_iteration
 
 
 class TestCreateSyntheticDataset(unittest.TestCase):
-    def setUp(self):
-        self.test_dir = tempfile.TemporaryFile()
-
-    def tearDown(self):
-        self.test_dir.close()
-
     def test_make_directories(self):
         """Test the make_directories function."""
         # Create a temporary directory
