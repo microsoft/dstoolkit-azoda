@@ -1,3 +1,5 @@
+"""Generate an Azure Machine Learning template for deployment."""
+
 import argparse
 import yaml
 
@@ -78,7 +80,7 @@ def save_aml_config(config_dict, filename):
         filename (str): Filename to save the config to.
     """
 
-    with open(filename, "w") as file:
+    with open(filename, "w", encoding="utf-8") as file:
         yaml.dump(config_dict, file)
 
 
@@ -87,9 +89,9 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     # Generate config
-    config_dict = generate_aml_config(
+    generated_config_dict = generate_aml_config(
         args.subscription, args.resource_group, args.acr_name, args.workspace
     )
 
     # Save config
-    save_aml_config(config_dict, "aml_config.yaml")
+    save_aml_config(generated_config_dict, "aml_config.yaml")

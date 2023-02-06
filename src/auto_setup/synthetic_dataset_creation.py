@@ -1,9 +1,10 @@
-from datetime import datetime
-import cv2
-import numpy as np
-import os
-import pandas as pd
+"""Create a synthetic dataset."""
 
+import os
+from datetime import datetime
+from cv2 import cv2
+import numpy as np
+import pandas as pd
 
 def add_rect(img: np.array, width: int, height: int):
     """Add a rectangle to the image in place.
