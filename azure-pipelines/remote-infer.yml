@@ -1,4 +1,4 @@
-name: Yolov8 Remote Model Inferencing
+name: Remote Model Inferencing
 
 trigger: none
 
@@ -15,14 +15,34 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-        echo '--- Installing required libraries ---'
-        cd model_zoo/ultralytics_yolov8
-        git clone https://github.com/ultralytics/ultralytics.git
-        mv ultralytics yolov8
-        cd yolov8
-        git checkout 59d43356644dd0df056e8d25cd5be92e0a1db88f
-        cd ../../..
+        echo '--- Set pipeline variables ---'
+        model_name=$(model_name)
+        if [ $model_name == yolov5 ]; then
+          repo_id=ultralytics_yolov5
+          git_url=https://github.com/ultralytics/yolov5
+          git_commit_sha=fe7de6a82da3444d755453f86f40b508f3b99419
+          remote_model_path=exp/weights/best.pt
+        elif [ $model_name == yolov7 ]; then
+          repo_id=wongkinyiu_yolov7
+          git_url=https://github.com/WongKinYiu/yolov7.git
+          git_commit_sha=2fdc7f14395f6532ad05fb3e6970150a6a83d290
+          remote_model_path=exp/weights/best.pt
+        else
+          if [ $model_name != yolov8 ]; then
+            echo 'model_name not detected, defaulting to yolov8'
+          fi
+          repo_id=ultralytics_yolov8
+          git_url=https://github.com/ultralytics/ultralytics.git
+          git_commit_sha=59d43356644dd0df056e8d25cd5be92e0a1db88f
+          remote_model_path=train/weights/best.pt
+        fi
 
+        echo '--- Installing required libraries ---'
+        cd model_zoo/$repo_id
+        git clone $git_url $model_name
+        cd $model_name
+        git checkout $git_commit_sha
+        cd ../../..
         pip install -r requirements.txt
         az config set extension.use_dynamic_install=yes_without_prompt
         az extension add -n ml -y
@@ -35,7 +55,6 @@ steps:
         tenant_id=$(az account list --query "[?name=='$subscription_name'].tenantId | [0]" | jq . -r)
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "sort_by([].{account_name:account_name}[? contains(account_name, 'azoda')], &account_name)"[0].account_name)
         aml_storage_account_name=$(echo $aml_storage_account_name_str | tr -d \")
-        echo 'aml_storage_account_name='$aml_storage_account_name
         aml_container_str=$(az ml datastore show --name workspaceblobstore --resource-group $resource_group --workspace-name $workspace_name --query container_name)
         aml_container=$(echo $aml_container_str | tr -d \")
 
@@ -43,17 +62,17 @@ steps:
         az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s $(dataset)/ -d . --recursive
 
         echo '--- Get latest model timestamp ---'
-        latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d yolov8_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
+        latest_checkpoint=$(az storage blob directory list --account-name $aml_storage_account_name -c $aml_container -d "$model_name"_models --query "sort_by([].{name:name}[? contains(name, 'best.pt')], &name)"[-1].name)
         latest_timestamp=${latest_checkpoint:15:13}
         echo $latest_timestamp
 
         echo '--- Get model ---'
-        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s yolov8_models/$latest_timestamp/train/weights/best.pt -d model_zoo/ultralytics_yolov8/loaded_weights/best.pt
+        az storage blob directory download -c $aml_container --account-name $aml_storage_account_name -s "$model_name"_models/$latest_timestamp/$remote_model_path -d model_zoo/$repo_id/loaded_weights/best.pt
 
         echo '--- Transform into yolo annotation format ---'
-        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model yolov8
+        python src/auto_setup/tf_to_yolo_annotations.py --dataset $(dataset) --model $model_name
 
-        mv $(dataset) model_zoo/ultralytics_yolov8/
+        mv $(dataset) model_zoo/$repo_id/
 
         echo '--- Start remote inference job ---'
         python src/auto_setup/start_yolo_aml_run.py --dataset $(dataset) \
@@ -64,4 +83,4 @@ steps:
                                                     --resource_group $resource_group \
                                                     --workspace_name $workspace_name \
                                                     --mode infer \
-                                                    --model_source ultralytics_yolov8
+                                                    --model_source $repo_id

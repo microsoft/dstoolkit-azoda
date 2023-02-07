@@ -51,8 +51,6 @@ steps:
 
         echo '--- Creating GPU compute instance ---'
         az ml compute create --min-instances 0 --max-instances 2 --name gpu-1 --size Standard_NC6 --workspace-name $workspace_name --resource-group $resource_group --no-wait --type AmlCompute --idle-time-before-scale-down 1800
-        az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 1
-        az ml compute update --name gpu-1 --resource-group $resource_group --workspace-name $workspace_name --min-instances 0
         
         echo '--- Fetching AML storage account name ---'
         aml_storage_account_name_str=$(az ml datastore list --resource-group $resource_group --workspace-name $workspace_name --query "[0].{account_name:account_name}.account_name")
